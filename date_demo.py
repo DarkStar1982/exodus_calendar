@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 EPOCH = "1970-01-01T00:00:00Z"
 
 # Martian day length in milliseconds
-SOL_LENGTH = 88775244.17279999
+SOL_LENGTH = 88775244
 
 # Terrestrial day length in milliseconds
 DAY_LENGTH = 86400000
@@ -128,6 +128,7 @@ def earth_datetime_to_mars_datetime(input_date):
     milliseconds_per_22y_cycle = sum(YEAR_CYCLE)*SOL_LENGTH
 
     cycle_count = milliseconds_since_epoch/milliseconds_per_22y_cycle
+
     year_raw = cycle_count*len(YEAR_CYCLE)
     year_frac, year_int = modf(year_raw)
     
@@ -140,7 +141,6 @@ def earth_datetime_to_mars_datetime(input_date):
     raw_sol_frac, raw_sol_int = modf(raw_month)
 
     year_adj = ceil(year_raw)+1
-    # print("%s: %s" % ("Current sol",current_sol))
     month_adj = ceil(raw_month)
     if raw_month<11:
         raw_sol_time = raw_sol_frac*MARS_MONTH_LENGTH
