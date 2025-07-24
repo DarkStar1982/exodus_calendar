@@ -2,7 +2,7 @@
 Revision 2025.07.24
 
 ## INTRODUCTION
-An accurate and user-friendly Martian calendar would be invaluable for future Martian colonists, yet no commonly accepted system exists today. Current proposals, such as the Darian calendar, appear overly complex and demand memorization of numerous unfamiliar terms. The ideal system should prioritize accuracy and simplicity while retaining familiar month and weekday names. Additionally, maintaining some degree of synchronization between Earth and Mars timekeeping systems would be highly beneficial.
+An accurate and user-friendly Martian calendar would be invaluable for future Martian colonists, yet no commonly accepted system exists today. Current proposals, such as the Darian calendar [1], appear overly complex and demand memorization of numerous unfamiliar terms. The ideal system should prioritize accuracy and simplicity while retaining familiar month and weekday names. Additionally, maintaining some degree of synchronization between Earth and Mars timekeeping systems would be highly beneficial.
 
 
 ## DESCRIPTION
@@ -13,6 +13,8 @@ Using the northward equinox year (668.5907 sols) as the reference year length, t
 - Ten 668-sol years (even-numbered years: second, fourth, sixth, etc.)
 - Eleven 669-sol years (odd-numbered years: first, third, fifth, etc.)
 - One 670-sol year (final year only)
+
+![martian calendar](infographics.png "Infographics")
 
 Each year comprises 12 months bearing the same names as their terrestrial counterparts, with each containing 56 days except December, which varies in length: 52, 53, or 54 days. Weeks maintain the familiar seven-day structure with Earth's day names (Monday, Tuesday, etc.), and each month contains exactly eight weeks. All months begin on Monday and conclude on Sunday, with only December's final week ending on Wednesday, Thursday, or Friday, depending on the year's length. Every new year begins on Monday as well.
 
