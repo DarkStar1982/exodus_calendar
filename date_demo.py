@@ -120,16 +120,12 @@ def format_raw_time(p_milliseconds):
     return "%s:%s:%2.3f" % (int(hours_int), int(minutes_int), seconds_raw)
 
 
-def earth_datetime_to_mars_datetime(p_timestamp):
-    #input_date = datetime.fromisoformat(p_timestamp)
-    #input_date = datetime.now()
-    input_date = p_timestamp
+def earth_datetime_to_mars_datetime(input_date):
     epoch_date = datetime.fromisoformat(EPOCH)
     diff = input_date - epoch_date
-    # milliseconds_since_epoch = input_date.timestamp()*1000
+
     milliseconds_since_epoch = diff.total_seconds()*1000
     milliseconds_per_22y_cycle = sum(YEAR_CYCLE)*SOL_LENGTH
-    #print("%s: %s" %("Sols elapsed",milliseconds_since_epoch/SOL_LENGTH))
 
     cycle_count = milliseconds_since_epoch/milliseconds_per_22y_cycle
     year_raw = cycle_count*len(YEAR_CYCLE)
