@@ -32,7 +32,8 @@ This concept requires minimal new information to memorize—essentially just the
 A simple reference code is available that allows conversions between terrestrial and Martian dates. Pull requests accepted. Recommended to be packaged into a library. 
 
 ## MISC
-Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists).
+Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
+https://github.com/DarkStar1982/prometheus_unbound
 
 Subscribe to our YT channel:
 https://www.youtube.com/@exodusorbitals4092
