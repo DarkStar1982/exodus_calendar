@@ -14,9 +14,9 @@ Using the northward equinox year (668.5907 sols) as the reference year length, t
 - Eleven 669-sol years (odd-numbered years: first, third, fifth, etc.)
 - One 670-sol year (final year only)
 
-![martian calendar](infographics.png "Infographics")
-
 Each year comprises 12 months bearing the same names as their terrestrial counterparts, with each containing 56 days except December, which varies in length: 52, 53, or 54 days. Weeks maintain the familiar seven-day structure with Earth's day names (Monday, Tuesday, etc.), and each month contains exactly eight weeks. All months begin on Monday and conclude on Sunday, with only December's final week ending on Wednesday, Thursday, or Friday, depending on the year's length. Every new year begins on Monday as well.
+
+![martian calendar](infographics.png "Infographics")
 
 Five complete cycles (110 Martian years) constitute a Martian "century," roughly equivalent to 200 Earth years, facilitating cross-referencing between planetary calendars. Each cycle within the century may optionally receive thematic names for distinction ("Earth," "Water," "Air," "Fire," "Aether"), though this remains purely cosmetic
 
