@@ -52,7 +52,7 @@ YEAR_CYCLE = [
 ]
 
 # Martian months and duration - 11 months x 56 days, 1 month variable duration
-# Alternatively, name after Zodiacal signs (European or Chinese)
+# Alternatively, name after Zodiacal signs (European or Chinese)?
 MONTHS = [
     "January",  # Aries - Rat
     "February", # Taurus - Ox
@@ -155,16 +155,12 @@ def earth_datetime_to_mars_datetime(input_date):
     day_of_the_week = (DAYS[sol_month_adj % 7])
     formatted_time = format_raw_time(raw_sol_time_frac*SOL_LENGTH)
 
-    print("Mars DateTime: %04d-%s-%s %s, %s" %(year_adj,MONTHS[month_adj],sol_month_adj,formatted_time,day_of_the_week))
-
-def mars_datetime_to_earth_datetime(p_timestamp):
-    print(p_timestamp)
+    print("Mars:  %04d-%02d-%s %s, %s" %(year_adj,month_adj+1,sol_month_adj,formatted_time,day_of_the_week))
 
 def main():
-    errors_test()
+    # errors_test()
     timedate = datetime.now(timezone.utc)
-    print("Earth DateTime: %s" % timedate.strftime("%Y-%B-%d %H:%M:%S(%Z), %A"))
+    print("Earth: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     earth_datetime_to_mars_datetime(timedate)
-    # mars_datetime_to_earth_datetime("TEST 2")
 
 main()
