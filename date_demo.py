@@ -74,7 +74,8 @@ LAST_MONTH_LENGTH = {
     670:54
 }
 
-# Five 22-year cycles form a "century", 110 Martian years are ~ 200 Earth ones.
+# Five 22-year cycles form a "century", 
+# 110 Martian years are ~ 200 Earth ones.
 # Purely a cosmetic feature
 CYCLES = ['Earth', 'Water', 'Air', 'Fire', 'Aether']
 
@@ -160,7 +161,7 @@ def mars_datetime_to_earth_datetime(p_timestamp):
     print(p_timestamp)
 
 def main():
-    # errors_test()
+    errors_test()
     timedate = datetime.now(timezone.utc)
     print("Earth DateTime: %s" % timedate.strftime("%Y-%B-%d %H:%M:%S(%Z), %A"))
     earth_datetime_to_mars_datetime(timedate)
