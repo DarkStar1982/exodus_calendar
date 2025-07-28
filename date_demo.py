@@ -1,6 +1,7 @@
 #!/opt/homebrew/bin/python3
 from math import modf, ceil
-from datetime import datetime, timezone
+import time
+from datetime import datetime, timezone, timedelta
 
 #######################################
 ############## CONSTANTS ##############
@@ -8,7 +9,7 @@ from datetime import datetime, timezone
 
 # Start year same as in Unix time
 # Preliminary date, can be changed
-EPOCH = "0148-06-20T18:00:00Z"
+EPOCH = "1970-01-01T00:00:00Z"
 
 # Martian day length in milliseconds
 SOL_LENGTH = 88775244
@@ -28,27 +29,27 @@ EARTH_YEAR_LENGTH = 365.2425
 # 22-year cycle - 10 668-sol years, 11 669-sol years, 1 670 sol year marks end of cycle
 YEAR_CYCLE = [
     669, #1
-    668, # 1
-    669, #2
     668, # 2
     669, #3
-    668, # 3
-    669, #4
     668, # 4
     669, #5
-    668, # 5
-    669, #6
     668, # 6
     669, #7
-    668, # 7
-    669, #8
     668, # 8
     669, #9
-    668, # 9
-    669, #10
-    668, # 10  
+    668, # 10
     669, #11
-    670  #1
+    668, # 12
+    669, #13
+    668, # 14
+    669, #15
+    668, # 16
+    669, #17
+    668, # 18
+    669, #19
+    668, # 20  
+    669, #21
+    670  # 22
 ]
 
 # Martian months and duration - 11 months x 56 days, 1 month variable duration
@@ -118,49 +119,81 @@ def format_raw_time(p_milliseconds):
     minutes_raw = (hours_raw - hours_int)*60
     minutes_frac, minutes_int = modf(minutes_raw)
     seconds_raw = minutes_frac*60
-    return "%s:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
+    return "%02d:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
 
+def sols_to_month(p_sol):
+    raw_month = p_sol/MARS_MONTH_LENGTH
+    raw_month_frac, raw_month_int = modf(raw_month)
+    return (int(raw_month_int),raw_month_frac)
 
-def earth_datetime_to_mars_datetime(input_date):
-    epoch_date = datetime.fromisoformat(EPOCH)
-    diff = input_date - epoch_date
-
-    milliseconds_since_epoch = diff.total_seconds()*1000
-    milliseconds_per_22y_cycle = sum(YEAR_CYCLE)*SOL_LENGTH
-
-    cycle_count = milliseconds_since_epoch/milliseconds_per_22y_cycle
-
-    year_raw = cycle_count*len(YEAR_CYCLE)
-    year_frac, year_int = modf(year_raw)
-    
-    cycle_count_frac, cycle_count_int = modf(cycle_count)
-    current_year_in_cycle = int(cycle_count_frac*len(YEAR_CYCLE))+1
-    length_of_year = YEAR_CYCLE[current_year_in_cycle-1]
-    
-    current_sol = length_of_year*year_frac
-    raw_month = current_sol/MARS_MONTH_LENGTH;
-    raw_sol_frac, raw_sol_int = modf(raw_month)
-
-    year_adj = ceil(year_raw)+1
-    month_adj = ceil(raw_month)
-    if raw_month<11:
-        raw_sol_time = raw_sol_frac*MARS_MONTH_LENGTH
-        sol_month_adj = ceil(raw_sol_time)
+def month_residual_to_date(p_month, p_residual):
+    if p_month<11:
+        raw_date = p_residual*MARS_MONTH_LENGTH
     else:
         last_month_length = LAST_MONTH_LENGTH[length_of_year]
-        raw_sol_time = raw_sol_frac*last_month_length
-        sol_month_adj = ceil(raw_sol_time)
-    
-    raw_sol_time_frac, raw_sol_time_int = modf(raw_sol_time)
-    day_of_the_week = (DAYS[sol_month_adj % 7])
-    formatted_time = format_raw_time(raw_sol_time_frac*SOL_LENGTH)
+        raw_date = p_residual*last_month_length
+    raw_date_frac, raw_date_int = modf(raw_date)
+    return (int(raw_date_int),raw_date_frac)
 
-    print("Mars:  %04d-%02d-%02d %s, %s" %(year_adj,month_adj,sol_month_adj,formatted_time,day_of_the_week))
+def day_of_the_weeka(p_date):
+    return (DAYS[int(p_date) % 7])
+
+def earth_datetime_to_mars_datetime(input_date):
+    # Calculate year
+    epoch_date = datetime.fromisoformat(EPOCH)
+    diff = input_date - epoch_date
+    #print(time.time()*1000) <-within 1 millisecond of diff
+    milliseconds_since_epoch = diff.total_seconds()*1000 
+    cycle_years_total_sols = sum(YEAR_CYCLE)
+    milliseconds_per_22y_cycle = cycle_years_total_sols*SOL_LENGTH
+    assert(milliseconds_per_22y_cycle == 1305795063996)
+
+    cycle_count = milliseconds_since_epoch/milliseconds_per_22y_cycle
+    
+    year_raw = cycle_count*len(YEAR_CYCLE) + 1 # No Year 0
+    year_frac, year_int = modf(year_raw)
+    cycle_count_frac, cycle_count_int = modf(cycle_count)
+
+    year_in_cycle = cycle_count_frac*len(YEAR_CYCLE)
+    year_count_frac, year_count_int = modf(year_in_cycle)
+    current_year_in_cycle = int(year_count_int)
+    length_of_year = YEAR_CYCLE[current_year_in_cycle]
+
+    current_sol = length_of_year*year_frac
+    current_sol_frac, current_sol_int = modf(current_sol)
+
+    month, residual = sols_to_month(current_sol)
+
+    date_month, date_month_residual = (month_residual_to_date(month,residual))
+    date_adj = ceil(date_month+residual)
+
+    day_week = day_of_the_weeka(date_adj)
+    #print("Day of the week: %s" % day_week)
+    assert(current_sol_frac-date_month_residual<1e-13)
+    formatted_time = format_raw_time(current_sol_frac*SOL_LENGTH)
+
+    print("Mars DateTime:  %04d-%02d-%02d %s, %s" %(year_int,month+1,date_adj+1,formatted_time,day_week))
+
+def test_data_run():
+    # test first date - should be year 1
+    timedate0 = datetime.fromisoformat(EPOCH)
+    print("Earth DateTime: %s" % timedate0.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    earth_datetime_to_mars_datetime(timedate0)
+
+    # test start day + 1 sol
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH)
+
+    # Add the timedelta to the current datetime
+    timedate1 = timedate0 + milliseconds_to_add
+    print("Earth DateTime: %s" % timedate1.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    earth_datetime_to_mars_datetime(timedate1)
+
 
 def main():
     # errors_test()
+    test_data_run()
     timedate = datetime.now(timezone.utc)
-    print("Earth: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    earth_datetime_to_mars_datetime(timedate)
+    #print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate)
 
 main()
