@@ -8,7 +8,7 @@ from datetime import datetime, timezone
 
 # Start year same as in Unix time
 # Preliminary date, can be changed
-EPOCH = "1970-01-01T00:00:00Z"
+EPOCH = "0148-06-20T18:00:00Z"
 
 # Martian day length in milliseconds
 SOL_LENGTH = 88775244
@@ -145,17 +145,17 @@ def earth_datetime_to_mars_datetime(input_date):
     month_adj = ceil(raw_month)
     if raw_month<11:
         raw_sol_time = raw_sol_frac*MARS_MONTH_LENGTH
-        sol_month_adj = ceil(raw_sol_time)+1
+        sol_month_adj = ceil(raw_sol_time)
     else:
         last_month_length = LAST_MONTH_LENGTH[length_of_year]
         raw_sol_time = raw_sol_frac*last_month_length
-        sol_month_adj = ceil(raw_sol_time)+1
+        sol_month_adj = ceil(raw_sol_time)
     
     raw_sol_time_frac, raw_sol_time_int = modf(raw_sol_time)
     day_of_the_week = (DAYS[sol_month_adj % 7])
     formatted_time = format_raw_time(raw_sol_time_frac*SOL_LENGTH)
 
-    print("Mars:  %04d-%02d-%s %s, %s" %(year_adj,month_adj+1,sol_month_adj,formatted_time,day_of_the_week))
+    print("Mars:  %04d-%02d-%02d %s, %s" %(year_adj,month_adj,sol_month_adj,formatted_time,day_of_the_week))
 
 def main():
     # errors_test()
