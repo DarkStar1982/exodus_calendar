@@ -118,7 +118,7 @@ def format_raw_time(p_milliseconds):
     minutes_raw = (hours_raw - hours_int)*60
     minutes_frac, minutes_int = modf(minutes_raw)
     seconds_raw = minutes_frac*60
-    return "%s:%s:%2.3f" % (int(hours_int), int(minutes_int), seconds_raw)
+    return "%s:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
 
 
 def earth_datetime_to_mars_datetime(input_date):
