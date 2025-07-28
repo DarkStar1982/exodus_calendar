@@ -172,7 +172,7 @@ def earth_datetime_to_mars_datetime(input_date):
     assert(current_sol_frac-date_month_residual<1e-13)
     formatted_time = format_raw_time(current_sol_frac*SOL_LENGTH)
 
-    print("Mars DateTime:  %04d-%02d-%02d %s, %s" %(year_int,month+1,date_adj+1,formatted_time,day_week))
+    print("Mars DateTime:  %04d-%02d-%02d %s, %s" %(year_int,month,date_adj,formatted_time,day_week))
 
 def test_data_run():
     # test first date - should be year 1
@@ -181,7 +181,7 @@ def test_data_run():
     earth_datetime_to_mars_datetime(timedate0)
 
     # test start day + 1 sol
-    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH)
+    milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH)
 
     # Add the timedelta to the current datetime
     timedate1 = timedate0 + milliseconds_to_add
