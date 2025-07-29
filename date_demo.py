@@ -9,7 +9,7 @@ from datetime import datetime, timezone, timedelta
 
 # Start year same as in Unix time
 # Preliminary date, can be changed
-EPOCH = "2000-01-01T12:00:00Z"
+EPOCH = "1970-01-01T00:00:00Z"
 
 # Martian day length in milliseconds
 SOL_LENGTH = 88775244
