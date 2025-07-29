@@ -30,9 +30,9 @@ Thursday, or Friday, depending on the year's length. Every new year begins on Mo
 
 Five complete cycles (110 Martian years) constitute a Martian "century," roughly equivalent to 200 Earth years, facilitating cross-referencing between planetary calendars. Each cycle within the century may optionally receive thematic names for distinction ("Earth," "Water," "Air," "Fire," "Aether"), though this remains purely cosmetic
 
-### Accuracy
+### ACCURACY
 
-_Calendar Year Length=(668*10 + 669*11 + 670)/22_
+_Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
 
 This yields an average calendar year duration of 668.5909(09) sols, creating a difference of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. The system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years. As the Martian year length inevitably drifts (+0.00079 sols per 1,000 Martian years [1, p3]), adjustments can be implemented as needed, like those made to Earth's calendar system
 
