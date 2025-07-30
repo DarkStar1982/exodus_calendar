@@ -11,7 +11,8 @@ from datetime import datetime, timezone, timedelta
 # Preliminary date, can be changed
 EPOCH = "1970-01-01 00:00:00Z"
 
-# Martian day length in milliseconds
+# Martian sol length in milliseconds:
+# 24:39:35.244 seconds
 SOL_LENGTH = 88775244
 
 # Terrestrial day length in milliseconds
@@ -127,12 +128,7 @@ def sols_to_month(p_sol):
     return (int(raw_month_int)+1,raw_month_frac)
 
 def month_residual_to_date(p_month, p_residual, p_year_length):
-    if p_month<11:
-        raw_date = p_residual*MARS_MONTH_LENGTH
-    else:
-        last_month_length = LAST_MONTH_LENGTH[p_year_length]
-        raw_date = p_residual*last_month_length
-
+    raw_date = p_residual*MARS_MONTH_LENGTH
     raw_date_frac, raw_date_int = modf(raw_date)
     raw_date_int = floor(raw_date_int+1.0)
     return (raw_date_int,raw_date_frac)
@@ -161,17 +157,13 @@ def earth_datetime_to_mars_datetime(input_date):
     year_count_frac, year_count_int = modf(year_in_cycle)
     current_year_in_cycle = int(year_count_int)
     length_of_year = YEAR_CYCLE[current_year_in_cycle]
-
     current_sol = length_of_year*year_frac
     current_sol_frac, current_sol_int = modf(current_sol)
-
     month, residual = sols_to_month(current_sol)
-
     date_month, date_month_residual = (month_residual_to_date(month,residual,length_of_year))
     date_adj = date_month
 
     day_week = day_of_the_weeka(date_adj-1)
-    #print("Day of the week: %s" % day_week)
     assert(current_sol_frac-date_month_residual<1e-13)
     formatted_time = format_raw_time(current_sol_frac*SOL_LENGTH)
 
@@ -180,32 +172,32 @@ def earth_datetime_to_mars_datetime(input_date):
 def test_data_run():
     # test first date - should be year 1
     timedate0 = datetime.fromisoformat(EPOCH)
-    print("Earth DateTime: %s" % timedate0.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    earth_datetime_to_mars_datetime(timedate0)
+    #print("Earth DateTime: %s" % timedate0.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate0)
 
     # test start day + 1 day
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH)
     timedate1 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate1.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    earth_datetime_to_mars_datetime(timedate1)
+    #print("Earth DateTime: %s" % timedate1.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate1)
 
     # test start day + 1 sol
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH)
     timedate2 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate2.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    earth_datetime_to_mars_datetime(timedate2)
+    #print("Earth DateTime: %s" % timedate2.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate2)
 
     # test start day + 1 year
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH*365.25)
-    timedate3 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate3.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-
-    earth_datetime_to_mars_datetime(timedate3)
+    #timedate3 = timedate0 + milliseconds_to_add
+    #print("Earth DateTime: %s" % timedate3.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate3)
 
     timedate4 = datetime.fromisoformat("2000-01-06T00:00:00Z")
-    milliseconds_to_sub = timedelta(milliseconds=4.5*88775244)
-    timedate5 = timedate4 - milliseconds_to_sub
-    print("Earth DateTime: %s" % timedate4.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    milliseconds_to_sub = timedelta(milliseconds=88775244)
+
+    timedate5 = timedate4 + 28.75055*milliseconds_to_sub
+    print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     earth_datetime_to_mars_datetime(timedate5)
 
 
@@ -214,7 +206,7 @@ def main():
     # errors_test()
     test_data_run()
     timedate = datetime.now(timezone.utc)
-    print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    earth_datetime_to_mars_datetime(timedate)
+    #print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #earth_datetime_to_mars_datetime(timedate)
 
 main()
