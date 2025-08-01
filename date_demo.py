@@ -227,17 +227,16 @@ def process_negative_diff(p_epoch_date, p_input_date):
 # |--------------------------------------------------|
 # |-----------------------epoch----------------------|
 # |------------------------||------------------------|
-# |-------negative offsets-||-positive offsets-------|
+# |----negative offsets----||----positive offsets----|
 # |------------------------||------------------------|
-# |-------negative years---||---positive years-------|
-# |-----------][-----------||-----------][-----------|
-# |         -2          -1 || +1          +2         |
+# |-----negative years-----||-----positive years-----|
+# |-8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8|
 # |------------------------||------------------------|
-# |----negative cycles-----||-----positive cycles----|
-# |01 02 03 ..... 20 21 22 || 01 02 03 ..... 20 21 22|
+# |--negative cycle order--||--positive cycle order--|
+# | 01 02 03 ... 20 21 22  || 01 02 03 ... 20 21 22  |
 # |------------------------||------------------------|
 # |--negative year months--||--positive year months--|
-# |--------Dec][--------Dec||Jan--------][Jan--------|
+# |[Jan----Dec][Jan----Dec]||[Jan----Dec][Jan----Dec]|
 # |------------------------||------------------------|
 def earth_datetime_to_mars_datetime(input_date):
     # Calculate year
