@@ -27,6 +27,9 @@ MARS_MONTH_LENGTH = 56 # except December
 # Gregorian year in days
 EARTH_YEAR_LENGTH = 365.2425
 
+# Julian year in days
+JULIAN_YEAR_LENGTH = 365.25
+
 # 22-year cycle - 10 668-sol years, 11 669-sol years, 1 670 sol year marks end of cycle
 YEAR_CYCLE = [
     669, #1
@@ -127,10 +130,10 @@ def errors_test():
     mars_years_to_1_sol_error = (SOL_LENGTH/1000)/annual_error
     earth_years_to_1_sol_error = (mars_years_to_1_sol_error*MARS_YEAR_LENGTH*SOL_LENGTH)/(DAY_LENGTH*EARTH_YEAR_LENGTH)
 
-    print("%s: %s" % (STR_AVG_YEAR_LENGTH, calendar_year_length))
-    print("%s: %s" % (STR_ANNUAL_ERROR, annual_error))
-    print("%s: %s" % (STR_MARS_YEARS_TO_1SOL_ERROR, mars_years_to_1_sol_error))
-    print("%s: %s" % (STR_EARTH_YEARS_TO_1SOL_ERROR, earth_years_to_1_sol_error))
+    assert(calendar_year_length-MARS_YEAR_LENGTH == 0.00020909090915210982)
+    assert(annual_error==18.562096478160385)
+    assert(mars_years_to_1_sol_error==4782.608694252308)
+    assert(earth_years_to_1_sol_error == 8995.431602985975)
 
 
 def format_raw_time(p_milliseconds):
@@ -193,9 +196,9 @@ def mars_date_time_to_earth_datetime(input_date):
     year = date_values[0]
     month = date_values[1]
     date = date_values[2] 
-    print(int(year))
-    print(int(month))
-    print(int(date))
+    #print(int(year))
+    #print(int(month))
+    #print(int(date))
 
 
 def earth_datetime_to_mars_datetime(input_date):
@@ -206,9 +209,7 @@ def earth_datetime_to_mars_datetime(input_date):
     else:
         return process_negative_diff(epoch_date, input_date)
     
-
-
-def utc_to_mars_time_tests():
+def utc_to_mars_time_tests_positive_offset():
     # test first date - should be year 1
     timedate0 = datetime.fromisoformat(EPOCH)
     assert(earth_datetime_to_mars_datetime(timedate0)=="Mars DateTime: 0001-01-01 00:00:00.000, Monday")
@@ -218,23 +219,50 @@ def utc_to_mars_time_tests():
     timedate1 = timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: 0001-01-01 24:00:00.000, Monday")
 
-
     # test start day + 1 sol
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH)
     timedate2 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate2.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate2))
+    assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: 0001-01-02 00:00:00.000, Tuesday")
 
-    # test start day + 2 months
-    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*112)
+    # test start day + 7 sol
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*7)
     timedate3 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate3.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate3))
+    assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: 0001-01-08 00:00:00.000, Monday")
+
+    # test start day + 1 Earth month
+    milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH*31)
+    timedate4 = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: 0001-01-31 04:12:22.679, Wednesday")
+
+    # test start day + 1 Martian month
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH)
+    timedate5 = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: 0001-02-01 00:00:00.000, Monday")
+
+    # test start day + 11 Martian months
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH*11)
+    timedate6 = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: 0001-12-01 00:00:00.000, Monday")
 
     # test end of december
-    timedate4 = datetime.fromisoformat("2000-01-06T00:00:00Z")
-    print("Earth DateTime: %s" % timedate4.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate4))
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH*11+52*SOL_LENGTH-100)
+    timedate7 = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: 0001-12-52 24:39:35.144, Wednesday")
+    
+    # test + 1 Earth year
+    milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH*365.2425)
+    timedate8 = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: 0001-07-20 11:35:40.379, Saturday")
+
+    # test + 1 Mars odd year - 1 day
+    milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*668)
+    timedate9= timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate9)=="Mars DateTime: 0001-12-53 00:00:00.000, Thursday")
+
+def utc_to_mars_time_tests_negative_offset():
+    test_date_1 = "0001-01-01 00:00:00.000, Monday"
+    mars_date_time_to_earth_datetime(test_date_1)
+    timedate0 = datetime.fromisoformat(EPOCH)
 
     # test negatives
     timedate_A = timedate0 - timedelta(milliseconds=100)
@@ -245,20 +273,16 @@ def utc_to_mars_time_tests():
     #print("Earth DateTime: %s" % timedate_B.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     #print(earth_datetime_to_mars_datetime(timedate_B))
 
-     # test negatives
+    # test negatives
     timedate_C = timedate0 - timedelta(milliseconds=DAY_LENGTH*365.25*25)
     #print("Earth DateTime: %s" % timedate_C.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     #print(earth_datetime_to_mars_datetime(timedate_C))
 
 
-def test_data_run_2():
-    test_date_1 = "0001-01-01 00:00:00.000, Monday"
-    mars_date_time_to_earth_datetime(test_date_1)
-
 def main():
-    # errors_test()
-    utc_to_mars_time_tests()
-    # test_data_run_2()
+    errors_test()
+    utc_to_mars_time_tests_positive_offset()
+    utc_to_mars_time_tests_negative_offset()
     timedate = datetime.now(timezone.utc)
     print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     print(earth_datetime_to_mars_datetime(timedate))
