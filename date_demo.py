@@ -127,7 +127,6 @@ def errors_test():
     mars_years_to_1_sol_error = (SOL_LENGTH/1000)/annual_error
     earth_years_to_1_sol_error = (mars_years_to_1_sol_error*MARS_YEAR_LENGTH*SOL_LENGTH)/(DAY_LENGTH*EARTH_YEAR_LENGTH)
 
-
     print("%s: %s" % (STR_AVG_YEAR_LENGTH, calendar_year_length))
     print("%s: %s" % (STR_ANNUAL_ERROR, annual_error))
     print("%s: %s" % (STR_MARS_YEARS_TO_1SOL_ERROR, mars_years_to_1_sol_error))
@@ -143,20 +142,6 @@ def format_raw_time(p_milliseconds):
     seconds_raw = minutes_frac*60
     return "%02d:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
 
-def sols_to_month(p_sol):
-    raw_month = p_sol/MARS_MONTH_LENGTH
-    raw_month_frac, raw_month_int = modf(raw_month)
-    return (int(raw_month_int)+1,raw_month_frac)
-
-def month_residual_to_date(p_month, p_residual, p_year_length):
-    raw_date = p_residual*MARS_MONTH_LENGTH
-    raw_date_frac, raw_date_int = modf(raw_date)
-    raw_date_int = floor(raw_date_int+1.0)
-    return (raw_date_int,raw_date_frac)
-
-def day_of_the_weeka(p_date):
-    return (DAYS[int(p_date) % 7])
-
 
 def process_positive_diff(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
@@ -170,28 +155,32 @@ def process_positive_diff(p_epoch_date, p_input_date):
     full_year_count = cycle_count_int*len(YEAR_CYCLE) + 1 # No Year 0
     remaining_sols = cycle_count_frac*len(YEAR_CYCLE)
     remaining_milliseconds = milliseconds_since_epoch - cycle_count_int*MS_PER_CYCLE
-    sols_since_last_cycle_end = remaining_milliseconds/SOL_LENGTH
     year_since_last_cycle = remaining_milliseconds/MS_PER_MARS_YEAR
 
-    year_in_cycle_0 = int(year_since_last_cycle)
-    current_year = full_year_count + year_in_cycle_0
-    year_selected_length = YEAR_CYCLE[year_in_cycle_0]
-
-    # month_count = remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH)
-    remaining_milliseconds = remaining_milliseconds - year_in_cycle_0*MS_PER_MARS_YEAR
+    # calculate year in the cycle
+    year_in_cycle = int(year_since_last_cycle)
+    current_year = full_year_count + year_in_cycle
+    year_selected_length = YEAR_CYCLE[year_in_cycle]
+    
+    # calculate month
+    remaining_milliseconds = remaining_milliseconds - year_in_cycle*MS_PER_MARS_YEAR
     current_month_int = floor(remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH))
+    
+    # calculate date
     remaining_milliseconds = remaining_milliseconds - current_month_int*SOL_LENGTH*MARS_MONTH_LENGTH
     date_residual = remaining_milliseconds/SOL_LENGTH
     date_integer = floor(date_residual)
-    remaining_milliseconds = remaining_milliseconds - date_integer*SOL_LENGTH
     
-    # prepare for display
-    month_display = current_month_int+1
-    date_display = date_integer + 1
-    day_week = date_integer % 7
+    # calculat time
+    remaining_milliseconds = remaining_milliseconds - date_integer*SOL_LENGTH
     formatted_time = format_raw_time(remaining_milliseconds)
 
-    return("Mars DateTime: %04d-%02d-%02d %s, %s" %(current_year,month_display,date_display,formatted_time,DAYS[day_week]))
+    # prepare data for display
+    month_display = current_month_int+1
+    date_display = date_integer + 1
+    day_week = DAYS[date_integer % 7]
+
+    return("Mars DateTime: %04d-%02d-%02d %s, %s" %(current_year,month_display,date_display,formatted_time,day_week))
 
 
 def process_negative_diff(p_epoch_date, p_input_date):
@@ -224,17 +213,14 @@ def earth_datetime_to_mars_datetime(input_date):
 def utc_to_mars_time_tests():
     # test first date - should be year 1
     timedate0 = datetime.fromisoformat(EPOCH)
-    print("Earth DateTime: %s" % timedate0.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate0))
-
-    # assert(earth_datetime_to_mars_datetime(timedate0)=="Mars DateTime: 0001-01-01 00:00:00.000, Monday")
+    assert(earth_datetime_to_mars_datetime(timedate0)=="Mars DateTime: 0001-01-01 00:00:00.000, Monday")
 
 
     # test start day + 1 day
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH)
     timedate1 = timedate0 + milliseconds_to_add
-    print("Earth DateTime: %s" % timedate1.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate1))
+    assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: 0001-01-01 24:00:00.000, Monday")
+
 
     # test start day + 1 sol
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH)
