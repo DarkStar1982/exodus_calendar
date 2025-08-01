@@ -196,9 +196,7 @@ def mars_date_time_to_earth_datetime(input_date):
     print(int(year))
     print(int(month))
     print(int(date))
-    # convert to milliseconds
-    # subtract from epoch
-    # convert to
+
 
 def earth_datetime_to_mars_datetime(input_date):
     # Calculate year
@@ -214,7 +212,6 @@ def utc_to_mars_time_tests():
     # test first date - should be year 1
     timedate0 = datetime.fromisoformat(EPOCH)
     assert(earth_datetime_to_mars_datetime(timedate0)=="Mars DateTime: 0001-01-01 00:00:00.000, Monday")
-
 
     # test start day + 1 day
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH)
