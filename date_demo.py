@@ -178,43 +178,20 @@ def process_positive_diff(p_epoch_date, p_input_date):
     year_selected_length = YEAR_CYCLE[year_in_cycle_0]
 
     # month_count = remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH)
-    residual_after_years_subtracted = remaining_milliseconds - year_in_cycle_0*MS_PER_MARS_YEAR
-    current_month_int = floor(residual_after_years_subtracted/(MARS_MONTH_LENGTH*SOL_LENGTH))
-    residual_after_months_substracted = residual_after_years_subtracted - current_month_int*SOL_LENGTH*MARS_MONTH_LENGTH
-    date_residual = residual_after_months_substracted/SOL_LENGTH
+    remaining_milliseconds = remaining_milliseconds - year_in_cycle_0*MS_PER_MARS_YEAR
+    current_month_int = floor(remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH))
+    remaining_milliseconds = remaining_milliseconds - current_month_int*SOL_LENGTH*MARS_MONTH_LENGTH
+    date_residual = remaining_milliseconds/SOL_LENGTH
     date_integer = floor(date_residual)
-    residual_after_days_substracted = residual_after_months_substracted - date_integer*SOL_LENGTH
+    remaining_milliseconds = remaining_milliseconds - date_integer*SOL_LENGTH
     
     # prepare for display
     month_display = current_month_int+1
     date_display = date_integer + 1
     day_week = date_integer % 7
-    formatted_time = format_raw_time(residual_after_days_substracted)
+    formatted_time = format_raw_time(remaining_milliseconds)
 
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(current_year,month_display,date_display,formatted_time,DAYS[day_week]))
-
-    # remaining length in sols
-    # year_raw = cycle_count*len(YEAR_CYCLE) + 1 # No Year 0
-    # print(year_raw)
-    # year_frac, year_int = modf(year_raw)
-
-    # year_in_cycle = cycle_count_frac*len(YEAR_CYCLE)
-    # year_count_frac, year_count_int = modf(year_in_cycle)
-    # current_year_in_cycle = floor(year_count_int)
-    #length_of_year = YEAR_CYCLE[current_year_in_cycle]
-    # print("Length of the current year %s" % length_of_year)
-
-
-    #current_sol = length_of_year*year_frac
-    #current_sol_frac, current_sol_int = modf(current_sol)
-    #month, residual = sols_to_month(current_sol)
-    #date_month, date_month_residual = (month_residual_to_date(month,residual,length_of_year))
-    #date_adj = date_month
-
-    #day_week = day_of_the_weeka(date_adj-1)
-    #assert(current_sol_frac-date_month_residual<1e-13)
-    #formatted_time = format_raw_time(abs(current_sol_frac*SOL_LENGTH))
-    #return("Mars DateTime: %04d-%02d-%02d %s, %s" %(year_int,month,date_month,formatted_time,day_week))
 
 
 def process_negative_diff(p_epoch_date, p_input_date):
