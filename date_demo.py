@@ -123,6 +123,22 @@ STR_MARS_YEARS_TO_1SOL_ERROR = "Martian years to pass for 1 sol error"
 STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
 
+# |----------------Schematics of the cycles and years--------------|
+# |----------------------------------------------------------------|
+# |---------------------------epoch year---------------------------|
+# |-------------------------------||-------------------------------|
+# |--------negative offsets-------||-------positive offsets--------|
+# |-------------------------------||-------------------------------|
+# |---------negative years--------||--------positive years---------|
+# |-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8 +9 +10|
+# |-------------------------------||-------------------------------|
+# |-------negative cycle order----||----positive cycle order-------|
+# | 01 02 03 04 ..... 19 20 21 22 || 01 02 03 04 ..... 19 20 21 22 |
+# |-------------------------------||-------------------------------|
+# |------negative year months-----||-----positive year months------|
+# |[Jan-------Dec] [Jan-------Dec]||[Jan-------Dec] [Jan-------Dec]|
+# |-------------------------------||-------------------------------|
+
 def errors_test():
     calendar_year_length = sum(YEAR_CYCLE)/len(YEAR_CYCLE)
     annual_error = (((calendar_year_length- MARS_YEAR_LENGTH)*SOL_LENGTH)/1000)
@@ -188,24 +204,20 @@ def process_positive_diff(p_epoch_date, p_input_date):
 def process_negative_diff(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000 # or time.time()*1000, within 1 millisecond of diff
+    absolute_milliseconds = abs(milliseconds_since_epoch)
 
-    cycle_count = abs(milliseconds_since_epoch) / MS_PER_CYCLE
-    cycle_count_frac, cycle_count_int = modf(cycle_count)
-    #print(cycle_count_int)
-    #print(cycle_count_frac)
-
-    # calculate milliseconds left of the last year
-    remainig_milliseconds = abs(milliseconds_since_epoch) - MS_PER_CYCLE*cycle_count_int
-    remainig_milliseconds = MS_PER_CYCLE - cycle_count_frac*MS_PER_CYCLE
-
-    year_in_cycle = remainig_milliseconds/MS_PER_MARS_YEAR
-    year_cycle_frac, year_cycle_int = modf(year_in_cycle)
-    year_length = YEAR_CYCLE[int(year_cycle_int)]
-
-    year_int = cycle_count_int + len(YEAR_CYCLE)-year_cycle_int
-    year_int = -int(year_int)
-    # calculate month
-    remaining_milliseconds = year_length*SOL_LENGTH - abs(milliseconds_since_epoch)
+    # calculat remaining milliseconds before end of year
+    cycles_elapsed = absolute_milliseconds / MS_PER_CYCLE
+    cycle_count_frac, cycle_count_int = modf(cycles_elapsed)
+    total_years_elapsed = cycle_count_int*len(YEAR_CYCLE) +cycle_count_frac*len(YEAR_CYCLE)
+    year_in_cycle = len(YEAR_CYCLE) - cycle_count_frac*len(YEAR_CYCLE)
+    year_in_cycle_frac, year_in_cycle_int = modf(year_in_cycle)
+    total_years_elapsed_frac, total_years_elapsed_int = modf(total_years_elapsed)
+    year_length = YEAR_CYCLE[int(year_in_cycle_int)]
+    remaining_milliseconds = abs(MS_PER_CYCLE*cycle_count_int + total_years_elapsed_int*MS_PER_MARS_YEAR  - absolute_milliseconds)
+    remaining_milliseconds = year_length*SOL_LENGTH - remaining_milliseconds
+    
+    #calculate month 
     current_month_int = floor(remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH))
 
     # calculate date 
@@ -221,23 +233,9 @@ def process_negative_diff(p_epoch_date, p_input_date):
     month_display = current_month_int+1
     date_display = date_integer + 1
     day_week = DAYS[date_integer % 7]
+    year_int = - floor(total_years_elapsed)-1
     return("Mars DateTime: %05d-%02d-%02d %s, %s" %(year_int,month_display,date_display,formatted_time,day_week))
 
-# |--------Schematics of the cycles and years--------|
-# |--------------------------------------------------|
-# |-----------------------epoch----------------------|
-# |------------------------||------------------------|
-# |----negative offsets----||----positive offsets----|
-# |------------------------||------------------------|
-# |-----negative years-----||-----positive years-----|
-# |-8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8|
-# |------------------------||------------------------|
-# |--negative cycle order--||--positive cycle order--|
-# | 01 02 03 ... 20 21 22  || 01 02 03 ... 20 21 22  |
-# |------------------------||------------------------|
-# |--negative year months--||--positive year months--|
-# |[Jan----Dec][Jan----Dec]||[Jan----Dec][Jan----Dec]|
-# |------------------------||------------------------|
 def earth_datetime_to_mars_datetime(input_date):
     # Calculate year
     epoch_date = datetime.fromisoformat(EPOCH)
@@ -340,9 +338,10 @@ def utc_to_mars_time_tests_negative_offset():
     timedate3 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-54 00:00:00.000, Friday")
 
-    #assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-54 24:39:34.244, Friday")
-    #print("Earth DateTime: %s" % timedate4.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    #print(earth_datetime_to_mars_datetime(timedate4))
+    # test - 10 terrestrial JD years
+    milliseconds_to_sub = timedelta(milliseconds=10*DAY_LENGTH*365.25)
+    timedate4 = timedate0 - milliseconds_to_sub
+    assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0006-09-10 04:25:57.181, Wednesday")
 
 def main():
     errors_test()
