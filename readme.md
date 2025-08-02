@@ -42,6 +42,8 @@ though this remains open to discussion. The year 1971 might be more appropriate,
 marked the first successful Martian missions reaching the planet - Mars 2 and 3 from the
 USSR, and Mariner 9 from the USA. Other dates are acceptable for consideration.
 
+![Calendar epoch structure](calendar_epochs.png "Structure of cycles and years before and after epoch starting year")
+
 ### EASE OF USE
 This concept requires minimal new information to memorize—essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
 
