@@ -214,7 +214,10 @@ def process_negative_diff(p_epoch_date, p_input_date):
     year_in_cycle_frac, year_in_cycle_int = modf(year_in_cycle)
     total_years_elapsed_frac, total_years_elapsed_int = modf(total_years_elapsed)
     year_length = YEAR_CYCLE[int(year_in_cycle_int)]
-    remaining_milliseconds = abs(MS_PER_CYCLE*cycle_count_int + total_years_elapsed_int*MS_PER_MARS_YEAR  - absolute_milliseconds)
+    years_since_cycle_start = floor(cycle_count_frac*len(YEAR_CYCLE))
+
+    # here might be mistakes!
+    remaining_milliseconds = abs(MS_PER_CYCLE*cycle_count_int + years_since_cycle_start*MS_PER_MARS_YEAR  - absolute_milliseconds)
     remaining_milliseconds = year_length*SOL_LENGTH - remaining_milliseconds
     
     #calculate month 
@@ -342,6 +345,13 @@ def utc_to_mars_time_tests_negative_offset():
     milliseconds_to_sub = timedelta(milliseconds=10*DAY_LENGTH*365.25)
     timedate4 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0006-09-10 04:25:57.181, Wednesday")
+
+    # test - 29 Mars years
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*29*668.590909091)
+    timedate5= timedate0 - milliseconds_to_sub
+    #print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    #print(earth_datetime_to_mars_datetime(timedate5))
+
 
 def main():
     errors_test()
