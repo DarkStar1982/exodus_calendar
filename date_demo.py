@@ -170,68 +170,54 @@ def process_negative_diff2(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
     absolute_milliseconds = abs(milliseconds_since_epoch)
+    total_cycles = absolute_milliseconds // MS_PER_CYCLE
+    
+    # calculate total cycle years passed
+    full_cycle_years = total_cycles*len(YEAR_CYCLE)
+    ms_residual = absolute_milliseconds % MS_PER_CYCLE
 
-    # How many complete cycles have passed
-    cycle_count = absolute_milliseconds / MS_PER_CYCLE
-    cycle_count_frac, cycle_count_int = modf(cycle_count)
-    # Remaining milliseconds within the current cycle
-    remaining_in_cycle = absolute_milliseconds - cycle_count_int * MS_PER_CYCLE
-    if remaining_in_cycle == 0:
-        year_int = cycle_count*len(YEAR_CYCLE) + 1
-        month_display = 1
-        date_display = 1
-        formatted_time = format_raw_time(0)
-        day_week="Monday"
-        return("Mars DateTime: %05d-%02d-%02d %s, %s" %(-year_int, month_display, date_display, formatted_time, day_week))
-    # Find which year in the cycle by iterating backwards
-    accumulated_ms = 0
-    year_in_cycle = 0
+    years_accumulated = 0
     for i in range(len(YEAR_CYCLE)-1, -1, -1):
-        year_ms = YEAR_CYCLE[i] * SOL_LENGTH
-        if accumulated_ms + year_ms > remaining_in_cycle:
-            year_in_cycle = i
+        if (ms_residual- YEAR_CYCLE[i]*SOL_LENGTH)<0:
             break
-        accumulated_ms += year_ms
-
-    # Calculate position within the year (from the end)
-    ms_into_year = remaining_in_cycle - accumulated_ms
-    year_length = YEAR_CYCLE[year_in_cycle]
-
-    # Calculate from the beginning of the year
-    remaining_milliseconds = year_length * SOL_LENGTH - ms_into_year
-    # Calculate month date
-    i = 0
-    while remaining_milliseconds>0:
-        if i == 0:
-            remaining_milliseconds = remaining_milliseconds - LAST_MONTH_LENGTH[year_length]*SOL_LENGTH
         else:
-            remaining_milliseconds = remaining_milliseconds - SOL_LENGTH*MARS_MONTH_LENGTH
-        i = i + 1
-
-    current_month_int = i
-    if current_month_int < 11:
-        remaining_milliseconds = SOL_LENGTH*MARS_MONTH_LENGTH + remaining_milliseconds
-    else:
-        remaining_milliseconds = SOL_LENGTH*LAST_MONTH_LENGTH[year_length] + remaining_milliseconds
-
-    # Calculate date
-    #remaining_milliseconds = remaining_milliseconds - current_month*SOL_LENGTH*MARS_MONTH_LENGTH
-
-    date_residual = remaining_milliseconds/SOL_LENGTH
-    date_integer = floor(date_residual)    
-    # Calculate time
-    remaining_milliseconds = remaining_milliseconds - date_integer*SOL_LENGTH
-    formatted_time = format_raw_time(remaining_milliseconds)
+            ms_residual = ms_residual - YEAR_CYCLE[i]*SOL_LENGTH
+            years_accumulated = years_accumulated - 1
     
-    # Prepare data for display
-    month_display = current_month_int 
-    date_display = date_integer + 1
-    day_week = DAYS[date_integer % 7]
+    # calculate current year duration
+    year_length = YEAR_CYCLE[21-years_accumulated]
+    print(year_length)
+    # calculate months elapsed since start of year
+    print(ms_residual/SOL_LENGTH)
+    months_accumulated = 12
+    for i in range(len(MONTH_LENGTH[year_length])-1,-1, 1):
+        if (ms_residual - MONTH_LENGTH[year_length][i]*SOL_LENGTH)<0:
+            break
+        else:
+            ms_residual = ms_residual - MONTH_LENGTH[year_length][i]*SOL_LENGTH
+            months_accumulated = months_accumulated - 1
+    print(ms_residual/SOL_LENGTH)    
+
+
+    # calculate days elapsed
+    month_duration = MONTH_LENGTH[year_length][months_accumulated-1]
+    #print(month_duration)
     
-    # Calculate the year number (negative)
-    total_years = cycle_count_int * len(YEAR_CYCLE) + (len(YEAR_CYCLE) - 1 - year_in_cycle)
-    year_int = -floor(total_years) - 1
-    
+    days_accumulated = month_duration
+    for i in range(month_duration-1,-1, -1):
+        if (ms_residual - SOL_LENGTH)<0:
+            break
+        else:
+            ms_residual = ms_residual - SOL_LENGTH
+            days_accumulated = days_accumulated - 1
+
+    # calculate time
+    formatted_time = format_raw_time(SOL_LENGTH-ms_residual)
+
+    year_int = - full_cycle_years - years_accumulated - 1
+    month_display = months_accumulated  
+    date_display = days_accumulated
+    day_week = DAYS[(days_accumulated-1) % 7]
     return("Mars DateTime: %05d-%02d-%02d %s, %s" %(year_int, month_display, date_display, formatted_time, day_week))
 
 
@@ -240,9 +226,8 @@ def process_positive_diff2(p_epoch_date, p_input_date):
     milliseconds_since_epoch = diff.total_seconds()*1000
     total_cycles = milliseconds_since_epoch // MS_PER_CYCLE
     
-    # calculate total cycles passed
+    # calculate total cycle years passed
     full_cycle_years = total_cycles*len(YEAR_CYCLE)
-    remainder_of_cycle = milliseconds_since_epoch % MS_PER_CYCLE 
     ms_residual = milliseconds_since_epoch % MS_PER_CYCLE
 
     years_accumulated = 0
@@ -399,27 +384,33 @@ def utc_to_mars_time_tests_negative_offset():
     # test  - 1 second
     milliseconds_to_sub = timedelta(milliseconds=1000)
     timedate1 = timedate0 - milliseconds_to_sub
+    print(earth_datetime_to_mars_datetime(timedate1))
 
     #assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: -0001-12-54 24:39:34.244, Friday")
 
-    # test - 1 day
+    # test - 1 Eath day
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH)
     timedate2 = timedate0 - milliseconds_to_sub
+    print(earth_datetime_to_mars_datetime(timedate2))
+
     #assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: -0001-12-54 00:39:35.244, Friday")
 
     # test - 1 sol
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
     timedate3 = timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-54 00:00:00.000, Friday")
+    assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-53 24:39:35.244, Thursday")
 
     # test start day - 1 Earth month
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH*31)
     timedate4 = timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.563, Wednesday")
+    assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.563, Wednesday")
 
     # test start day - 1 Martian month
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH)
     timedate5 = timedate0 - milliseconds_to_sub
+    print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    print(earth_datetime_to_mars_datetime(timedate5))
+
     #print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
     #print(earth_datetime_to_mars_datetime(timedate5))
     #assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-11-55 00:00:00.000, Saturday")
@@ -481,7 +472,7 @@ def utc_to_mars_time_long_intervals():
 def main():
     errors_test()
     utc_to_mars_time_tests_positive_offset()
-    #utc_to_mars_time_tests_negative_offset()
+    utc_to_mars_time_tests_negative_offset()
     utc_to_mars_time_long_intervals()
     #timedate = datetime.now(timezone.utc)
     #print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
