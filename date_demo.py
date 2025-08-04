@@ -166,45 +166,6 @@ def format_raw_time(p_milliseconds):
     return "%02d:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
 
 
-def process_positive_diff(p_epoch_date, p_input_date):
-    diff = p_input_date - p_epoch_date
-    # timedelta since start of calendar
-    milliseconds_since_epoch = diff.total_seconds()*1000 # or time.time()*1000, within 1 millisecond of diff
-
-    # how many 22 year cycles has passed since beginning of epoch
-    cycle_count = milliseconds_since_epoch/MS_PER_CYCLE
-    cycle_count_frac, cycle_count_int = modf(cycle_count)
-
-    full_year_count = cycle_count_int*len(YEAR_CYCLE) + 1 # No Year 0
-    remaining_milliseconds = milliseconds_since_epoch - cycle_count_int*MS_PER_CYCLE
-    year_since_last_cycle = remaining_milliseconds/MS_PER_MARS_YEAR
-
-    # calculate year in the cycle
-    year_in_cycle = int(year_since_last_cycle)
-    current_year = full_year_count + year_in_cycle
-    year_selected_length = YEAR_CYCLE[year_in_cycle]
-    
-    # calculate month <--check december here
-    remaining_milliseconds = remaining_milliseconds - year_in_cycle*MS_PER_MARS_YEAR
-    current_month_int = floor(remaining_milliseconds/(MARS_MONTH_LENGTH*SOL_LENGTH))
-    
-    # calculate date
-    remaining_milliseconds = remaining_milliseconds - current_month_int*SOL_LENGTH*MARS_MONTH_LENGTH
-    date_residual = remaining_milliseconds/SOL_LENGTH
-    date_integer = floor(date_residual)
-    
-    # calculate time
-    remaining_milliseconds = remaining_milliseconds - date_integer*SOL_LENGTH
-    formatted_time = format_raw_time(remaining_milliseconds)
-
-    # prepare data for display
-    month_display = current_month_int+1
-    date_display = date_integer + 1
-    day_week = DAYS[date_integer % 7]
-
-    return("Mars DateTime: %04d-%02d-%02d %s, %s" %(current_year,month_display,date_display,formatted_time,day_week))
-
-
 def process_negative_diff2(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
