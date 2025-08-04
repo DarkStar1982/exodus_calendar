@@ -3,9 +3,29 @@ from math import modf, ceil, floor
 import time
 from datetime import datetime, timezone, timedelta
 
-#######################################
-############## CONSTANTS ##############
-#######################################
+# |--------Calendar structure before and after epoch year----------|
+# |----------------------------------------------------------------|
+# |---------------------------Epoch Year---------------------------|
+# |-------negative timestamps-----||-----positive timestamps-------|
+# |-2^64 ................... -1.0 || 1.0 .................... 2^64 |
+# |-------------------------------||-------------------------------|
+# |-------negative cycle order----||----positive cycle order-------|
+# | 01 02 03 04 ..... 19 20 21 22 || 01 02 03 04 ..... 19 20 21 22 |
+# |-------------------------------||-------------------------------|
+# |------negative years order-----||-----positive years order------|
+# |-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8 +9 +10|
+# |-------------------------------||-------------------------------|
+# |---negative year month order---||-----positive year months------|
+# |[Jan-------Dec] [Jan-------Dec]||[Jan-------Dec] [Jan-------Dec]|
+# |-------------------------------||-------------------------------|
+# |------negative year dates------||-------positive year dates-----|
+# | 01 02 03 04 ..... 51 52 53 54 || 01 02 03 04 ..... 53 54 55 56 |
+# |-------------------------------||-------------------------------|
+
+
+##############################################################################
+################################## CONSTANTS #################################
+##############################################################################
 
 # Start year same as in Unix time
 # Preliminary date, can be changed
@@ -77,20 +97,19 @@ MONTHS = [
     "December"  # Pisces - Pig
 ]
 
-MONTH_LENGTH = {
 # MONTHS: 01  02  03  04  05  06  07  08  09  10  11  12
+MONTH_LENGTH = {
     668: [56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 52],
     669: [56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 53],
     670: [56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 54],
 }
 
-# Five 22-year cycles form a "century", 
-# 110 Martian years are ~ 200 Earth ones.
-# 12 cycles make ~ 500 Earth ones
 # Purely cosmetic features
+# Five 22-year cycles form a "century" (110 Martian years) are ~ 200 Earth ones.
+# 12 cycles (264 Martian years) make ~ 500 Earth ones and so on
 CYCLES_5 = ['Earth', 'Water', 'Air', 'Fire', 'Aether']
 
-# Zodiac signs or something else of same duration
+# Zodiac signs or something else of same length
 CYCLES_12 = [
     'Aries', 
     'Taurus',
@@ -116,32 +135,11 @@ DAYS = [
     "Sunday"
 ]
 
-
 # STRING CONSTANTS
 STR_ANNUAL_ERROR = "Annual error for calendar year in seconds"
 STR_AVG_YEAR_LENGTH = "Calendar year length"
 STR_MARS_YEARS_TO_1SOL_ERROR = "Martian years to pass for 1 sol error"
 STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
-
-
-# |--------Calendar structure before and after epoch year----------|
-# |----------------------------------------------------------------|
-# |---------------------------Epoch Year---------------------------|
-# |-------negative timestamps-----||-----positive timestamps-------|
-# |-2^64 ................... -1.0 || 1.0 .................... 2^64 |
-# |-------------------------------||-------------------------------|
-# |-------negative cycle order----||----positive cycle order-------|
-# | 01 02 03 04 ..... 19 20 21 22 || 01 02 03 04 ..... 19 20 21 22 |
-# |-------------------------------||-------------------------------|
-# |------negative years order-----||-----positive years order------|
-# |-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8 +9 +10|
-# |-------------------------------||-------------------------------|
-# |---negative year month order---||-----positive year months------|
-# |[Jan-------Dec] [Jan-------Dec]||[Jan-------Dec] [Jan-------Dec]|
-# |-------------------------------||-------------------------------|
-# |------negative year dates------||-------positive year dates-----|
-# | 01 02 03 04 ..... 51 52 53 54 || 01 02 03 04 ..... 53 54 55 56 |
-# |-------------------------------||-------------------------------|
 
 def errors_test():
     calendar_year_length = sum(YEAR_CYCLE)/len(YEAR_CYCLE)
@@ -178,44 +176,42 @@ def process_negative_diff2(p_epoch_date, p_input_date):
 
     years_accumulated = 0
     for i in range(len(YEAR_CYCLE)-1, -1, -1):
-        if (ms_residual- YEAR_CYCLE[i]*SOL_LENGTH)<0:
+        if (ms_residual - YEAR_CYCLE[i]*SOL_LENGTH)<0:
             break
         else:
             ms_residual = ms_residual - YEAR_CYCLE[i]*SOL_LENGTH
-            years_accumulated = years_accumulated - 1
+            years_accumulated = years_accumulated + 1
     
     # calculate current year duration
-    year_length = YEAR_CYCLE[21-years_accumulated]
-    print(year_length)
+    year_length = YEAR_CYCLE[len(YEAR_CYCLE)-years_accumulated-1]
+    
     # calculate months elapsed since start of year
-    print(ms_residual/SOL_LENGTH)
-    months_accumulated = 12
-    for i in range(len(MONTH_LENGTH[year_length])-1,-1, 1):
+    months_accumulated = 0
+    for i in range(len(MONTH_LENGTH[year_length])-1, -1, -1):
         if (ms_residual - MONTH_LENGTH[year_length][i]*SOL_LENGTH)<0:
             break
         else:
             ms_residual = ms_residual - MONTH_LENGTH[year_length][i]*SOL_LENGTH
-            months_accumulated = months_accumulated - 1
-    print(ms_residual/SOL_LENGTH)    
+            months_accumulated = months_accumulated + 1
 
+    months_accumulated = len(MONTH_LENGTH[year_length]) - months_accumulated
 
     # calculate days elapsed
     month_duration = MONTH_LENGTH[year_length][months_accumulated-1]
-    #print(month_duration)
-    
-    days_accumulated = month_duration
-    for i in range(month_duration-1,-1, -1):
+    days_accumulated = 0
+    for i in range(month_duration-1, -1, -1):
         if (ms_residual - SOL_LENGTH)<0:
             break
         else:
             ms_residual = ms_residual - SOL_LENGTH
-            days_accumulated = days_accumulated - 1
+            days_accumulated = days_accumulated + 1
+    days_accumulated = month_duration - days_accumulated
 
     # calculate time
     formatted_time = format_raw_time(SOL_LENGTH-ms_residual)
 
     year_int = - full_cycle_years - years_accumulated - 1
-    month_display = months_accumulated  
+    month_display = months_accumulated
     date_display = days_accumulated
     day_week = DAYS[(days_accumulated-1) % 7]
     return("Mars DateTime: %05d-%02d-%02d %s, %s" %(year_int, month_display, date_display, formatted_time, day_week))
@@ -279,19 +275,6 @@ def earth_datetime_to_mars_datetime(input_date):
     else:
         return process_negative_diff2(epoch_date, input_date)
 
-
-# convert date to milliseconds
-# convert milliseconds to Unix date
-def mars_date_time_to_earth_datetime(input_date):
-    # split into YYYY-MM-DD format
-    values = input_date.split()
-    date_values = values[0].split('-')
-    year = date_values[0]
-    month = date_values[1]
-    date = date_values[2] 
-    #print(int(year))
-    #print(int(month))
-    #print(int(date)) 
 
 def utc_to_mars_time_tests_positive_offset():
     # test first date - should be year 1
@@ -384,16 +367,12 @@ def utc_to_mars_time_tests_negative_offset():
     # test  - 1 second
     milliseconds_to_sub = timedelta(milliseconds=1000)
     timedate1 = timedate0 - milliseconds_to_sub
-    print(earth_datetime_to_mars_datetime(timedate1))
-
-    #assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: -0001-12-54 24:39:34.244, Friday")
+    assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: -0001-12-54 24:39:34.244, Friday")
 
     # test - 1 Eath day
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH)
     timedate2 = timedate0 - milliseconds_to_sub
-    print(earth_datetime_to_mars_datetime(timedate2))
-
-    #assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: -0001-12-54 00:39:35.244, Friday")
+    assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: -0001-12-54 00:39:35.244, Friday")
 
     # test - 1 sol
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
@@ -405,25 +384,31 @@ def utc_to_mars_time_tests_negative_offset():
     timedate4 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.563, Wednesday")
 
-    # test start day - 1 Martian month
-    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH)
+    # test start day - 54 sols
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*54)
     timedate5 = timedate0 - milliseconds_to_sub
-    print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate5))
+    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-11-56 24:39:35.244, Sunday")
 
-    #print("Earth DateTime: %s" % timedate5.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    #print(earth_datetime_to_mars_datetime(timedate5))
-    #assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-11-55 00:00:00.000, Saturday")
+    # test start day - 110 sols
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*(54+56))
+    timedate6 = timedate0 - milliseconds_to_sub
+    assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: -0001-10-56 24:39:35.244, Sunday")
+
+    # test - 1 long Mars year
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*670)
+    timedate7= timedate0 - milliseconds_to_sub
+    assert(earth_datetime_to_mars_datetime(timedate7) == "Mars DateTime: -0002-12-53 24:39:35.244, Thursday")
+
+    # test - 1 Mars cycle
+    milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE)
+    timedate8= timedate0 - milliseconds_to_sub
+    assert(earth_datetime_to_mars_datetime(timedate8) == "Mars DateTime: -0023-12-54 24:39:35.244, Friday")
 
     # test - 10 terrestrial JD years
     milliseconds_to_sub = timedelta(milliseconds=10*DAY_LENGTH*365.25)
-    timedate6 = timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: -0006-09-14 05:33:12.419, Sunday")
-
-    # test - 29 Mars years
-    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*29*668.590909091)
-    timedate7= timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate7) == "Mars DateTime: -0029-01-05 21:17:49.528, Friday")
+    timedate9 = timedate0 - milliseconds_to_sub
+    # print(earth_datetime_to_mars_datetime(timedate8))
+    assert(earth_datetime_to_mars_datetime(timedate9) == "Mars DateTime: -0006-09-11 05:33:12.419, Thursday")
 
 
 def utc_to_mars_time_long_intervals():
@@ -451,31 +436,31 @@ def utc_to_mars_time_long_intervals():
     # test - 110 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*5)
     timedate5= timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate5)=="Mars DateTime: -0111-01-01 00:00:00.000, Monday")
+    # print(earth_datetime_to_mars_datetime(timedate5))
+    assert(earth_datetime_to_mars_datetime(timedate5)=="Mars DateTime: -0111-12-54 24:39:35.244, Friday")
 
     # test - 264 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*12)
     timedate6= timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate6)=="Mars DateTime: -0265-01-01 00:00:00.000, Monday")
+    assert(earth_datetime_to_mars_datetime(timedate6)=="Mars DateTime: -0265-12-54 24:39:35.244, Friday")
 
     # test - 374 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*17)
     timedate7= timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: -0375-01-01 00:00:00.000, Monday")
+    assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: -0375-12-54 24:39:35.244, Friday")
 
     # test - 638 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*29)
     timedate8= timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: -0639-01-01 00:00:00.000, Monday")
-
+    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: -0639-12-54 24:39:35.244, Friday")
 
 def main():
     errors_test()
     utc_to_mars_time_tests_positive_offset()
     utc_to_mars_time_tests_negative_offset()
     utc_to_mars_time_long_intervals()
-    #timedate = datetime.now(timezone.utc)
-    #print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    #print(earth_datetime_to_mars_datetime(timedate))
+    timedate = datetime.now(timezone.utc)
+    print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+    print(earth_datetime_to_mars_datetime(timedate))
 
 main()
