@@ -160,6 +160,13 @@ def format_raw_time(p_milliseconds):
     return "%02d:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
 
 
+def martian_time_to_milliseconds(p_hours, p_min, p_sec):
+    milliseconds = p_sec*1000
+    milliseconds = milliseconds + p_min*60*1000
+    milliseconds = milliseconds + p_hours*3600*1000
+    return int(milliseconds)
+
+
 def process_negative_diff(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
@@ -217,7 +224,6 @@ def process_positive_diff(p_epoch_date, p_input_date):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
     total_cycles = milliseconds_since_epoch // MS_PER_CYCLE
-    
     # calculate total cycle years passed
     full_cycle_years = total_cycles*len(YEAR_CYCLE)
     ms_residual = milliseconds_since_epoch % MS_PER_CYCLE
@@ -262,12 +268,6 @@ def process_positive_diff(p_epoch_date, p_input_date):
     day_week = DAYS[days_accumulated % 7]
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(year_int, month_display, date_display, formatted_time, day_week))
 
-
-def martian_time_to_milliseconds(p_hours, p_min, p_sec):
-    milliseconds = p_sec*1000
-    milliseconds = milliseconds + p_min*60*1000
-    milliseconds = milliseconds + p_hours*3600*1000
-    return int(milliseconds)
 
 def process_positive_diff_inv(input_date):
     earth_start_date = datetime.fromisoformat(EPOCH)
@@ -327,6 +327,7 @@ def process_negative_diff_inv(p_input_date):
     ms_accumulated = ms_accumulated + (SOL_LENGTH - martian_time_to_milliseconds(time_split[0], time_split[1], time_split[2]))
     return -ms_accumulated
 
+
 def earth_datetime_to_mars_datetime(input_date):
     # Calculate year
     epoch_date = datetime.fromisoformat(EPOCH)
@@ -335,11 +336,16 @@ def earth_datetime_to_mars_datetime(input_date):
     else:
         return process_negative_diff(epoch_date, input_date)
 
+
 def mars_datetime_to_earth_datetime(input_date):
     if input_date[0] == '-':
         return process_negative_diff_inv(input_date[1:])
     else:
         return process_positive_diff_inv(input_date)
+
+##############################################################################
+############################### ACCURACY TESTS ###############################
+##############################################################################
 
 def errors_test():
     calendar_year_length = sum(YEAR_CYCLE)/len(YEAR_CYCLE)
@@ -352,6 +358,11 @@ def errors_test():
     assert(annual_error==18.562096478160385)
     assert(mars_years_to_1_sol_error==4782.608694252308)
     assert(earth_years_to_1_sol_error == 8995.431602985975)
+
+
+##############################################################################
+############################# FUNCTIONALITY TESTS ############################
+##############################################################################
 
 def utc_to_mars_time_tests_positive_offset():
     # test first date - should be year 1
