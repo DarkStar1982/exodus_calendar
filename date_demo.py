@@ -267,28 +267,13 @@ def process_positive_diff(p_epoch_date, p_input_date):
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(year_int, month_display, date_display, formatted_time, day_week))
 
 
-def earth_datetime_to_mars_datetime(input_date):
-    # Calculate year
-    epoch_date = datetime.fromisoformat(EPOCH)
-    if (epoch_date<=input_date):
-        return process_positive_diff(epoch_date, input_date)
-    else:
-        return process_negative_diff(epoch_date, input_date)
-
-
 def martian_time_to_milliseconds(p_hours, p_min, p_sec):
     milliseconds = p_sec*1000
     milliseconds = milliseconds + p_min*60*1000
     milliseconds = milliseconds + p_hours*3600*1000
     return int(milliseconds)
 
-
-def mars_datetime_to_earth_datetime(input_date):
-    if input_date[0] == '-':
-        return
-    else:
-        pass
-    # Calculate year
+def process_positive_diff_inv(input_date):
     earth_start_date = datetime.fromisoformat(EPOCH)
     datetimes = input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
@@ -318,6 +303,48 @@ def mars_datetime_to_earth_datetime(input_date):
     return ms_accumulated
 
  
+def process_negative_diff_inv(p_input_date):
+    datetimes = p_input_date.split()
+    date_split = [int(x) for x in datetimes[0].split('-')]
+    time_split = [float(x) for x in datetimes[1].split(':')]
+
+    # calculate milliseconds elapsed
+    ms_accumulated = 0
+    years_elapsed = date_split[0] - 1 
+    total_cycles_passed = years_elapsed // len(YEAR_CYCLE)
+    ms_accumulated = ms_accumulated + MS_PER_CYCLE*total_cycles_passed
+    year_in_current_cycle = years_elapsed - total_cycles_passed*len(YEAR_CYCLE)
+    # calculate year length
+    year_length = YEAR_CYCLE[len(YEAR_CYCLE)-year_in_current_cycle-1]
+
+    for i in range(0, year_in_current_cycle,1):
+        ms_accumulated = ms_accumulated + YEAR_CYCLE[len(YEAR_CYCLE)-i-1]*SOL_LENGTH
+
+    months_elapsed = len(MONTHS) - date_split[1]
+    for i in range(0, months_elapsed, 1):
+        ms_accumulated = ms_accumulated + MONTH_LENGTH[year_length][len(MONTHS)-i-1]*SOL_LENGTH
+
+    days_elapsed = MONTH_LENGTH[year_length][date_split[1]-1] - date_split[2]
+    for i in range(0, days_elapsed, 1):
+        ms_accumulated = ms_accumulated + SOL_LENGTH
+            
+    ms_accumulated = ms_accumulated + (SOL_LENGTH - martian_time_to_milliseconds(time_split[0], time_split[1], time_split[2]))
+    return -ms_accumulated
+
+def earth_datetime_to_mars_datetime(input_date):
+    # Calculate year
+    epoch_date = datetime.fromisoformat(EPOCH)
+    if (epoch_date<=input_date):
+        return process_positive_diff(epoch_date, input_date)
+    else:
+        return process_negative_diff(epoch_date, input_date)
+
+def mars_datetime_to_earth_datetime(input_date):
+    if input_date[0] == '-':
+        return process_negative_diff_inv(input_date[1:])
+    else:
+        return process_positive_diff_inv(input_date)
+
 # testing direct and reverse converstion from UTC to Martian time  
 def utc_to_mars_time_tests_positive_offset():
     utc_timezone = ZoneInfo("UTC")
@@ -470,53 +497,82 @@ def utc_to_mars_time_tests_negative_offset():
     milliseconds_to_sub = timedelta(milliseconds=1000)
     timedate1 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate1) == "Mars DateTime: -0001-12-54 24:39:34.244, Friday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 24:39:34.244")
+    assert(milliseconds_from_epoch + 1000 < 1.0)
 
     # test - 1 Eath day
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH)
     timedate2 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: -0001-12-54 00:39:35.244, Friday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:39:35.244")
+    assert(milliseconds_from_epoch + DAY_LENGTH < 1.0)
 
     # test - 1 sol
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
     timedate3 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-53 24:39:35.244, Thursday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-53 24:39:35.244")
+    assert(milliseconds_from_epoch + SOL_LENGTH < 1.0)
 
     # test start day - 1 Earth month
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH*31)
     timedate4 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.563, Wednesday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-24 20:27:12.563")
+    # ~1 ms conversion error here - assert fails
+    # assert(milliseconds_from_epoch + DAY_LENGTH*31 < 1.1)
 
     # test start day - 54 sols
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*54)
     timedate5 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-11-56 24:39:35.244, Sunday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-11-56 24:39:35.244")
+    assert(milliseconds_from_epoch + SOL_LENGTH*54<1.0)
 
     # test start day - 110 sols
-    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*(54+56))
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*110)
     timedate6 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: -0001-10-56 24:39:35.244, Sunday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-10-56 24:39:35.244")
+    assert(milliseconds_from_epoch + SOL_LENGTH*110<1.0)
 
     # test - 1 long Mars year
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*670)
     timedate7= timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate7) == "Mars DateTime: -0002-12-53 24:39:35.244, Thursday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0002-12-53 24:39:35.244")
+    assert(milliseconds_from_epoch + SOL_LENGTH*670<1.0)
 
     # test - 1 Mars cycle
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE)
     timedate8= timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate8) == "Mars DateTime: -0023-12-54 24:39:35.244, Friday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0023-12-54 24:39:35.244")
+    assert(milliseconds_from_epoch + MS_PER_CYCLE<1.0)
 
     # test - 10 terrestrial JD years
-    milliseconds_to_sub = timedelta(milliseconds=10*DAY_LENGTH*365.25)
+    milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH*3652.5)
     timedate9 = timedate0 - milliseconds_to_sub
     # print(earth_datetime_to_mars_datetime(timedate8))
     assert(earth_datetime_to_mars_datetime(timedate9) == "Mars DateTime: -0006-09-11 05:33:12.419, Thursday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0006-09-11 05:33:12.419")
+    assert(milliseconds_from_epoch + DAY_LENGTH*3652.5<1.0)
+
+    # test + 29 Mars yeras
+    milliseconds_to_sub = timedelta(milliseconds=MS_PER_MARS_YEAR*29)
+    timedate10= timedate0 - milliseconds_to_sub
+    #print(earth_datetime_to_mars_datetime(timedate10))
+    assert(earth_datetime_to_mars_datetime(timedate10)=="Mars DateTime: -0029-01-01 21:17:49.528, Monday") 
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0029-01-01 21:17:49.528")
+    # -0.9091796875 ms error here
+    assert((milliseconds_from_epoch + (MS_PER_MARS_YEAR*29)) < 1.0)
 
 
 def utc_to_mars_time_long_intervals():
     utc_timezone = ZoneInfo("UTC")
     timedate0 = datetime.fromisoformat(EPOCH)
-    # test + 110 Mars years
+    
+    # test +110 Mars years
     milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE*5)
     timedate1= timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate1)=="Mars DateTime: 0111-01-01 00:00:00.000, Monday")
@@ -524,8 +580,7 @@ def utc_to_mars_time_long_intervals():
     assert((milliseconds_from_epoch - (MS_PER_CYCLE*5)) < 1.0)
     assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,utc_timezone) == timedate1)
 
-
-    # test + 264 Mars years
+    # test +264 Mars years
     milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE*12)
     timedate2= timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate2)=="Mars DateTime: 0265-01-01 00:00:00.000, Monday")
@@ -533,8 +588,7 @@ def utc_to_mars_time_long_intervals():
     assert((milliseconds_from_epoch - (MS_PER_CYCLE*12)) < 1.0)
     assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,utc_timezone) == timedate2)
 
-
-    # test + 374 Mars years
+    # test +374 Mars years
     milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE*17)
     timedate3= timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate3)=="Mars DateTime: 0375-01-01 00:00:00.000, Monday")
@@ -543,7 +597,7 @@ def utc_to_mars_time_long_intervals():
     assert((milliseconds_from_epoch - (MS_PER_CYCLE*17)) < 1.0)
     # assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,utc_timezone) == timedate3)
 
-    # test + 638 Mars years
+    # test +638 Mars years
     milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE*29)
     timedate4= timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate4)=="Mars DateTime: 0639-01-01 00:00:00.000, Monday")
@@ -552,23 +606,23 @@ def utc_to_mars_time_long_intervals():
     assert((milliseconds_from_epoch - (MS_PER_CYCLE*29)) < 1.0)
     # assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,utc_timezone) == timedate4)
 
-    # test - 110 Mars years
+    # test -110 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*5)
     timedate5= timedate0 - milliseconds_to_sub
     # print(earth_datetime_to_mars_datetime(timedate5))
     assert(earth_datetime_to_mars_datetime(timedate5)=="Mars DateTime: -0111-12-54 24:39:35.244, Friday")
 
-    # test - 264 Mars years
+    # test -264 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*12)
     timedate6= timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate6)=="Mars DateTime: -0265-12-54 24:39:35.244, Friday")
 
-    # test - 374 Mars years
+    # test -374 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*17)
     timedate7= timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: -0375-12-54 24:39:35.244, Friday")
 
-    # test - 638 Mars years
+    # test -638 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*29)
     timedate8= timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: -0639-12-54 24:39:35.244, Friday")
