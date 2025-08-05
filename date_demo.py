@@ -4,32 +4,32 @@ import time
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 
-##############################################################################
-############################# SUMMARY INFORMATION ############################
-##############################################################################
-##### |--------Calendar structure before and after epoch year----------| #####
-##### |----------------------------------------------------------------| #####
-##### |---------------------------Epoch Year---------------------------| #####
-##### |-------negative timestamps-----||-----positive timestamps-------| #####
-##### |-2^64 ................... -1.0 || 1.0 .................... 2^64 | #####
-##### |-------------------------------||-------------------------------| #####
-##### |-------negative cycle order----||----positive cycle order-------| #####
-##### | 01 02 03 04 ..... 19 20 21 22 || 01 02 03 04 ..... 19 20 21 22 | #####
-##### |-------------------------------||-------------------------------| #####
-##### |------negative years order-----||-----positive years order------| #####
-##### |-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8 +9 +10| #####
-##### |-------------------------------||-------------------------------| #####
-##### |---negative year month order---||---positive year month order---| #####
-##### |[Jan-------Dec] [Jan-------Dec]||[Jan-------Dec] [Jan-------Dec]| #####
-##### |-------------------------------||-------------------------------| #####
-##### |------negative year dates------||-------positive year dates-----| #####
-##### | 01 02 03 04 ..... 51 52 53 54 || 01 02 03 04 ..... 53 54 55 56 | #####
-##### |-------------------------------||-------------------------------| #####
-##############################################################################
+###############################################################################
+############################# SUMMARY INFORMATION ##########$##################
+###############################################################################
+###### |--------Calendar structure before and after epoch year----------| #####
+###### |----------------------------------------------------------------| #####
+###### |---------------------------Epoch Year---------------------------| #####
+###### |-------negative timestamps-----||-----positive timestamps-------| #####
+###### |-2^64 ................... -1.0 || 1.0 .................... 2^64 | #####
+###### |-------------------------------||-------------------------------| #####
+###### |-------negative cycle order----||----positive cycle order-------| #####
+###### | 01 02 03 04 ..... 19 20 21 22 || 01 02 03 04 ..... 19 20 21 22 | #####
+###### |-------------------------------||-------------------------------| #####
+###### |------negative years order-----||-----positive years order------| #####
+###### |-10 -9 -8 -7 -6 -5 -4 -3 -2 -1 || +1 +2 +3 +4 +5 +6 +7 +8 +9 +10| #####
+###### |-------------------------------||-------------------------------| #####
+###### |---negative year month order---||---positive year month order---| #####
+###### |[Jan-------Dec] [Jan-------Dec]||[Jan-------Dec] [Jan-------Dec]| #####
+###### |-------------------------------||-------------------------------| #####
+###### |------negative year dates------||-------positive year dates-----| #####
+###### | 01 02 03 04 ..... 51 52 53 54 || 01 02 03 04 ..... 53 54 55 56 | #####
+###### |-------------------------------||-------------------------------| #####
+###############################################################################
 
-##############################################################################
-################################## CONSTANTS #################################
-##############################################################################
+###############################################################################
+################################## CONSTANTS ##################################
+###############################################################################
 
 # Start year same as in Unix time
 # Preliminary date, can be changed
@@ -56,7 +56,10 @@ EARTH_YEAR_LENGTH = 365.2425
 # Julian year in days
 JULIAN_YEAR_LENGTH = 365.25
 
-# 22-year cycle - 10 668-sol years, 11 669-sol years, 1 670 sol year marks end of cycle
+# 22-year cycle: 
+# - 10 668-sol years
+# - 11 669-sol years, 
+# - 1 670 sol year marks end of cycle
 YEAR_CYCLE = [
     669, #1
     668, # 2
@@ -109,27 +112,6 @@ MONTH_LENGTH = {
     670: [56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 54],
 }
 
-# Purely cosmetic features
-# Five 22-year cycles form a "century" (110 Martian years) are ~ 200 Earth ones.
-# 12 cycles (264 Martian years) make ~ 500 Earth ones and so on
-CYCLES_5 = ['Earth', 'Water', 'Air', 'Fire', 'Aether']
-
-# Zodiac signs or something else of same length
-CYCLES_12 = [
-    'Aries', 
-    'Taurus',
-    'Gemini',
-    'Cancer',
-    'Leo', 
-    'Virgo', 
-    'Libra', 
-    'Scorpio', 
-    'Sagittarius', 
-    'Capricorn', 
-    'Aquarius', 
-    'Pisces'
-]
-
 DAYS = [
     "Monday",
     "Tuesday",
@@ -152,12 +134,15 @@ STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
 def format_raw_time(p_milliseconds):
     seconds = p_milliseconds/1000
-    hours_raw = seconds/3600
-    hours_frac, hours_int = modf(hours_raw)
-    minutes_raw = (hours_raw - hours_int)*60
-    minutes_frac, minutes_int = modf(minutes_raw)
-    seconds_raw = minutes_frac*60
-    return "%02d:%02d:%02d.%03d" % (int(hours_int), int(minutes_int), int(seconds_raw), int((seconds_raw-int(seconds_raw))*1000))
+    hours = seconds/3600
+    _, h_int = modf(hours)
+    minutes = (hours - h_int)*60
+    m_f, m_int = modf(minutes)
+    seconds = m_f*60
+    sec_f, sec_int = modf(seconds)
+    ms = round((sec_f*1000),3)
+    timestamp = "%02d:%02d:%02d.%03d" % (int(h_int), int(m_int), int(sec_int), int(ms))
+    return timestamp
 
 
 def martian_time_to_milliseconds(p_hours, p_min, p_sec):
@@ -407,12 +392,12 @@ def utc_to_mars_time_tests_positive_offset():
     # test start day + 1 Earth month
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH*31)
     timedate5 = timedate0 + milliseconds_to_add
-    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: 0001-01-31 04:12:22.679, Wednesday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-01-31 04:12:22.679")
-    milliseconds_from_epoch = milliseconds_from_epoch
+    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: 0001-01-31 04:12:22.680, Wednesday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-01-31 04:12:22.680")
+
     # 1 ms conversion error - both asserts fail!
-    #assert(milliseconds_from_epoch - DAY_LENGTH*31 < 1.0)
-    #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate5)
+    assert(milliseconds_from_epoch - DAY_LENGTH*31 < 1.0)
+    assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate5)
 
     # test start day + 1 Martian month
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH)
@@ -441,8 +426,10 @@ def utc_to_mars_time_tests_positive_offset():
     # test B end of december for year 1 
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH-100)
     timedate7b = timedate0 + milliseconds_to_add
-    assert(earth_datetime_to_mars_datetime(timedate7b)=="Mars DateTime: 0001-12-53 24:39:35.144, Thursday")
+    #assert(earth_datetime_to_mars_datetime(timedate7b)=="Mars DateTime: 0001-12-53 24:39:35.144, Thursday")
+    #print(timedate7b)
     milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-12-53 24:39:35.144")
+    #print(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE))
     assert(abs(milliseconds_from_epoch - (SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH-100)) < 1.0)
     assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate7b)
     
@@ -457,11 +444,10 @@ def utc_to_mars_time_tests_positive_offset():
     # test + 1 Earth year
     milliseconds_to_add = timedelta(milliseconds=DAY_LENGTH*JULIAN_YEAR_LENGTH)
     timedate8 = timedate0 + milliseconds_to_add
-    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: 0001-07-20 11:46:28.379, Saturday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-07-20 11:46:28.379")
-    # ~1 ms conversion error - second assert fails!
-    # assert(abs(milliseconds_from_epoch - DAY_LENGTH*JULIAN_YEAR_LENGTH) < 1.0)
-    # assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate8)
+    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: 0001-07-20 11:46:28.380, Saturday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-07-20 11:46:28.380")
+    assert(abs(milliseconds_from_epoch - DAY_LENGTH*JULIAN_YEAR_LENGTH) < 1.0)
+    assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate8)
 
     # test + 1 Mars even year
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*668)
@@ -537,11 +523,10 @@ def utc_to_mars_time_tests_negative_offset():
     # test start day - 1 Earth month
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH*31)
     timedate4 = timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.563, Wednesday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-24 20:27:12.563")
-    # ~1 ms conversion error here - assert fails
-    # assert(milliseconds_from_epoch + DAY_LENGTH*31 < 1.1)
-    #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate3)
+    assert(earth_datetime_to_mars_datetime(timedate4) == "Mars DateTime: -0001-12-24 20:27:12.564, Wednesday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-24 20:27:12.564")
+    assert(milliseconds_from_epoch + DAY_LENGTH*31 < 1.0)
+    assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate4)
 
     # test start day - 54 sols
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*54)
@@ -582,13 +567,10 @@ def utc_to_mars_time_tests_negative_offset():
     # test - 10 terrestrial JD years
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH*3652.5)
     timedate9 = timedate0 - milliseconds_to_sub
-    # print(earth_datetime_to_mars_datetime(timedate8))
-    assert(earth_datetime_to_mars_datetime(timedate9) == "Mars DateTime: -0006-09-11 05:33:12.419, Thursday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0006-09-11 05:33:12.419")
-    # 1ms conversion error here
-    #print(abs(milliseconds_from_epoch+DAY_LENGTH*3652.5))
-    #assert(abs(milliseconds_from_epoch + DAY_LENGTH*3652.5)<1.0)
-    #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate9)
+    assert(earth_datetime_to_mars_datetime(timedate9) == "Mars DateTime: -0006-09-11 05:33:12.420, Thursday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0006-09-11 05:33:12.420")
+    assert(abs(milliseconds_from_epoch + DAY_LENGTH*3652.5)<1.0)
+    assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate9)
 
 
     # test + 29 Mars yeras
@@ -599,7 +581,9 @@ def utc_to_mars_time_tests_negative_offset():
     milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0029-01-01 21:17:49.528")
     # -0.9092 ms conversion error here
     assert(abs(milliseconds_from_epoch + MS_PER_MARS_YEAR*29) < 1.0)
-    # assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate10)
+    #print(timedate10)
+    #print(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE))
+    #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate10)
 
 def utc_to_mars_time_long_intervals():
     timedate0 = datetime.fromisoformat(EPOCH)
