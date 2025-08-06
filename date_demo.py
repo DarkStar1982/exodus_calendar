@@ -31,8 +31,7 @@ from zoneinfo import ZoneInfo
 ################################## CONSTANTS ##################################
 ###############################################################################
 
-# Start year same as in Unix time
-# Preliminary date, can be changed
+# Start year same as in Unix time, preliminary designation, can be changed
 EPOCH = "1970-01-01 00:00:00Z"
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
@@ -57,9 +56,9 @@ EARTH_YEAR_LENGTH = 365.2425
 JULIAN_YEAR_LENGTH = 365.25
 
 # 22-year cycle: 
-# - 10 668-sol years
-# - 11 669-sol years, 
-# - 1 670 sol year marks end of cycle
+# * 10 668-sol years
+# * 11 669-sol years, 
+# * 1 670 sol year marks end of cycle (leap year)
 YEAR_CYCLE = [
     669, #1
     668, # 2
