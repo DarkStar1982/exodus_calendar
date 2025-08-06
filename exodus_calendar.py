@@ -394,6 +394,7 @@ def utc_to_mars_time_tests_positive_offset():
     # test B end of december for year 1 
     milliseconds_to_add = timedelta(milliseconds=SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH-100)
     timedate7b = timedate0 + milliseconds_to_add
+    assert(earth_datetime_to_mars_datetime(timedate7b)=="Mars DateTime: 0001-12-53 24:39:35.144, Thursday")
     milliseconds_from_epoch = mars_datetime_to_earth_datetime("0001-12-53 24:39:35.144")
     assert(abs(milliseconds_from_epoch - (SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH-100)) < 1.0)
     assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate7b)
