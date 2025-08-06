@@ -540,6 +540,7 @@ def utc_to_mars_time_tests_negative_offset():
     assert(abs(milliseconds_from_epoch + MS_PER_MARS_YEAR*29) < 1.0)
     #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate10)
 
+
 def utc_to_mars_time_long_intervals():
     timedate0 = datetime.fromisoformat(EPOCH)
     
@@ -610,12 +611,23 @@ def utc_to_mars_time_long_intervals():
     # 0.003 ms error here - second assert fails!
     #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate8)
 
+def utc_to_mars_time_test_now():
+    ms_since_unix_epoch = time.time()
+    timedate_now = datetime.fromtimestamp(ms_since_unix_epoch,EARTH_TIMEZONE)
+    mars_timestamp = (earth_datetime_to_mars_datetime(timedate_now)[15:38])
+    milliseconds = mars_datetime_to_earth_datetime(mars_timestamp)
+    timedetelta = abs(datetime.fromtimestamp(milliseconds/1000,EARTH_TIMEZONE) - timedate_now)
+    ms_diff = timedetelta.microseconds/1000.0
+    # should never fail!
+    assert(ms_diff<1.0)
+
 
 def run_all_tests():
     errors_test()
     utc_to_mars_time_tests_positive_offset()
     utc_to_mars_time_tests_negative_offset()
     utc_to_mars_time_long_intervals()
+    utc_to_mars_time_test_now()
 
 
 def main():
@@ -652,14 +664,15 @@ def main():
         try:
             milliseconds_from_epoch = mars_datetime_to_earth_datetime(args.MARS_DATETIME)
             output_date = datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE)
-            print("Earth DateTime: %s" % output_date)
+            print("Earth DateTime: %s, %s" % (output_date, DAYS[output_date.weekday()]))
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
             print("exodus_calendar.py -m '0030-03-51 12:26:45.556'")
     else:
         timedate = datetime.now(timezone.utc)
-        print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+        timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
+        print("Earth DateTime: %s, %s" % (timedate_str[:23], timedate_str[32:]))
         print(earth_datetime_to_mars_datetime(timedate))
 
 main()
