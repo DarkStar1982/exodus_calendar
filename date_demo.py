@@ -641,12 +641,22 @@ def main():
 
     args = parser.parse_args()
     if args.EARTH_DATETIME is not None:
-        input_date = datetime.fromisoformat(args.EARTH_DATETIME)
-        print(earth_datetime_to_mars_datetime(input_date))
+        try:
+            input_date = datetime.fromisoformat(args.EARTH_DATETIME)
+            print(earth_datetime_to_mars_datetime(input_date))
+        except:
+            print("Input date is not in the correct format!")
+            print("Correct example below:")
+            print("exodus_calendar.py -e '2025-01-01 00:00:01+00:00'")
     elif args.MARS_DATETIME is not None:
-        milliseconds_from_epoch = mars_datetime_to_earth_datetime(args.MARS_DATETIME)
-        output_date = datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE)
-        print("Earth DateTime: %s" % output_date)
+        try:
+            milliseconds_from_epoch = mars_datetime_to_earth_datetime(args.MARS_DATETIME)
+            output_date = datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE)
+            print("Earth DateTime: %s" % output_date)
+        except:
+            print("Input date is not in the correct format!")
+            print("Correct example below:")
+            print("exodus_calendar.py -m '0030-03-51 12:26:45.556'")
     else:
         timedate = datetime.now(timezone.utc)
         print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
