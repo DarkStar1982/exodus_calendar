@@ -59,49 +59,18 @@ JULIAN_YEAR_LENGTH = 365.25
 # * 10 668-sol years
 # * 11 669-sol years, 
 # * 1 670 sol year marks end of cycle (leap year)
-YEAR_CYCLE = [
-    669, #1
-    668, # 2
-    669, #3
-    668, # 4
-    669, #5
-    668, # 6
-    669, #7
-    668, # 8
-    669, #9
-    668, # 10
-    669, #11
-    668, # 12
-    669, #13
-    668, # 14
-    669, #15
-    668, # 16
-    669, #17
-    668, # 18
-    669, #19
-    668, # 20  
-    669, #21
-    670  # 22
+YEAR_CYCLE = [ 
+    669, 668, 669, 668, 669, 668, 669, 668, 669, 668, 669,
+    668, 669, 668, 669, 668, 669, 668, 669, 668, 669, 670
 ]
 
 MS_PER_CYCLE = sum(YEAR_CYCLE)*SOL_LENGTH
 MS_PER_MARS_YEAR = (sum(YEAR_CYCLE)*SOL_LENGTH)/len(YEAR_CYCLE)
 
 # Martian months and duration - 11 months x 56 days, 1 month variable duration
-# Alternatively, name after Zodiacal signs (European or Chinese?)
 MONTHS = [
-    "January",  # Aries - Rat
-    "February", # Taurus - Ox
-    "March",    # Gemini - Tiger
-    "April",    # Cancer - Rabbit
-    "May",      # Leo - Dragon
-    "June",     # Virgo - Snake
-    "July",     # Libra - Horse
-    "August",   # Scorpio - Goat
-    "September",# Sagittarius - Monkey
-    "October",  # Capricorn - Rooster
-    "November", # Aquarius - Dog
-    "December"  # Pisces - Pig
+    "JAN", "FEB", "MAR", "APR", "MAY", "JUN",
+    "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"
 ]
 
 # MONTHS: 01  02  03  04  05  06  07  08  09  10  11  12
@@ -111,7 +80,9 @@ MONTH_LENGTH = {
     670: [56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 56, 54],
 }
 
-DAYS = ["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"]
+WEEKDAYS = [
+    "Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saturday", "Sunday"
+]
 
 # STRING CONSTANTS
 STR_ANNUAL_ERROR = "Annual error for calendar year in seconds"
@@ -188,7 +159,7 @@ def process_negative_diff(p_epoch_date, p_input_date):
     yyyy = - full_cycle_years - years_accumulated - 1
     mm = months_accumulated
     dd= days_accumulated
-    wd = DAYS[(days_accumulated-1) % 7]
+    wd = WEEKDAYS[(days_accumulated-1) % 7]
     return("Mars DateTime: %05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
 
 
@@ -231,7 +202,7 @@ def process_positive_diff(p_epoch_date, p_input_date):
     yyyy = full_cycle_years + years_accumulated + 1
     mm = months_accumulated + 1
     dd = days_accumulated + 1
-    wd = DAYS[days_accumulated % 7]
+    wd = WEEKDAYS[days_accumulated % 7]
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
@@ -665,7 +636,7 @@ def main():
         try:
             milliseconds_from_epoch = mars_datetime_to_earth_datetime(args.MARS_DATETIME)
             output_date = datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE)
-            print("Earth DateTime: %s, %s" % (output_date, DAYS[output_date.weekday()]))
+            print("Earth DateTime: %s, %s" % (output_date, WEEKDAYS[output_date.weekday()]))
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
