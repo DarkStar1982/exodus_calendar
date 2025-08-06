@@ -1,9 +1,9 @@
 #!/opt/homebrew/bin/python3
-from math import modf, ceil, floor
+import argparse
 import time
+from math import modf, ceil, floor
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
-
 ###############################################################################
 ############################# SUMMARY INFORMATION ##########$##################
 ###############################################################################
@@ -610,14 +610,46 @@ def utc_to_mars_time_long_intervals():
     # 0.003 ms error here - second assert fails!
     #assert(datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE) == timedate8)
 
-def main():
+
+def run_all_tests():
     errors_test()
     utc_to_mars_time_tests_positive_offset()
     utc_to_mars_time_tests_negative_offset()
     utc_to_mars_time_long_intervals()
-    mars_datetime_to_earth_datetime("0001-01-01 00:00:00.000")
-    timedate = datetime.now(timezone.utc)
-    print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
-    print(earth_datetime_to_mars_datetime(timedate))
+
+
+def main():
+    run_all_tests()
+    parser = argparse.ArgumentParser(
+        prog='exodus_calendar.py',
+        description='Converts the time and date between Earth and Mars.'
+    )
+    parser.add_argument(
+        '-m',
+        "--mars", 
+        type=str, 
+        dest='MARS_DATETIME', 
+        help='convert Mars datetime to Earth one (in UTC)'
+    )
+    parser.add_argument(
+        '-e',
+        "--earth", 
+        type=str, 
+        dest='EARTH_DATETIME', 
+        help='convert Earth datetime in UTC to Mars one'
+    )
+
+    args = parser.parse_args()
+    if args.EARTH_DATETIME is not None:
+        input_date = datetime.fromisoformat(args.EARTH_DATETIME)
+        print(earth_datetime_to_mars_datetime(input_date))
+    elif args.MARS_DATETIME is not None:
+        milliseconds_from_epoch = mars_datetime_to_earth_datetime(args.MARS_DATETIME)
+        output_date = datetime.fromtimestamp(milliseconds_from_epoch/1000,EARTH_TIMEZONE)
+        print("Earth DateTime: %s" % output_date)
+    else:
+        timedate = datetime.now(timezone.utc)
+        print("Earth DateTime: %s" % timedate.strftime("%Y-%m-%d %H:%M:%S+%Z, %A"))
+        print(earth_datetime_to_mars_datetime(timedate))
 
 main()
