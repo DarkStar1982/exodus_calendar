@@ -237,7 +237,6 @@ def process_positive_diff(p_epoch_date, p_input_date):
 
 
 def process_positive_diff_inv(input_date):
-    earth_start_date = datetime.fromisoformat(EPOCH)
     datetimes = input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
     # calculate milliseconds elapsed
@@ -263,7 +262,6 @@ def process_positive_diff_inv(input_date):
 def process_negative_diff_inv(p_input_date):
     datetimes = p_input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
-    time_split = [float(x) for x in datetimes[1].split(':')]
     # calculate milliseconds elapsed
     ms_total = 0
     years_elapsed = date_split[0] - 1
