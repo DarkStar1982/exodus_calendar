@@ -1,5 +1,5 @@
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.02
+Revision 2025.08.08
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -26,7 +26,7 @@ Tuesday, etc.), and each month contains exactly eight weeks. All months begin on
 and conclude on Sunday, with only December's final week ending on Wednesday,
 Thursday, or Friday, depending on the year's length. Every new year begins on Monday.
 
-![martian calendar](infographics.png "Infographics")
+![martian calendar](doc/infographics.png "Infographics")
 
 Five complete cycles (110 Martian years) constitute a Martian "century," roughly equivalent to 200 Earth years, facilitating cross-referencing between planetary calendars. Each cycle within the century may optionally receive thematic names for distinction ("Earth," "Water," "Air," "Fire," "Aether"), though this remains purely cosmetic
 
@@ -42,7 +42,7 @@ though this remains open to discussion. The year 1971 might be more appropriate,
 marked the first successful Martian missions reaching the planet - Mars 2 and 3 from the
 USSR, and Mariner 9 from the USA. Other dates are acceptable for consideration.
 
-![Calendar epoch structure](calendar_epochs.png "Structure of cycles and years before and after epoch starting year")
+![Calendar epoch structure](doc/calendar_epochs.png "Structure of cycles and years before and after epoch starting year")
 
 ### EASE OF USE
 This concept requires minimal new information to memorize—essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
@@ -64,8 +64,6 @@ https://github.com/DarkStar1982/prometheus_unbound
 Subscribe to our YT channel:
 https://www.youtube.com/@exodusorbitals4092
 
-Support us financially on Artizen:
-https://artizen.fund/index/p/prometheus-unbound?season=5
 
 ## REFERENCES
 

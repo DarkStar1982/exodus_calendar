@@ -6,7 +6,7 @@ from src.exodus_calendar.exodus_calendar import WEEKDAYS, EARTH_TIMEZONE
 
 def main():
     parser = argparse.ArgumentParser(
-        prog='exodus_calendar.py',
+        prog='exodus.py',
         description='Converts the time and date between Earth and Mars.'
     )
     parser.add_argument(
