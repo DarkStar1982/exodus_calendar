@@ -253,7 +253,6 @@ def process_negative_diff_inv(p_input_date):
 
 
 def earth_datetime_to_mars_datetime(input_date):
-    # Calculate year
     epoch_date = datetime.fromisoformat(EPOCH)
     if (epoch_date<=input_date):
         return process_positive_diff(epoch_date, input_date)

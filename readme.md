@@ -54,8 +54,8 @@ Multiples of 22-year cycles, specifically 5, 12, 17, and 29, correspond approxim
 between two planetary calendars. Thematic cycle names can be used for additional
 aesthetics (for example, "Earth," "Water," "Air," "Fire," and "Aether" for a five-cycle period).
 
-## DEMO
-A simple reference code is available that allows conversions between terrestrial and Martian dates. Pull requests accepted. 
+## SOURCE CODE
+A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial and Martian dates. Packaged into library that will be available on PyPi.
 
 ## MISC
 Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
