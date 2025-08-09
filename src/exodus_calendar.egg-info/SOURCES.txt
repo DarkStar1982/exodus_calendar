@@ -2,6 +2,7 @@ LICENSE
 README.md
 pyproject.toml
 src/__init__.py
+src/doc/__init__.py
 src/exodus_calendar/__init__.py
 src/exodus_calendar/exodus_calendar.py
 src/exodus_calendar.egg-info/PKG-INFO
