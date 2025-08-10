@@ -105,6 +105,8 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
     m_f, m_int = modf(minutes)
     seconds = m_f*60
     sec_f, sec_int = modf(seconds)
+    # the fractional part is not in "ms" if 
+    # "Martian second" is used!
     ms = round((sec_f*1000.0),3)
     timestamp = "%02d:%02d:%02d.%03d" % (h_int, m_int, sec_int, ms)
     return timestamp
