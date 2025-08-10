@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 from datetime import datetime, timezone
-from src.exodus_calendar.exodus_calendar import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime
-from src.exodus_calendar.exodus_calendar import WEEKDAYS, EARTH_TIMEZONE
+from src.exodus_calendar.utils import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime
+from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE
 
 def main():
     parser = argparse.ArgumentParser(
@@ -46,6 +46,9 @@ def main():
         timedate = datetime.now(timezone.utc)
         timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         print("Earth DateTime: %s, %s" % (timedate_str[:23], timedate_str[32:]))
-        print(earth_datetime_to_mars_datetime(timedate))
+        mars_date_earth_second = earth_datetime_to_mars_datetime(timedate, False)
+        mars_date_mars_second = earth_datetime_to_mars_datetime(timedate, True)
+        print(mars_date_earth_second)
+        print(mars_date_mars_second)
 
 main()

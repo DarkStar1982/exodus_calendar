@@ -8,8 +8,8 @@ from zoneinfo import ZoneInfo
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.exodus_calendar import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime
-from exodus_calendar.exodus_calendar import JULIAN_YEAR_LENGTH, SOL_LENGTH, EPOCH, MS_PER_CYCLE, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH
+from exodus_calendar.utils import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime
+from exodus_calendar.utils import JULIAN_YEAR_LENGTH, SOL_LENGTH, EPOCH, MS_PER_CYCLE, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 

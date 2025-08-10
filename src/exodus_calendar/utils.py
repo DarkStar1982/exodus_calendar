@@ -30,8 +30,8 @@ from zoneinfo import ZoneInfo
 ################################## CONSTANTS ##################################
 ###############################################################################
 
-# Start year same as in Unix time, preliminary designation, can be changed
-EPOCH = "1955-04-11 19:57:54Z"
+# Start year, preliminary designation, can be changed
+EPOCH = "1955-04-11 19:21:51Z"
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 
@@ -93,8 +93,12 @@ STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 ################################ IMPLEMENTATION ###############################
 ###############################################################################
 
-def format_raw_time(p_milliseconds):
-    seconds = p_milliseconds/1000
+def format_raw_time(p_milliseconds, mars_second_on=False):
+    if mars_second_on:
+        martian_second = (SOL_LENGTH/DAY_LENGTH)*1000
+        seconds = p_milliseconds/martian_second
+    else:
+        seconds = p_milliseconds/1000
     hours = seconds/3600
     _, h_int = modf(hours)
     minutes = (hours - h_int)*60
@@ -117,7 +121,7 @@ def martian_time_to_millisec(timestamp):
     return int(milliseconds)
 
 
-def process_negative_diff(p_epoch_date, p_input_date):
+def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
     absolute_milliseconds = abs(milliseconds_since_epoch)
@@ -154,7 +158,7 @@ def process_negative_diff(p_epoch_date, p_input_date):
             days_accumulated = days_accumulated + 1
     days_accumulated = month_duration - days_accumulated
     # calculate time
-    tt = format_raw_time(SOL_LENGTH-ms_residual)
+    tt = format_raw_time(SOL_LENGTH-ms_residual, mars_second_on)
     yyyy = - full_cycle_years - years_accumulated - 1
     mm = months_accumulated
     dd= days_accumulated
@@ -162,7 +166,7 @@ def process_negative_diff(p_epoch_date, p_input_date):
     return("Mars DateTime: %05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
 
 
-def process_positive_diff(p_epoch_date, p_input_date):
+def process_positive_diff(p_epoch_date, p_input_date, mars_second_on=False):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
     total_cycles = milliseconds_since_epoch // MS_PER_CYCLE
@@ -196,7 +200,7 @@ def process_positive_diff(p_epoch_date, p_input_date):
             ms_residual = ms_residual - SOL_LENGTH
             days_accumulated = days_accumulated + 1
     # get time
-    tt = format_raw_time(ms_residual)
+    tt = format_raw_time(ms_residual, mars_second_on)
     # adds ones where necessary
     yyyy = full_cycle_years + years_accumulated + 1
     mm = months_accumulated + 1
@@ -252,12 +256,12 @@ def process_negative_diff_inv(p_input_date):
     return -ms_total
 
 
-def earth_datetime_to_mars_datetime(input_date):
+def earth_datetime_to_mars_datetime(input_date, mars_second_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     if (epoch_date<=input_date):
-        return process_positive_diff(epoch_date, input_date)
+        return process_positive_diff(epoch_date, input_date, mars_second_on)
     else:
-        return process_negative_diff(epoch_date, input_date)
+        return process_negative_diff(epoch_date, input_date, mars_second_on)
 
 
 def mars_datetime_to_earth_datetime(input_date):
