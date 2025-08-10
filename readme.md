@@ -37,8 +37,7 @@ _Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
 This yields an average calendar year duration of 668.5909(09) sols, creating a difference of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. The system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years. As the Martian year length inevitably drifts (+0.00079 sols per 1,000 Martian years [1, p3]), adjustments can be implemented as needed, like those made to Earth's calendar system
 
 ### EPOCH
-The starting epoch is provisionally set to match Unix time (00:00:00 UTC January 1, 1970),
-though this remains open to discussion. The year 1971 might be more appropriate, as it
+The starting epoch is provisionally set to commonly used Mars calendar epoch (11 April, 1955) and epoch time to be aligned with MTC, though this remains open to discussion. Unix epoch (midnight, 1 Jan 1970) can be used as well. The epoch year of 1971 might be more appropriate, as it
 marked the first successful Martian missions reaching the planet - Mars 2 and 3 from the
 USSR, and Mariner 9 from the USA. Other dates are acceptable for consideration.
 
