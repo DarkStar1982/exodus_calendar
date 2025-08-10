@@ -13,6 +13,8 @@ from exodus_calendar.utils import JULIAN_YEAR_LENGTH, SOL_LENGTH, EPOCH, MS_PER_
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 
+# ALL TESTS unless specified otherwise are using terrestial second length (1000ms),
+# and NOT martian one (1027.5 ms). MTC timestamps will require a separate set of sets
 def utc_to_mars_time_tests_positive_offset():
     # test first date - should be year 1
     timedate0 = datetime.fromisoformat(EPOCH)
