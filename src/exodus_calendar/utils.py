@@ -110,14 +110,16 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
     return timestamp
 
 
-def martian_time_to_millisec(timestamp):
+def martian_time_to_millisec(timestamp, mars_second_on=False):
     time_split = [float(x) for x in timestamp.split(':')]
     p_hours = time_split[0]
     p_min = time_split[1]
     p_sec = time_split[2]
-    milliseconds = p_sec*1000
-    milliseconds = milliseconds + p_min*60*1000
-    milliseconds = milliseconds + p_hours*3600*1000
+    if mars_second_on:
+        martian_second = (SOL_LENGTH/DAY_LENGTH)*1000
+        milliseconds = (p_sec+p_min*60+p_hours*3600)*martian_second
+    else:
+        milliseconds = (p_sec+p_min*60+p_hours*3600)*1000
     return int(milliseconds)
 
 
@@ -166,7 +168,7 @@ def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
     return("Mars DateTime: %05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
 
 
-def process_positive_diff(p_epoch_date, p_input_date, mars_second_on=False):
+def process_positive_diff(p_epoch_date, p_input_date, p_mars_second_on=False):
     diff = p_input_date - p_epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000
     total_cycles = milliseconds_since_epoch // MS_PER_CYCLE
@@ -200,7 +202,7 @@ def process_positive_diff(p_epoch_date, p_input_date, mars_second_on=False):
             ms_residual = ms_residual - SOL_LENGTH
             days_accumulated = days_accumulated + 1
     # get time
-    tt = format_raw_time(ms_residual, mars_second_on)
+    tt = format_raw_time(ms_residual, p_mars_second_on)
     # adds ones where necessary
     yyyy = full_cycle_years + years_accumulated + 1
     mm = months_accumulated + 1
@@ -209,7 +211,7 @@ def process_positive_diff(p_epoch_date, p_input_date, mars_second_on=False):
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
-def process_positive_diff_inv(input_date):
+def process_positive_diff_inv(input_date, p_mars_second_on=False):
     datetimes = input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
     # calculate milliseconds elapsed
@@ -228,11 +230,11 @@ def process_positive_diff_inv(input_date):
     days_elapsed = date_split[2] - 1
     for i in range(0, days_elapsed, 1):
         ms_total = ms_total + SOL_LENGTH
-    ms_total = ms_total + martian_time_to_millisec(datetimes[1])
+    ms_total = ms_total + martian_time_to_millisec(datetimes[1], p_mars_second_on)
     return ms_total
 
  
-def process_negative_diff_inv(p_input_date):
+def process_negative_diff_inv(p_input_date, p_mars_second_on=False):
     datetimes = p_input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
     # calculate milliseconds elapsed
@@ -252,20 +254,21 @@ def process_negative_diff_inv(p_input_date):
     days_elapsed = MONTH_LENGTH[year_len][date_split[1]-1] - date_split[2]
     for i in range(0, days_elapsed, 1):
         ms_total = ms_total + SOL_LENGTH
-    ms_total = ms_total + (SOL_LENGTH - martian_time_to_millisec(datetimes[1]))
+    time_to_ms = martian_time_to_millisec(datetimes[1],p_mars_second_on)
+    ms_total = ms_total + (SOL_LENGTH - time_to_ms)
     return -ms_total
 
 
-def earth_datetime_to_mars_datetime(input_date, mars_second_on=False):
+def earth_datetime_to_mars_datetime(input_date, p_mars_second_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     if (epoch_date<=input_date):
-        return process_positive_diff(epoch_date, input_date, mars_second_on)
+        return process_positive_diff(epoch_date, input_date, p_mars_second_on)
     else:
-        return process_negative_diff(epoch_date, input_date, mars_second_on)
+        return process_negative_diff(epoch_date, input_date, p_mars_second_on)
 
 
-def mars_datetime_to_earth_datetime(input_date):
+def mars_datetime_to_earth_datetime(input_date, p_mars_second_on=False):
     if input_date[0] == '-':
-        return process_negative_diff_inv(input_date[1:])
+        return process_negative_diff_inv(input_date[1:], p_mars_second_on)
     else:
-        return process_positive_diff_inv(input_date)
+        return process_positive_diff_inv(input_date, p_mars_second_on)

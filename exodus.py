@@ -45,10 +45,12 @@ def main():
     else:
         timedate = datetime.now(timezone.utc)
         timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
-        print("Earth DateTime: %s, %s" % (timedate_str[:23], timedate_str[32:]))
-        mars_date_earth_second = earth_datetime_to_mars_datetime(timedate, False)
+        print("Earth DateTime [UTC]: %s, %s" % (timedate_str[:23], timedate_str[32:]))
+        # Using Earth second (1000.0 ms)
+        # mars_date_earth_second = earth_datetime_to_mars_datetime(timedate, False)
+        # print(mars_date_earth_second)
+        # using Mars second (1025.7 ms)
         mars_date_mars_second = earth_datetime_to_mars_datetime(timedate, True)
-        print(mars_date_earth_second)
-        print(mars_date_mars_second)
+        print(mars_date_mars_second.replace("Mars DateTime:", " Mars DateTime [MTC]:"))
 
 main()
