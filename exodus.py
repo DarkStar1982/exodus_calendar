@@ -52,5 +52,6 @@ def main():
         # using Mars second (1025.7 ms)
         mars_date_mars_second = earth_datetime_to_mars_datetime(timedate, True)
         print(mars_date_mars_second.replace("Mars DateTime:", " Mars DateTime [MTC]:"))
+        print(earth_datetime_to_mars_datetime("0038-05-41 20:22:20.885"))
 
 main()
