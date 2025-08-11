@@ -113,15 +113,13 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
 
 
 def martian_time_to_millisec(timestamp, mars_second_on=False):
-    time_split = [float(x) for x in timestamp.split(':')]
-    p_hours = time_split[0]
-    p_min = time_split[1]
-    p_sec = time_split[2]
+    ts_s = [float(x) for x in timestamp.split(':')]
+    # ts_s = [hours, minutes, seconds]
     if mars_second_on:
         martian_second = (SOL_LENGTH/DAY_LENGTH)*1000
-        milliseconds = (p_sec+p_min*60+p_hours*3600)*martian_second
+        milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*martian_second
     else:
-        milliseconds = (p_sec+p_min*60+p_hours*3600)*1000
+        milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*1000
     return int(milliseconds)
 
 
