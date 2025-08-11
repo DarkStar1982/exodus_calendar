@@ -54,7 +54,7 @@ between two planetary calendars. Thematic cycle names can be used for additional
 aesthetics (for example, "Earth," "Water," "Air," "Fire," and "Aether" for a five-cycle period).
 
 ## SOURCE CODE
-A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates Packaged into library that will be available on PyPi.
+A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi.
 
 ## MISC
 Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
