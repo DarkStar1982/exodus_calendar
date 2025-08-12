@@ -259,16 +259,22 @@ def process_negative_diff_inv(p_input_date, p_mars_second_on=False):
     return -ms_total
 
 
-def earth_datetime_to_mars_datetime(input_date, p_mars_second_on=False):
+def earth_datetime_to_mars_datetime(input_date, p_mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     if (epoch_date<=input_date):
-        return process_positive_diff(epoch_date, input_date, p_mars_second_on)
+        return process_positive_diff(epoch_date, input_date, p_mars_sec_on)
     else:
-        return process_negative_diff(epoch_date, input_date, p_mars_second_on)
+        return process_negative_diff(epoch_date, input_date, p_mars_sec_on)
 
 
-def mars_datetime_to_earth_datetime(input_date, p_mars_second_on=False):
+def mars_datetime_to_earth_datetime(input_date, p_mars_sec_on=False, raw_ms=True):
     if input_date[0] == '-':
-        return process_negative_diff_inv(input_date[1:], p_mars_second_on)
+        ms_from_epoch = process_negative_diff_inv(input_date[1:], p_mars_sec_on)
     else:
-        return process_positive_diff_inv(input_date, p_mars_second_on)
+        ms_from_epoch = process_positive_diff_inv(input_date, p_mars_sec_on)
+    if raw_ms:
+        return ms_from_epoch
+    else:
+        output_date = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=ms_from_epoch)
+        timedate_str = output_date.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
+        return "%s, %s" % (timedate_str[:23], timedate_str[32:])
