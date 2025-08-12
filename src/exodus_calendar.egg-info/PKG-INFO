@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: exodus_calendar
-Version: 0.99.0.5
+Version: 0.99.0.6
 Summary: A complete Martian Calendar package
 Author-email: Dennis Silin <d_silin@yahoo.com>
 License-Expression: GPL-3.0-or-later
@@ -14,7 +14,7 @@ License-File: LICENSE
 Dynamic: license-file
 
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.09
+Revision 2025.08.12
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -69,7 +69,7 @@ between two planetary calendars. Thematic cycle names can be used for additional
 aesthetics (for example, "Earth," "Water," "Air," "Fire," and "Aether" for a five-cycle period).
 
 ## SOURCE CODE
-A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates Packaged into library that will be available on PyPi.
+A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi.
 
 ## MISC
 Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
