@@ -95,7 +95,7 @@ STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
 def format_raw_time(p_milliseconds, mars_second_on=False):
     if mars_second_on:
-        martian_second = (SOL_LENGTH/DAY_LENGTH)*1000
+        martian_second = round((SOL_LENGTH/DAY_LENGTH)*1000.0,1)
         seconds = p_milliseconds/martian_second
     else:
         seconds = p_milliseconds/1000
@@ -116,11 +116,11 @@ def martian_time_to_millisec(timestamp, mars_second_on=False):
     ts_s = [float(x) for x in timestamp.split(':')]
     # ts_s = [hours, minutes, seconds]
     if mars_second_on:
-        martian_second = (SOL_LENGTH/DAY_LENGTH)*1000
+        martian_second = round((SOL_LENGTH/DAY_LENGTH)*1000.0,1)
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*martian_second
     else:
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*1000
-    return int(milliseconds)
+    return round(milliseconds,0)
 
 
 def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
