@@ -120,7 +120,7 @@ def martian_time_to_millisec(timestamp, mars_second_on=False):
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*martian_second
     else:
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*1000
-    return round(milliseconds,0)
+    return ceil(milliseconds)
 
 
 def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
