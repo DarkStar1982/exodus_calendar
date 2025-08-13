@@ -47,6 +47,7 @@ DAY_LENGTH = 86400000
 # Needs to be replaced with better expression
 MARS_YEAR_LENGTH = 668.5907
 MARS_MONTH_LENGTH = 56 # except December
+MARS_SECOND_LENGTH = 1027.49125
 
 # Gregorian year in days
 EARTH_YEAR_LENGTH = 365.2425
@@ -95,20 +96,18 @@ STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
 def format_raw_time(p_milliseconds, mars_second_on=False):
     if mars_second_on:
-        martian_second = round((SOL_LENGTH/DAY_LENGTH)*1000.0,1)
-        seconds = p_milliseconds/martian_second
+        second_length = MARS_SECOND_LENGTH
     else:
-        seconds = p_milliseconds/1000
-    hours = seconds/3600
-    _, h_int = modf(hours)
-    minutes = (hours - h_int)*60
-    m_f, m_int = modf(minutes)
-    seconds = m_f*60
-    sec_f, sec_int = modf(seconds)
-    # the fractional part is not in "ms" if 
-    # "Martian second" is used!
-    ms = round((sec_f*1000.0),3)
-    timestamp = "%02d:%02d:%02d.%03d" % (h_int, m_int, sec_int, ms)
+        second_length = 1000
+    hours = p_milliseconds//(3600*second_length)
+    p_milliseconds = p_milliseconds - hours*3600*second_length
+    minutes = p_milliseconds//(60*second_length)
+    p_milliseconds = p_milliseconds - minutes*60*second_length
+    seconds = p_milliseconds / second_length
+    sec_frac, sec_int = modf(seconds)
+    milliseconds = p_milliseconds - seconds*second_length
+    ms = round(sec_frac*1000)
+    timestamp = "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, ms)
     return timestamp
 
 
@@ -116,11 +115,11 @@ def martian_time_to_millisec(timestamp, mars_second_on=False):
     ts_s = [float(x) for x in timestamp.split(':')]
     # ts_s = [hours, minutes, seconds]
     if mars_second_on:
-        martian_second = round((SOL_LENGTH/DAY_LENGTH)*1000.0,1)
+        martian_second = 1027.49125
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*martian_second
     else:
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*1000
-    return ceil(milliseconds)
+    return round(milliseconds)
 
 
 def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
@@ -259,22 +258,22 @@ def process_negative_diff_inv(p_input_date, p_mars_second_on=False):
     return -ms_total
 
 
-def earth_datetime_to_mars_datetime(input_date, p_mars_sec_on=False):
+def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
-    if (epoch_date<=input_date):
-        return process_positive_diff(epoch_date, input_date, p_mars_sec_on)
+    if (epoch_date<=input_dt):
+        return process_positive_diff(epoch_date, input_dt, mars_sec_on)
     else:
-        return process_negative_diff(epoch_date, input_date, p_mars_sec_on)
+        return process_negative_diff(epoch_date, input_dt, mars_sec_on)
 
 
-def mars_datetime_to_earth_datetime(input_date, p_mars_sec_on=False, raw_ms=True):
-    if input_date[0] == '-':
-        ms_from_epoch = process_negative_diff_inv(input_date[1:], p_mars_sec_on)
+def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
+    if input_dt[0] == '-':
+        out_ms = process_negative_diff_inv(input_dt[1:], mars_sec_on)
     else:
-        ms_from_epoch = process_positive_diff_inv(input_date, p_mars_sec_on)
+        out_ms = process_positive_diff_inv(input_dt, mars_sec_on)
     if raw_ms:
-        return ms_from_epoch
+        return out_ms
     else:
-        output_date = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=ms_from_epoch)
-        timedate_str = output_date.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
+        out_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=out_ms)
+        timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         return "%s, %s" % (timedate_str[:23], timedate_str[32:])
