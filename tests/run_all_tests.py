@@ -348,13 +348,13 @@ def utc_to_mars_time_tests_negative_offset_mtc_on():
     # test -1 sol
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
     timedate3 = timedate0 - milliseconds_to_sub
-    #assert(earth_datetime_to_mars_datetime(timedate3, True) == "Mars DateTime: -0001-12-53 23:59:59.000, Thursday")
+    assert(earth_datetime_to_mars_datetime(timedate3, True) == "Mars DateTime: -0001-12-53 23:59:59.000, Thursday")
     # BUG HERE and everywhere where the midnight is on negative dates!!!
     # BOTH WITH MTC ON AND OFF!!!!
     # SHOULD BE -0001-12-54 00:00:00.000????
     # assert(False)
 
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-53 24:00:00.000", True)
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:00:00.000", True)
     timedate3_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH) < 1.0)
     assert(timedate3_inverse == timedate3)
