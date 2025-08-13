@@ -99,15 +99,14 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
         second_length = MARS_SECOND_LENGTH
     else:
         second_length = 1000
-    hours = p_milliseconds//(3600*second_length)
-    p_milliseconds = p_milliseconds - hours*3600*second_length
-    minutes = p_milliseconds//(60*second_length)
-    p_milliseconds = p_milliseconds - minutes*60*second_length
+    hours_int = (p_milliseconds // (3600*second_length))
+    p_milliseconds = p_milliseconds - hours_int*3600*second_length
+    minutes_int = p_milliseconds//(60*second_length)
+    p_milliseconds = p_milliseconds - minutes_int*60*second_length
     seconds = p_milliseconds / second_length
     sec_frac, sec_int = modf(seconds)
-    milliseconds = p_milliseconds - seconds*second_length
     ms = round(sec_frac*1000)
-    timestamp = "%02d:%02d:%02d.%03d" % (hours, minutes, seconds, ms)
+    timestamp = "%02d:%02d:%02d.%03d" % (hours_int, minutes_int, sec_int, ms)
     return timestamp
 
 
@@ -115,8 +114,7 @@ def martian_time_to_millisec(timestamp, mars_second_on=False):
     ts_s = [float(x) for x in timestamp.split(':')]
     # ts_s = [hours, minutes, seconds]
     if mars_second_on:
-        martian_second = 1027.49125
-        milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*martian_second
+        milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*MARS_SECOND_LENGTH
     else:
         milliseconds = (ts_s[2]+ts_s[1]*60+ts_s[0]*3600)*1000
     return round(milliseconds)
@@ -147,6 +145,7 @@ def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
         else:
             ms_residual = ms_residual - MONTH_LENGTH[year_len][i]*SOL_LENGTH
             months_accumulated = months_accumulated + 1
+
     months_accumulated = len(MONTH_LENGTH[year_len]) - months_accumulated
     # calculate days elapsed
     month_duration = MONTH_LENGTH[year_len][months_accumulated-1]
@@ -159,9 +158,21 @@ def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
             days_accumulated = days_accumulated + 1
     days_accumulated = month_duration - days_accumulated
     # calculate time
-    tt = format_raw_time(SOL_LENGTH-ms_residual, mars_second_on)
+    if ms_residual>0:
+        tt = format_raw_time(SOL_LENGTH-ms_residual, mars_second_on)
+    else:
+        tt = format_raw_time(ms_residual, mars_second_on)
+        days_accumulated = days_accumulated + 1
+        if days_accumulated>month_duration:
+            months_accumulated = months_accumulated + 1
+            days_accumulated = 1
+        if months_accumulated>len(MONTHS):
+            months_accumulated = 1
+            years_accumulated = years_accumulated - 1
+        
     yyyy = - full_cycle_years - years_accumulated - 1
     mm = months_accumulated
+
     dd= days_accumulated
     wd = WEEKDAYS[(days_accumulated-1) % 7]
     return("Mars DateTime: %05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))

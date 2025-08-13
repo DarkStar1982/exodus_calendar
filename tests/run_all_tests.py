@@ -339,11 +339,25 @@ def utc_to_mars_time_tests_negative_offset_mtc_on():
     # test -1 Eath day
     milliseconds_to_sub = timedelta(milliseconds=DAY_LENGTH)
     timedate2 = timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate2) == "Mars DateTime: -0001-12-54 00:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate2, True) == "Mars DateTime: -0001-12-54 00:38:31.693, Friday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:38:31.693", True)
     timedate2_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + DAY_LENGTH) < 1.0)
     assert(timedate2_inverse == timedate2)
+
+    # test -1 sol
+    milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
+    timedate3 = timedate0 - milliseconds_to_sub
+    #assert(earth_datetime_to_mars_datetime(timedate3, True) == "Mars DateTime: -0001-12-53 23:59:59.000, Thursday")
+    # BUG HERE and everywhere where the midnight is on negative dates!!!
+    # BOTH WITH MTC ON AND OFF!!!!
+    # SHOULD BE -0001-12-54 00:00:00.000????
+    # assert(False)
+
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-53 24:00:00.000", True)
+    timedate3_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
+    assert(abs(milliseconds_from_epoch + SOL_LENGTH) < 1.0)
+    assert(timedate3_inverse == timedate3)
 
 
 def utc_to_mars_time_tests_negative_offset_mtc_off():
@@ -369,8 +383,8 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     # test -1 sol
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
     timedate3 = timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-53 24:39:35.244, Thursday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-53 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-54 00:00:00.000, Friday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:00:0.000")
     timedate3_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH) < 1.0)
     assert(timedate3_inverse == timedate3)
@@ -387,8 +401,8 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     # test start day -54 sols
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*54)
     timedate5 = timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-11-56 24:39:35.244, Sunday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-11-56 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate5) == "Mars DateTime: -0001-12-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-01 00:00:00.000")
     timedate5_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH*54)<1.0)
     assert(timedate5_inverse == timedate5)
@@ -396,8 +410,8 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     # test start day -110 sols
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*110)
     timedate6 = timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: -0001-10-56 24:39:35.244, Sunday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-10-56 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate6) == "Mars DateTime: -0001-11-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-11-01 00:00:00.000")
     timedate6_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH*110)<1.0)
     assert(timedate6_inverse == timedate6)
@@ -405,8 +419,8 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     # test -1 long Mars year
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH*670)
     timedate7= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate7) == "Mars DateTime: -0002-12-53 24:39:35.244, Thursday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0002-12-53 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate7) == "Mars DateTime: -0001-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-01-01 00:00:00.000")
     timedate7_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH*670)<1.0)
     assert(timedate7_inverse == timedate7)
@@ -414,8 +428,8 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     # test -1 Mars cycle
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE)
     timedate8= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate8) == "Mars DateTime: -0023-12-54 24:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0023-12-54 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate8) == "Mars DateTime: -0022-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0022-01-01 00:00:00.000")
     timedate8_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + MS_PER_CYCLE)<1.0)
     assert(timedate8_inverse == timedate8)
@@ -467,9 +481,8 @@ def utc_to_mars_time_long_intervals_mtc_off():
     assert(earth_datetime_to_mars_datetime(timedate3)=="Mars DateTime: 0375-01-01 00:00:00.000, Monday")
     milliseconds_from_epoch = mars_datetime_to_earth_datetime("0375-01-01 00:00:00.000")
     timedate3_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
-    # 0.001 ms error here - second assert fails!
     assert(abs(milliseconds_from_epoch - MS_PER_CYCLE*17) < 1.0)
-    # assert(timedate3_inverse == timedate3)
+    assert(timedate3_inverse == timedate3)
 
     # test +638 Mars years
     milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE*29)
@@ -477,15 +490,14 @@ def utc_to_mars_time_long_intervals_mtc_off():
     assert(earth_datetime_to_mars_datetime(timedate4)=="Mars DateTime: 0639-01-01 00:00:00.000, Monday")
     milliseconds_from_epoch = mars_datetime_to_earth_datetime("0639-01-01 00:00:00.000")
     timedate4_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
-    # 0.003 ms error here - second assert fails!
     assert(abs(milliseconds_from_epoch - MS_PER_CYCLE*29) < 1.0)
-    # assert(timedate4_inverse == timedate4)
+    assert(timedate4_inverse == timedate4)
 
     # test -110 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*5)
     timedate5= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate5)=="Mars DateTime: -0111-12-54 24:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0111-12-54 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate5)=="Mars DateTime: -0110-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0110-01-01 00:00:00.000")
     timedate5_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + MS_PER_CYCLE*5)<1.0)
     assert(timedate5_inverse == timedate5)
@@ -493,8 +505,8 @@ def utc_to_mars_time_long_intervals_mtc_off():
     # test -264 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*12)
     timedate6= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate6)=="Mars DateTime: -0265-12-54 24:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0265-12-54 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate6)=="Mars DateTime: -0264-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0264-01-01 00:00:00.000")
     timedate6_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + MS_PER_CYCLE*12)<1.0)
     assert(timedate6_inverse == timedate6)
@@ -502,22 +514,20 @@ def utc_to_mars_time_long_intervals_mtc_off():
     # test -374 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*17)
     timedate7= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: -0375-12-54 24:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0375-12-54 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate7)=="Mars DateTime: -0374-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0374-01-01 00:00:00.000")
     timedate7_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
-    # 0.001 ms error here - second assert fails!
     assert(abs(milliseconds_from_epoch + MS_PER_CYCLE*17)<1.0)
-    # assert(timedate7_inverse == timedate7)
+    assert(timedate7_inverse == timedate7)
 
     # test -638 Mars years
     milliseconds_to_sub = timedelta(milliseconds=MS_PER_CYCLE*29)
     timedate8= timedate0 - milliseconds_to_sub
-    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: -0639-12-54 24:39:35.244, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0639-12-54 24:39:35.244")
+    assert(earth_datetime_to_mars_datetime(timedate8)=="Mars DateTime: -0638-01-01 00:00:00.000, Monday")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0638-01-01 00:00:00.000")
     timedate8_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
-    # 0.003 ms error here - second assert fails!
     assert(abs(milliseconds_from_epoch + MS_PER_CYCLE*29)<1.0)
-    # assert(timedate8_inverse == timedate8)
+    assert(timedate8_inverse == timedate8)
 
 
 def utc_to_mars_time_test_now_mtc_off():
