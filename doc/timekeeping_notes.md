@@ -10,3 +10,7 @@ need to maintain a clear distinction between the two.
 The library itself uses milliseconds internally for most of the conversion calculations, converting timestamps to and from ones with Martian seconds where necessary.
 
 Future Martian settlers should probably use a different name for their "second" of 1027.5 ms duration or use millisecond as fundamental time unit.
+
+
+## NTP (Re-)implementation.
+Because we don't want to confuse Earth-local and Mars-local times and timekeeping, a separate fork of NTP can be created to synchronize the Martian clocks across the users. As we don't expect any significant difference in timekeeping on different planets, other than requried by choice of local time. A simplified version of protocol can work initially, with the expectatio of eventual feature-parity with NTPv4
