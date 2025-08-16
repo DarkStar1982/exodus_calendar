@@ -8,7 +8,7 @@ from exodus_calendar.utils import YEAR_CYCLE, MARS_YEAR_LENGTH, EARTH_YEAR_LENGT
 from exodus_calendar.utils import MARS_SECOND_LENGTH, SOL_LENGTH
 
 # Calendar parameters
-fixed_year = 668.5909090909091  # Fixed calendar year length
+fixed_year = (668*10+669*11+670)/22.0  # Fixed calendar year length
 true_year_epoch = 668.5907  # True year at epoch (t=0)
 rate_change = 0.00079  # Rate of change per 1000 years
 
@@ -23,7 +23,6 @@ def accumulated_error(t):
     return error
 
 def main():
-
     # Time range: 0 to 2000 Martian years to show -1 sol point clearly
     t = np.linspace(0, 2000, 200)
 
@@ -48,17 +47,19 @@ def main():
     # Maximum error point
     max_error_time = 1000 * (fixed_year - true_year_epoch) / rate_change
     max_error_value = accumulated_error(max_error_time)
-    ax3.plot(max_error_time, max_error_value, 'go', markersize=8, label=f'Max error: +{max_error_value:.2f} sols')
+    label_str_pos = f'Max positive error: +{max_error_value:.2f} sols at T+{max_error_time:.0f} years'
+    ax3.plot(max_error_time, max_error_value, 'go', markersize=8, label= label_str_pos)
 
     # -1 sol error point
     # Solve quadratic: 0.000000395*t² - 0.0002090909*t - 1 = 0
     a = 0.000000395
     b = -0.0002090909
     c = -1
-    discriminant = b**2 - 4*a*c
-    t_minus_1 = (-b + np.sqrt(discriminant)) / (2*a)
-    if t_minus_1 <= 15000:  # Only plot if within range
-        ax3.plot(t_minus_1, -1, 'ro', markersize=8, label=f'-1 sol at {t_minus_1:.0f} years')
+    d = b**2 - 4*a*c
+    t_minus_1 = (-b + np.sqrt(d)) / (2*a)
+    if t_minus_1 <= 2500:  # Only plot if within range
+        label_str_neg = f'Error of -1.0 sol accumulates by T+{t_minus_1:.0f} years'
+        ax3.plot(t_minus_1, -1, 'ro', markersize=8, label=label_str_neg)
     ax3.axhline(y=-1, color='r', linestyle='--', alpha=0.5)
 
 
