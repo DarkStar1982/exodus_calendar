@@ -37,7 +37,7 @@ _Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
 This yields an average calendar year duration of 668.5909(09) sols, creating a naive error estimate of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. If no other factors take into account, such a system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years assuming fixed duration of Mars northward equinox year. But as the Martian year length is known to drift (+0.00079 sols per 1,000 Martian years [1, p3]), more accurate error expression that includes annual duration drift can be expressed as following:
 
 $$
-\int_0^t \left(\frac{668 \times 10 + 669 \times 11 + 670}{22} - (668.5907 + 0.00079t/1000)\right) dt
+Accumulated Error(sols) = \int_0^t \left(\frac{668 \times 10 + 669 \times 11 + 670}{22} - (668.5907 + 0.00079t/1000)\right) dt
 $$
 
 Solving for t, error expression becomes $2.1 \times 10^{-4}𝑡 - 3.95 \times 10^{-7}𝑡^2$, so 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth ones), illustrated below:
