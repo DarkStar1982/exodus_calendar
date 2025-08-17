@@ -34,7 +34,16 @@ Five complete cycles (110 Martian years) constitute a Martian "century," roughly
 
 _Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
 
-This yields an average calendar year duration of 668.5909(09) sols, creating a difference of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. The system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years. As the Martian year length inevitably drifts (+0.00079 sols per 1,000 Martian years [1, p3]), adjustments can be implemented as needed, like those made to Earth's calendar system
+This yields an average calendar year duration of 668.5909(09) sols, creating a difference of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. The system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years assuming fixed duration of Mars northward equinox year. But as the Martian year length is known to drift (+0.00079 sols per 1,000 Martian years [1, p3]), more accurate error expression that includes annual duration drift can be expressed as following:
+
+$$
+\int_0^t \left(\frac{668 \times 10 + 669 \times 11 + 670}{22} - (668.5907 + 0.00079t/1000)\right) dt
+$$
+
+Solving for t, error expression becomes equal to $ 2.1 \times 10^{-4}𝑡 - 3.95 \times 10^-7𝑡^2 $, so 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth ones), illustrated below:
+
+![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
+
 
 ### EPOCH
 The starting epoch is provisionally set to commonly used Mars calendar epoch (11 April, 1955) and epoch time to be aligned with MTC, though this remains open to discussion. Unix epoch (midnight, 1 Jan 1970) can be used as well. The epoch year of 1971 might be more appropriate, as it
@@ -63,7 +72,7 @@ https://github.com/DarkStar1982/prometheus_unbound
 Subscribe to our YT channel:
 https://www.youtube.com/@exodusorbitals4092
 
-## SUPPORT DEVELOPMENT 
+## SUPPORT PROJECT DEVELOPMENT 
 https://www.paypal.com/paypalme/DenysSilin
 
 ## REFERENCES
