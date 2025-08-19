@@ -8,6 +8,11 @@ Darian calendar [1], may appear overly complex and demand memorization of numero
 unfamiliar terms. The ideal Martian calendar should combine both accuracy and simplicity, retaining familiar month and weekday names. Additionally, maintaining some degree of
 backwards compatibility with existing Martian timekeeping solutions would be highly beneficial.
 
+## DEFINITIONS
+* The duration of Martian solar day (“sol”), that is, the time for the plane to rotate around its axis with respect to the Sun is currently 24 hours 39 minutes and 35.244 seconds (88775.244 seconds, equal to 1.02749125 Earth solar days)
+
+* The duration of Martian tropical year (orbital period with respect to the Sun) is 668.5921 sols, but for the planetary calendar purposes, time between vernal equinoxes is often used, as in Gregorian calendar, allowing more close alignment with seasons of the year. In Mars case, this value is equal to 668.5907 sols [1, p. 2]
+
 
 ## DESCRIPTION
 I propose the following scheme:
