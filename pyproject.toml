@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "exodus_calendar"
-version = "0.99.0.8"
+version = "0.99.0.9"
 authors = [
   { name="Dennis Silin", email="d_silin@yahoo.com" },
 ]
