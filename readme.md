@@ -51,20 +51,14 @@ The epoch date and time is provisionally set to Mars vernal equinox of April 11,
 ![Calendar epoch structure](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/calendar_epochs.png "Structure of cycles and years before and after epoch starting year")
 
 ### EASE OF USE
-This concept requires minimal new information to memorize—essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
+This concept requires minimal new information to memorize: essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
 
 ## SOURCE CODE
 A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
 https://pypi.org/project/exodus-calendar/
 
-## MISC
-Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
-https://github.com/DarkStar1982/prometheus_unbound
 
-### SUBSCRIBE TO OUR YOUTUBE CHANNEL
-https://www.youtube.com/@exodusorbitals4092
-
-### SUPPORT PROJECT DEVELOPMENT 
+## SUPPORT PROJECT DEVELOPMENT 
 https://www.paypal.com/paypalme/DenysSilin
 
 ## REFERENCES
