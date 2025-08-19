@@ -29,7 +29,6 @@ Thursday, or Friday, depending on the year's length. Every new year begins on Mo
 
 ![martian calendar](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/infographics.png "Infographics")
 
-### EASE OF USE
 This concept requires minimal new information to memorize: essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
 
 ### EPOCH
