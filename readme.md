@@ -29,6 +29,9 @@ Thursday, or Friday, depending on the year's length. Every new year begins on Mo
 
 ![martian calendar](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/infographics.png "Infographics")
 
+### EASE OF USE
+This concept requires minimal new information to memorize: essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
+
 ### EPOCH
 The epoch date and time is provisionally set to Mars vernal equinox of April 11, 1955, at UTC 19:21:51 to keep the calendar aligned with planetary seasons and in sync with MST (Mean Solar Time). Years are counted from 1, and negative years start from -1, as in Gregorian calendar (i.e. there is no year 0).
 
@@ -55,8 +58,6 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
 
-### EASE OF USE
-This concept requires minimal new information to memorize: essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
 
 ## SOURCE CODE
 A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
