@@ -1,13 +1,12 @@
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.12
+Revision 2025.08.19
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
 colonists, yet no commonly accepted system exists today. Current proposals, such as the
-Darian calendar [1], appear overly complex and demand memorization of numerous
-unfamiliar terms. The ideal system should prioritize accuracy and simplicity while retaining
-familiar month and weekday names. Additionally, maintaining some degree of
-synchronization between Earth and Mars timekeeping systems would be highly beneficial
+Darian calendar [1], may appear overly complex and demand memorization of numerous
+unfamiliar terms. The ideal Martian calendar should combine both accuracy and simplicity, retaining familiar month and weekday names. Additionally, maintaining some degree of
+backwards compatibility with existing Martian timekeeping solutions would be highly beneficial.
 
 
 ## DESCRIPTION
@@ -17,7 +16,9 @@ Using the northward equinox year (668.5907 sols) as the reference year length, t
 calendar operates on a 22-year cycle:
 - Ten 668-sol years (even-numbered years: second, fourth, sixth, etc.)
 - Eleven 669-sol years (odd-numbered years: first, third, fifth, etc.)
-- One 670-sol year (final year only)
+- One 670-sol year (leap year)
+
+In one sentence, rephrased: _odd years are 669 sols, even years are 668 sols except when divisible by 22, then they are 670 sol long._
 
 Each year comprises 12 months bearing the same names as their terrestrial counterparts,
 with each containing 56 sols except December, which varies in length: 52, 53, or 54 sols.
@@ -28,13 +29,12 @@ Thursday, or Friday, depending on the year's length. Every new year begins on Mo
 
 ![martian calendar](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/infographics.png "Infographics")
 
-Five complete cycles (110 Martian years) constitute a Martian "century," roughly equivalent to 200 Earth years, facilitating cross-referencing between planetary calendars. Each cycle within the century may optionally receive thematic names for distinction ("Earth," "Water," "Air," "Fire," "Aether"), though this remains purely cosmetic
 
 ### ACCURACY
 
 _Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
 
-This yields an average calendar year duration of 668.5909(09) sols, creating a naive error estimate of 0.00021 sols per year, comparable to the Gregorian calendar's 0.0003-day annual discrepancy. If no other factors take into account, such a system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years assuming fixed duration of Mars northward equinox year. But as the Martian year length is known to drift (+0.00079 sols per 1,000 Martian years [1, p3]), more accurate error expression that includes annual duration drift can be expressed as following:
+This yields an average calendar year duration of 668.5909(09) sols, creating a naive error estimate of 0.00021 sols per year, comparable to the Gregorian calendar's 0.00013-day annual discrepancy. If no other factors take into account, such a system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years, assuming fixed duration of Mars northward equinox year. But as the Martian year length is known to drift (+0.00079 sols per 1,000 Martian years [1, p3]), more accurate error expression that includes annual duration drift can be expressed as following:
 
 $$
 Accumulated\ Error(sols) = \int_0^t \left(\frac{668 \times 10 + 669 \times 11 + 670}{22} - (668.5907 + 0.00079t/1000)\right) dt
@@ -46,33 +46,25 @@ Solving for t, error expression becomes $2.1 \times 10^{-4}𝑡 - 3.95 \times 10
 
 
 ### EPOCH
-The starting epoch is provisionally set to commonly used Mars calendar epoch (11 April, 1955) and epoch time to be aligned with MTC, though this remains open to discussion. Unix epoch (midnight, 1 Jan 1970) can be used as well. The epoch year of 1971 might be more appropriate, as it
-marked the first successful Martian missions reaching the planet - Mars 2 and 3 from the
-USSR, and Mariner 9 from the USA. Other dates are acceptable for consideration.
+The epoch date and time is provisionally set to Mars vernal equinox of April 11, 1955, at UTC 19:21:51 to keep the calendar aligned with planetary seasons and in sync with MST (Mean Solar Time). Years are counted from 1, and negative years start from -1, as in Gregorian calendar (i.e. there is no year 0).
 
 ![Calendar epoch structure](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/calendar_epochs.png "Structure of cycles and years before and after epoch starting year")
 
 ### EASE OF USE
 This concept requires minimal new information to memorize—essentially just the 22-year cycle structure and two month lengths: one constant and one dependent on the year's position within the cycle.
 
-
-### OPTIONAL FEATURES
-Multiples of 22-year cycles, specifically 5, 12, 17, and 29, correspond approximately to
-200, 500, 700, and 1,200 Earth years respectively, enabling a degree of cross-referencing
-between two planetary calendars. Thematic cycle names can be used for additional
-aesthetics (for example, "Earth," "Water," "Air," "Fire," and "Aether" for a five-cycle period).
-
 ## SOURCE CODE
-A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi.
+A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
+https://pypi.org/project/exodus-calendar/
 
 ## MISC
 Part of the bigger Prometheus Unbound project (a knowledge base for future Martian colonists):
 https://github.com/DarkStar1982/prometheus_unbound
 
-Subscribe to our YT channel:
+### SUBSCRIBE TO OUR YOUTUBE CHANNEL
 https://www.youtube.com/@exodusorbitals4092
 
-## SUPPORT PROJECT DEVELOPMENT 
+### SUPPORT PROJECT DEVELOPMENT 
 https://www.paypal.com/paypalme/DenysSilin
 
 ## REFERENCES
