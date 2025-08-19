@@ -443,7 +443,7 @@ def utc_to_mars_time_tests_negative_offset_mtc_off():
     milliseconds_to_sub = timedelta(milliseconds=SOL_LENGTH)
     timedate3 = timedate0 - milliseconds_to_sub
     assert(earth_datetime_to_mars_datetime(timedate3) == "Mars DateTime: -0001-12-54 00:00:00.000, Friday")
-    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:00:0.000")
+    milliseconds_from_epoch = mars_datetime_to_earth_datetime("-0001-12-54 00:00:00.000")
     timedate3_inverse = timedate0 + timedelta(milliseconds=milliseconds_from_epoch)
     assert(abs(milliseconds_from_epoch + SOL_LENGTH) < 1.0)
     assert(timedate3_inverse == timedate3)
