@@ -52,8 +52,8 @@ def main():
 
     # -1 sol error point
     # Solve quadratic: 0.000000395*t² - 0.0002090909*t - 1 = 0
-    a = 0.000000395
-    b = -0.0002090909
+    a = rate_change/(2*1000)
+    b = true_year_epoch-fixed_year
     c = -1
     d = b**2 - 4*a*c
     t_minus_1 = (-b + np.sqrt(d)) / (2*a)
