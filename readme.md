@@ -62,7 +62,6 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
 
-
 ## SOURCE CODE
 A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
 https://pypi.org/project/exodus-calendar/
