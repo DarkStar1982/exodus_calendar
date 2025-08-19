@@ -61,6 +61,10 @@ https://pypi.org/project/exodus-calendar/
 ## SUPPORT PROJECT DEVELOPMENT 
 https://www.paypal.com/paypalme/DenysSilin
 
+
+## SUBSCRIBE TO AUTHOR'S YOUTUBE CHANNEL
+https://www.youtube.com/@exodusorbitals4092
+
 ## REFERENCES
 
 1. Gangale, Thomas. (2006). The Architecture of Time, Part 2: The Darian System for Mars. SAE Technical Papers. 10.4271/2006-01-2249. 
