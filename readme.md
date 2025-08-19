@@ -41,9 +41,11 @@ Accumulated\ Error(sols) = \int_0^t \left(\frac{668 \times 10 + 669 \times 11 + 
 $$
 
 Solving for t, error expression becomes: 
+
 $$
 2.1 \times 10^{-4}𝑡 - 3.95 \times 10^{-7}𝑡^2
 $$
+
 So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth ones), illustrated below:
 
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
