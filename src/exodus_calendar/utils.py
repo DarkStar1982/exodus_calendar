@@ -294,5 +294,5 @@ def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
 def compute_timedelta(p_date_1, p_date_2, mars_sec_on=False):
     return None
 
-def add_timedelta(p_date, p_milliseconds mars_sec_on=False):
+def add_timedelta(p_date, p_milliseconds, mars_sec_on=False):
     return None
