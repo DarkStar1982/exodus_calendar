@@ -219,6 +219,7 @@ def process_positive_diff(p_epoch_date, p_input_date, p_mars_second_on=False):
     mm = months_accumulated + 1
     dd = days_accumulated + 1
     wd = WEEKDAYS[days_accumulated % 7]
+    # I think "Mars DateTime" part should be removed
     return("Mars DateTime: %04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
@@ -289,3 +290,9 @@ def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
         out_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=out_ms)
         timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         return "%s, %s" % (timedate_str[:23], timedate_str[32:])
+
+def compute_timedelta(p_date_1, p_date_2, mars_sec_on=False):
+    return None
+
+def add_timedelta(p_date, p_milliseconds mars_sec_on=False):
+    return None
