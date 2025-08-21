@@ -278,12 +278,16 @@ def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
     else:
         return process_negative_diff(epoch_date, input_dt, mars_sec_on)
 
-
-def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
+def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
     if input_dt[0] == '-':
         out_ms = negative_dates_to_milliseconds(input_dt[1:], mars_sec_on)
     else:
         out_ms = positive_dates_to_milliseconds(input_dt, mars_sec_on)
+    return out_ms
+
+
+def mars_datetime_to_earth_datetime_as_string(input_dt, mars_sec_on=False, raw_ms=True):
+    out_ms = mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on)
     if raw_ms:
         return out_ms
     else:
@@ -291,10 +295,18 @@ def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
         timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         return "%s, %s" % (timedate_str[:23], timedate_str[32:])
 
+
+def mars_datetime_to_earth_datetime_as_isoformat(input_dt, mars_sec_on=False):
+    out_ms = mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on)
+    out_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=out_ms)
+    return out_dt
+
+
 def compute_mars_timedelta(p_date_1, p_date_2, mars_sec_on=False):
-    time_ms_a = mars_datetime_to_earth_datetime(p_date_1, mars_sec_on, True)
-    time_ms_b = mars_datetime_to_earth_datetime(p_date_2, mars_sec_on, True)
+    time_ms_a = mars_datetime_to_earth_datetime_as_ms(p_date_1, mars_sec_on)
+    time_ms_b = mars_datetime_to_earth_datetime_as_ms(p_date_2, mars_sec_on)
     return (time_ms_b-time_ms_a)
+
 
 def add_timedelta_to_mars_date(p_date, p_milliseconds, mars_sec_on=False):
     return None

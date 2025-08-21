@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 import argparse
 from datetime import datetime, timezone, timedelta
-from src.exodus_calendar.utils import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime
+from src.exodus_calendar.utils import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime_as_string
 from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE, EPOCH
 
 def main():
@@ -49,7 +49,7 @@ def main():
             print("exodus.py -u '2025-01-01 00:00:01+00:00'")
     elif args.MARS_DATETIME_UTC is not None:
         try:
-            timedate_str = mars_datetime_to_earth_datetime(args.MARS_DATETIME_UTC, True, False)
+            timedate_str = mars_datetime_to_earth_datetime_as_string(args.MARS_DATETIME_UTC, True, False)
             print("Earth DateTime: %s" % timedate_str)
         except:
             print("Input date is not in the correct format!")
@@ -65,7 +65,7 @@ def main():
             print("exodus.py -r '2025-01-01 00:00:01+00:00'")
     elif args.MARS_DATETIME_RAW is not None:
         try:
-            timedate_str = mars_datetime_to_earth_datetime(args.MARS_DATETIME_RAW, False, False)
+            timedate_str = mars_datetime_to_earth_datetime_as_string(args.MARS_DATETIME_RAW, False, False)
             print("Earth DateTime: %s" % timedate_str)
         except:
             print("Input date is not in the correct format!")
