@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.utils import compute_mars_timedelta
+from exodus_calendar.utils import compute_mars_timedelta, mars_datetime_to_earth_datetime
 from exodus_calendar.utils import JULIAN_YEAR_LENGTH, SOL_LENGTH, EPOCH, MS_PER_CYCLE, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
@@ -33,9 +33,14 @@ TEST_DATA_MTC_OFF = [
 #   negative and negative = positive time delta
 #   negative and negative = negative time delta
 def delta_tests():
-    result = compute_mars_timedelta(TEST_DATA_MTC_OFF[0][0], TEST_DATA_MTC_OFF[0][1])
-    print(result)
     print("Running time delta tests")
+    result = compute_mars_timedelta(TEST_DATA_MTC_OFF[0][0], TEST_DATA_MTC_OFF[0][1])
+    earth_date_1 = mars_datetime_to_earth_datetime(TEST_DATA_MTC_OFF[0][0], False, False)
+    earth_date_2 = mars_datetime_to_earth_datetime(TEST_DATA_MTC_OFF[0][1], False, False)
+    print(earth_date_1)
+    print(earth_date_2)
+
+    assert(TEST_DATA_MTC_OFF[0][2]==result)
 
 
 def main():
