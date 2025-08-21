@@ -176,7 +176,7 @@ def process_negative_diff(p_epoch_date, p_input_date, mars_second_on=False):
 
     dd= days_accumulated
     wd = WEEKDAYS[(days_accumulated-1) % 7]
-    return("Mars DateTime: %05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
+    return("%05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
 
 
 def process_positive_diff(p_epoch_date, p_input_date, p_mars_second_on=False):
@@ -220,7 +220,7 @@ def process_positive_diff(p_epoch_date, p_input_date, p_mars_second_on=False):
     dd = days_accumulated + 1
     wd = WEEKDAYS[days_accumulated % 7]
     # I think "Mars DateTime" part should be removed
-    return("Mars DateTime: %04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
+    return("%04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
 def process_positive_diff_inv(input_date, p_mars_second_on=False):
