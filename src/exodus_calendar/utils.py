@@ -291,8 +291,10 @@ def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
         timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         return "%s, %s" % (timedate_str[:23], timedate_str[32:])
 
-def compute_timedelta_between_mars_dates(p_date_1, p_date_2, mars_sec_on=False):
-    return None
+def compute_mars_timedelta(p_date_1, p_date_2, mars_sec_on=False):
+    time_ms_a = mars_datetime_to_earth_datetime(p_date_1, mars_sec_on, True)
+    time_ms_b = mars_datetime_to_earth_datetime(p_date_2, mars_sec_on, True)
+    return (time_ms_a-time_ms_b)
 
 def add_timedelta_to_mars_date(p_date, p_milliseconds, mars_sec_on=False):
     return None
