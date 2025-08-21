@@ -223,7 +223,7 @@ def process_positive_diff(p_epoch_date, p_input_date, p_mars_second_on=False):
     return("%04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
-def process_positive_diff_inv(input_date, p_mars_second_on=False):
+def positive_dates_to_milliseconds(input_date, p_mars_second_on=False):
     datetimes = input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
     # calculate milliseconds elapsed
@@ -246,7 +246,7 @@ def process_positive_diff_inv(input_date, p_mars_second_on=False):
     return ms_total
 
  
-def process_negative_diff_inv(p_input_date, p_mars_second_on=False):
+def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
     datetimes = p_input_date.split()
     date_split = [int(x) for x in datetimes[0].split('-')]
     # calculate milliseconds elapsed
@@ -281,9 +281,9 @@ def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
 
 def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False, raw_ms=True):
     if input_dt[0] == '-':
-        out_ms = process_negative_diff_inv(input_dt[1:], mars_sec_on)
+        out_ms = negative_dates_to_milliseconds(input_dt[1:], mars_sec_on)
     else:
-        out_ms = process_positive_diff_inv(input_dt, mars_sec_on)
+        out_ms = positive_dates_to_milliseconds(input_dt, mars_sec_on)
     if raw_ms:
         return out_ms
     else:
