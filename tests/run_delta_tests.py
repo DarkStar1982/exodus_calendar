@@ -9,7 +9,7 @@ from zoneinfo import ZoneInfo
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from exodus_calendar.utils import compute_mars_timedelta, mars_datetime_to_earth_datetime_as_isoformat, add_timedelta_to_mars_date, earth_datetime_to_mars_datetime
-from exodus_calendar.utils import DAY_LENGTH, SOL_LENGTH, EPOCH, JULIAN_YEAR_LENGTH, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH
+from exodus_calendar.utils import DAY_LENGTH, SOL_LENGTH, EPOCH, JULIAN_YEAR_LENGTH, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH, MS_PER_CYCLE
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 
@@ -31,7 +31,12 @@ TEST_DATA_MTC_OFF = [
     ["0001-01-01 00:00:00.000", "0001-12-52 24:39:35.144", SOL_LENGTH*MARS_MONTH_LENGTH*11+52*SOL_LENGTH-100],
     ["0001-01-01 00:00:00.000", "0001-12-53 24:39:35.144", SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH-100],
     ["0001-01-01 00:00:00.000", "0002-01-01 00:00:00.000", SOL_LENGTH*MARS_MONTH_LENGTH*11+53*SOL_LENGTH],
-    ["0001-01-01 00:00:00.000", "0001-07-20 11:46:28.380", DAY_LENGTH*JULIAN_YEAR_LENGTH]
+    ["0001-01-01 00:00:00.000", "0001-07-20 11:46:28.380", DAY_LENGTH*JULIAN_YEAR_LENGTH],
+    ["0001-01-01 00:00:00.000", "0001-12-53 00:00:00.000", SOL_LENGTH*668],
+    ["0001-01-01 00:00:00.000", "0002-01-01 00:00:00.000", SOL_LENGTH*669],
+    #["0001-01-01 00:00:00.000", "0011-01-01 22:25:04.767", MS_PER_MARS_YEAR*10], <-fail here
+    ["0001-01-01 00:00:00.000", "0023-01-01 00:00:00.000", MS_PER_CYCLE]
+    # ["0001-01-01 00:00:00.000", "0030-01-01 03:21:45.715", MS_PER_MARS_YEAR*29] <-fail here
 ]
 
 
@@ -46,6 +51,7 @@ def run_positive_dates_mtc_off():
         # timedelta between two Earth timestamps should be identical to Mars
         delta_time = (earth_date_2 - earth_date_1)
         delta_ms_E = (delta_time.total_seconds()*1000)
+        assert(abs(TEST_DATA_MTC_OFF[i][2]-delta_ms_E)<1.0)
         assert(TEST_DATA_MTC_OFF[i][2]==delta_ms_E)
         assert(delta_ms_M==delta_ms_E)
         

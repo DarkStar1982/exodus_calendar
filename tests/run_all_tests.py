@@ -151,7 +151,7 @@ def utc_to_mars_time_tests_positive_offset_mtc_on():
     #assert(timedate11_inverse == timedate11)
 
     # test +1 cycle (22 Mars years)
-    milliseconds_to_add = timedelta(milliseconds=MS_PER_MARS_YEAR*22)
+    milliseconds_to_add = timedelta(milliseconds=MS_PER_CYCLE)
     timedate12= timedate0 + milliseconds_to_add
     assert(earth_datetime_to_mars_datetime(timedate12, True)=="0023-01-01 00:00:00.000, Monday")
     milliseconds_from_epoch = mars_datetime_to_earth_datetime_as_ms("0023-01-01 00:00:00.000", True)
