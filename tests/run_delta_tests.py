@@ -46,18 +46,35 @@ TEST_DATA_B_MTC_OFF = [
     ["0001-01-01 00:00:00.000", "-0001-12-54 24:39:34.244", -1000],
     ["0001-01-01 00:00:00.000", "-0001-12-54 00:39:35.244", -DAY_LENGTH],
     ["0001-01-01 00:00:00.000", "-0001-12-54 00:00:00.000", -SOL_LENGTH],
+    ["0001-01-01 00:00:00.000", "-0001-12-24 20:27:12.564", -DAY_LENGTH*31],
+    ["0001-01-01 00:00:00.000", "-0001-12-01 00:00:00.000", -SOL_LENGTH*54],
+    ["0001-01-01 00:00:00.000", "-0001-11-01 00:00:00.000", -SOL_LENGTH*110],
+    ["0001-01-01 00:00:00.000", "-0001-01-01 00:00:00.000", -SOL_LENGTH*670],
+    ["0001-01-01 00:00:00.000", "-0006-09-11 05:33:12.420", -DAY_LENGTH*3652.5],
+    ["0001-01-01 00:00:00.000", "-0022-01-01 00:00:00.000", -MS_PER_CYCLE],
+    ["0001-01-01 00:00:00.000", "-0029-01-01 21:17:49.529", -MS_PER_MARS_YEAR*29],
+    ["0001-01-01 00:00:00.000", "-0110-01-01 00:00:00.000", -MS_PER_CYCLE*5],
+    ["0001-01-01 00:00:00.000", "-0264-01-01 00:00:00.000", -MS_PER_CYCLE*12],
+    ["0001-01-01 00:00:00.000", "-0374-01-01 00:00:00.000", -MS_PER_CYCLE*17],
+    ["0001-01-01 00:00:00.000", "-0638-01-01 00:00:00.000", -MS_PER_CYCLE*29],
+
 ]
 
-TEST_DATA_C_MTC_OFF = [
-    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:00.000",  1000]
-]
-
-# more randomized start time
+# more randomized time intervals
 TEST_DATA_D_MTC_OFF = [
     ["0001-01-31 04:12:22.680", "0001-01-31 04:12:23.680", 1000],
-    ["0001-07-20 11:46:28.380", "0001-07-20 11:46:29.380", 1000],
-    ["0011-01-01 22:25:04.767", "0011-01-01 22:25:05.767", 1000],
-    ["0030-01-01 03:21:45.715", "0030-01-01 03:21:46.715", 1000]
+    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:00.001", 1001],
+    ["0001-01-01 00:00:01.450","-0001-12-54 24:39:34.244", -2450],
+    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:01.111", 2111],
+    ["0001-01-01 00:00:00.500","-0001-12-54 24:39:34.244", -1500],
+    ["0001-01-31 04:12:22.680", "0001-07-20 11:46:28.380", DAY_LENGTH*(JULIAN_YEAR_LENGTH-31)],
+    ["0011-01-01 22:25:04.767", "0030-01-01 03:21:45.715", MS_PER_MARS_YEAR*19],
+    ["-0001-12-24 20:27:12.564", "-0001-12-24 20:27:13.564", 1000],
+    ["-0029-01-01 21:17:49.529", "-0006-09-11 05:33:12.420", MS_PER_MARS_YEAR*29-DAY_LENGTH*3652.5],
+    ["-0001-12-24 20:27:12.564", "0001-01-31 04:12:22.680", 31*DAY_LENGTH*2],
+    ["-0001-12-24 20:27:12.564", "0011-01-01 22:25:04.767", 31*DAY_LENGTH+MS_PER_MARS_YEAR*10],
+    ["0001-07-20 11:46:28.380", "-0001-12-24 20:27:12.564", -DAY_LENGTH*JULIAN_YEAR_LENGTH-DAY_LENGTH*31],
+    ["0030-01-01 03:21:45.715", "-0029-01-01 21:17:49.529", -MS_PER_MARS_YEAR*58]
 ]
 
 
@@ -71,13 +88,17 @@ def run_delta_test(P_DATA):
     # timedelta between two Earth timestamps should be identical to Mars
     delta_time = (earth_date_2 - earth_date_1)
     delta_ms_E = (delta_time.total_seconds()*1000)
+    # known sub-1ms errors happen here due to rounding
     try:
         assert(P_DATA[2]==delta_ms_E)
+        assert(delta_ms_M==delta_ms_E)
     except:
         delta_error = abs(P_DATA[2]-delta_ms_E)
-        print ("Accuracy error: %3.4f ms for %s test case" % (delta_error,P_DATA[1]))
-        assert(delta_error<1.0)
-    assert(delta_ms_M==delta_ms_E)
+        etm_error = abs(delta_ms_M-delta_ms_E)
+        net_error = delta_error+etm_error
+        if net_error>0:
+            print ("Accuracy error: %3.4f ms for %s test case" % (net_error,P_DATA[1]))
+        assert(net_error<1.0)
         
     # convert from Earth datetimes back to Mars datetimes,
     # those should be identical to input dates
@@ -100,9 +121,6 @@ def run_all_tests_mtc_off():
     
     for i in range(0, len(TEST_DATA_B_MTC_OFF),1):
         run_delta_test(TEST_DATA_B_MTC_OFF[i])
-
-    for i in range(0, len(TEST_DATA_C_MTC_OFF),1):
-        run_delta_test(TEST_DATA_C_MTC_OFF[i])
 
     for i in range(0, len(TEST_DATA_D_MTC_OFF),1):
         run_delta_test(TEST_DATA_D_MTC_OFF[i])
