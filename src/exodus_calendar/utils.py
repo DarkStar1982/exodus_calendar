@@ -157,7 +157,7 @@ def negative_milliseconds_to_date(p_delta_ms, mars_second_on=False):
             days_accumulated = days_accumulated + 1
     days_accumulated = month_duration - days_accumulated
     # calculate time
-    if ms_residual>0:
+    if round(ms_residual)>0:
         tt = format_raw_time(SOL_LENGTH-ms_residual, mars_second_on)
     else:
         tt = format_raw_time(ms_residual, mars_second_on)
@@ -174,7 +174,11 @@ def negative_milliseconds_to_date(p_delta_ms, mars_second_on=False):
 
     dd= days_accumulated
     wd = WEEKDAYS[(days_accumulated-1) % 7]
-    return("%05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
+    # never year 'zero'
+    if yyyy==0:
+        return("%04d-%02d-%02d %s, %s" % (yyyy+1, mm, dd, tt, wd))
+    else:
+        return("%05d-%02d-%02d %s, %s" % (yyyy, mm, dd, tt, wd))
 
 
 def positive_milliseconds_to_date(p_delta_ms, p_mars_second_on=False):
