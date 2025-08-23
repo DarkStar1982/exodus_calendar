@@ -69,13 +69,19 @@ https://pypi.org/project/exodus-calendar/
 ## CODE USAGE
 Import from PyPi. Functions of value are in exodus_orbitals.utils:
 
-- **earth_datetime_to_mars_datetime**. Converts timestamp in UTC to Martian date time. 
-- **mars_datetime_to_earth_datetime_as_isoformat** Converts Martian timestamp to Earth one in UTC as datetime object
-- **mars_datetime_to_earth_datetime_as_string** Converts Martian timestamp to Earth one in UTC as string
-- **mars_datetime_to_earth_datetime_as_ms** Converts Martian timestamp to Earth one as milliseconds since calendar epoch (not Unix epoch!)
+- **earth_datetime_to_mars_datetime(input_date, mars_sec_on)**. Converts timestamp in UTC to Martian date time. 
 
+- **mars_datetime_to_earth_datetime_as_isoformat(input_date, mars_sec_on)** Converts Martian timestamp to Earth one in UTC as datetime object
 
-_"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC.
+- **mars_datetime_to_earth_datetime_as_string(input_date, mars_sec_on)** Converts Martian timestamp to Earth one in UTC as string
+
+- **mars_datetime_to_earth_datetime_as_ms(input_date, mars_sec_on)** Converts Martian timestamp to Earth one as milliseconds since calendar epoch (not Unix epoch!)
+
+-**compute_mars_timedelta(date_a, date_b, mars_sec_on)** Computes time delta in milliseconds between two Martian dates. Returns _date_b - date_a_
+
+-**add_timedelta_to_mars_date(date, millis, mars_sec_on)** Adds time delta in millisecond to a Martian date. Returns Martian date.
+
+_"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC. Set to False by default.
 
 
 ## SUPPORT PROJECT DEVELOPMENT 
