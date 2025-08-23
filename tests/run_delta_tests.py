@@ -13,13 +13,9 @@ from exodus_calendar.utils import DAY_LENGTH, SOL_LENGTH, EPOCH, JULIAN_YEAR_LEN
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 
-# run test cases: 
-#   positive and negative = negative time delta
-#   positive and negative = positive time delta
-#   negative and negative = positive time delta
-#   negative and negative = negative time delta
+
+# positive and positive timestamps = positive time delta
 TEST_DATA_A_MTC_OFF = [
-    #  positive and positive = positive time delta
     ["0001-01-01 00:00:00.000", "0001-01-01 00:00:01.000", 1000.0],
     ["0001-01-01 00:00:00.000", "0001-01-01 24:00:00.000", DAY_LENGTH],
     ["0001-01-01 00:00:00.000", "0001-01-02 00:00:00.000", SOL_LENGTH],
@@ -42,6 +38,8 @@ TEST_DATA_A_MTC_OFF = [
     ["0001-01-01 00:00:00.000", "0639-01-01 00:00:00.000", MS_PER_CYCLE*29],
 ]
 
+
+# positive and negative timestamps, negative time delta
 TEST_DATA_B_MTC_OFF = [
     ["0001-01-01 00:00:00.000", "-0001-12-54 24:39:34.244", -1000],
     ["0001-01-01 00:00:00.000", "-0001-12-54 00:39:35.244", -DAY_LENGTH],
@@ -60,32 +58,42 @@ TEST_DATA_B_MTC_OFF = [
 
 ]
 
-# more randomized time intervals
+# with more randomized time intervals:
+# - positive and positive timestamps = positive time delta
+# - positive and positive timestamps = negative time delta
+# - positive and negative timestamps = positive time delta
+# - positive and negative timestamps = negative time delta
+# - negative and negative timestamps = positive time delta
+# - negative and negative timestamps = negative time delta
+
 TEST_DATA_D_MTC_OFF = [
     ["0001-01-31 04:12:22.680", "0001-01-31 04:12:23.680", 1000],
-    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:00.001", 1001],
-    ["0001-01-01 00:00:01.450","-0001-12-54 24:39:34.244", -2450],
-    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:01.111", 2111],
-    ["0001-01-01 00:00:00.500","-0001-12-54 24:39:34.244", -1500],
     ["0001-01-31 04:12:22.680", "0001-07-20 11:46:28.380", DAY_LENGTH*(JULIAN_YEAR_LENGTH-31)],
     ["0011-01-01 22:25:04.767", "0030-01-01 03:21:45.715", MS_PER_MARS_YEAR*19],
+    ["0001-07-20 11:46:28.380", "0639-01-01 00:00:00.000", MS_PER_CYCLE*29-DAY_LENGTH*JULIAN_YEAR_LENGTH],
+    ["0001-01-31 04:12:22.680","0001-01-08 00:00:00.000", -31*DAY_LENGTH+7*SOL_LENGTH],
+    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:00.001", 1001],
+    ["-0001-12-54 24:39:34.244", "0001-01-01 00:00:01.111", 2111],
+    ["-0001-12-24 20:27:12.564", "0011-01-01 22:25:04.767", 31*DAY_LENGTH+MS_PER_MARS_YEAR*10],
+    ["-0001-12-24 20:27:12.564", "0001-01-31 04:12:22.680", 31*DAY_LENGTH*2],
+    ["0001-01-01 00:00:00.500","-0001-12-54 24:39:34.244", -1500],
+    ["0001-01-01 00:00:01.450","-0001-12-54 24:39:34.244", -2450],
+    ["0001-07-20 11:46:28.380", "-0001-12-24 20:27:12.564", -DAY_LENGTH*JULIAN_YEAR_LENGTH-DAY_LENGTH*31],
+    ["0030-01-01 03:21:45.715", "-0029-01-01 21:17:49.529", -MS_PER_MARS_YEAR*58],
     ["-0001-12-24 20:27:12.564", "-0001-12-24 20:27:13.564", 1000],
     ["-0029-01-01 21:17:49.529", "-0006-09-11 05:33:12.420", MS_PER_MARS_YEAR*29-DAY_LENGTH*3652.5],
-    ["-0001-12-24 20:27:12.564", "0001-01-31 04:12:22.680", 31*DAY_LENGTH*2],
-    ["-0001-12-24 20:27:12.564", "0011-01-01 22:25:04.767", 31*DAY_LENGTH+MS_PER_MARS_YEAR*10],
-    ["0001-07-20 11:46:28.380", "-0001-12-24 20:27:12.564", -DAY_LENGTH*JULIAN_YEAR_LENGTH-DAY_LENGTH*31],
-    ["0030-01-01 03:21:45.715", "-0029-01-01 21:17:49.529", -MS_PER_MARS_YEAR*58]
+    ["-0029-01-01 21:17:49.529", "-0029-01-01 21:17:48.529", -1000],
+    ["-0001-12-24 20:27:12.564", "-0001-12-01 00:00:00.000", -SOL_LENGTH*54+DAY_LENGTH*31],
 ]
 
 
-def run_delta_test(P_DATA):
+def run_delta_test(P_DATA, TEST_LETTER, TEST_INDEX):
     # calculate timedelta between two Mars timestamps
-    # convert them into Earth timestamps
     delta_ms_M = compute_mars_timedelta(P_DATA[0], P_DATA[1])
+    # convert them into Earth timestamps
     earth_date_1 = mars_datetime_to_earth_datetime_as_isoformat(P_DATA[0], False)
-    earth_date_2 = mars_datetime_to_earth_datetime_as_isoformat(P_DATA[1], False)
-        
-    # timedelta between two Earth timestamps should be identical to Mars
+    earth_date_2 = mars_datetime_to_earth_datetime_as_isoformat(P_DATA[1], False)    
+    # timedelta between two Earth timestamps should be identical to Mars ones
     delta_time = (earth_date_2 - earth_date_1)
     delta_ms_E = (delta_time.total_seconds()*1000)
     # known sub-1ms errors happen here due to rounding
@@ -97,7 +105,7 @@ def run_delta_test(P_DATA):
         etm_error = abs(delta_ms_M-delta_ms_E)
         net_error = delta_error+etm_error
         if net_error>0:
-            print ("Accuracy error: %3.4f ms for %s test case" % (net_error,P_DATA[1]))
+            print ("Accuracy error %3.4f ms for test case %s%s" % (net_error,TEST_LETTER,TEST_INDEX))
         assert(net_error<1.0)
         
     # convert from Earth datetimes back to Mars datetimes,
@@ -106,7 +114,6 @@ def run_delta_test(P_DATA):
     mars_date_2 = earth_datetime_to_mars_datetime(earth_date_2)
     assert(P_DATA[0]==mars_date_1[:len(P_DATA[0])])
     assert(P_DATA[1]==mars_date_2[:len(P_DATA[1])])
-        
     # first timedate + timedelta = second timedate
     # second timedate - timedelta = first time_date
     check_date_1 = add_timedelta_to_mars_date(P_DATA[0], P_DATA[2])
@@ -117,13 +124,13 @@ def run_delta_test(P_DATA):
 def run_all_tests_mtc_off():
     #   positive and positive = positive time delta
     for i in range(0, len(TEST_DATA_A_MTC_OFF),1):
-        run_delta_test(TEST_DATA_A_MTC_OFF[i])
+        run_delta_test(TEST_DATA_A_MTC_OFF[i], "A", i)
     
     for i in range(0, len(TEST_DATA_B_MTC_OFF),1):
-        run_delta_test(TEST_DATA_B_MTC_OFF[i])
+        run_delta_test(TEST_DATA_B_MTC_OFF[i], "B", i)
 
     for i in range(0, len(TEST_DATA_D_MTC_OFF),1):
-        run_delta_test(TEST_DATA_D_MTC_OFF[i])
+        run_delta_test(TEST_DATA_D_MTC_OFF[i], "D", i)
 
 
 def delta_tests():
