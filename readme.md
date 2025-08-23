@@ -61,10 +61,21 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
-
 ## SOURCE CODE
 A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
 https://pypi.org/project/exodus-calendar/
+
+
+## CODE USAGE
+Import from PyPi. Functions of value are in exodus_orbitals.utils:
+
+- **earth_datetime_to_mars_datetime**. Converts timestamp in UTC to Martian date time. 
+- **mars_datetime_to_earth_datetime_as_isoformat** Converts Martian timestamp to Earth one in UTC as datetime object
+- **mars_datetime_to_earth_datetime_as_string** Converts Martian timestamp to Earth one in UTC as string
+- **mars_datetime_to_earth_datetime_as_ms** Converts Martian timestamp to Earth one as milliseconds since calendar epoch (not Unix epoch!)
+
+
+_"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC.
 
 
 ## SUPPORT PROJECT DEVELOPMENT 
