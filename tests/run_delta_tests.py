@@ -134,7 +134,10 @@ def run_delta_test(P_DATA, TEST_LETTER, TEST_INDEX, mars_second_on=False):
         etm_error = abs(delta_ms_M-delta_ms_E)
         net_error = delta_error+etm_error
         if net_error>0:
-            print ("Accuracy error %3.4f ms for test case %s%s" % (net_error,TEST_LETTER,TEST_INDEX))
+            if net_error<1e-4:
+                print ("Accuracy error %3.2E ms for test case %s%s" % (net_error,TEST_LETTER,TEST_INDEX))
+            else:
+                print ("Accuracy error %3.4f ms for test case %s%s" % (net_error,TEST_LETTER,TEST_INDEX))
         assert(net_error<1.0)
         
     # convert from Earth datetimes back to Mars datetimes,
