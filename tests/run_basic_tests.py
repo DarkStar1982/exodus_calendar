@@ -589,15 +589,23 @@ def utc_to_mars_time_long_intervals_mtc_off():
     assert(timedate8_inverse == timedate8)
 
 
-def utc_to_mars_time_test_now_mtc_off():
+def utc_to_mars_time_test_now():
+    # mtc off
     ms_since_unix_epoch = time.time()
     timedate_now = datetime.fromtimestamp(ms_since_unix_epoch,EARTH_TIMEZONE)
-    mars_timestamp = (earth_datetime_to_mars_datetime(timedate_now)[:23])
-    milliseconds_since_epoch = mars_datetime_to_earth_datetime_as_ms(mars_timestamp)
-    timedate_now_inverse = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=milliseconds_since_epoch)
-    time_diff = (timedate_now_inverse - timedate_now)
+    mars_timestamp_a = (earth_datetime_to_mars_datetime(timedate_now)[:23])
+    milliseconds_since_epoch_a = mars_datetime_to_earth_datetime_as_ms(mars_timestamp_a)
+    timedate_now_inverse_a = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=milliseconds_since_epoch_a)
+    time_diff_a = (timedate_now_inverse_a - timedate_now)
     # should never fail - write to file if does!
-    assert(abs(time_diff.total_seconds()*1000)<1.0)
+    assert(abs(time_diff_a.total_seconds()*1000)<1.0)
+    # mtc on
+    mars_timestamp_b = (earth_datetime_to_mars_datetime(timedate_now,True)[:23])
+    milliseconds_since_epoch_b = mars_datetime_to_earth_datetime_as_ms(mars_timestamp_b, True)
+    timedate_now_inverse_b = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=milliseconds_since_epoch_b)
+    time_diff_b = (timedate_now_inverse_b - timedate_now)
+    # should never fail - write to file if does!
+    assert(abs(time_diff_b.total_seconds()*1000)<1.0)
 
 
 def run_all_tests():
@@ -606,7 +614,7 @@ def run_all_tests():
     utc_to_mars_time_tests_negative_offset_mtc_on()
     utc_to_mars_time_tests_negative_offset_mtc_off()
     utc_to_mars_time_long_intervals_mtc_off()
-    utc_to_mars_time_test_now_mtc_off()
+    utc_to_mars_time_test_now()
 
 def main():
 	print("Tests started")
