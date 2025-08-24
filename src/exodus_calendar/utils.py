@@ -309,9 +309,9 @@ def compute_mars_timedelta(p_date_1, p_date_2, mars_sec_on=False):
 
 
 def add_timedelta_to_mars_date(p_date, p_milliseconds, mars_sec_on=False):
-    start_ms = mars_datetime_to_earth_datetime_as_ms(p_date)
+    start_ms = mars_datetime_to_earth_datetime_as_ms(p_date, mars_sec_on)
     total_ms = start_ms + p_milliseconds
     if total_ms>=0:
-        return positive_milliseconds_to_date(total_ms)
+        return positive_milliseconds_to_date(total_ms, mars_sec_on)
     else:
-        return negative_milliseconds_to_date(total_ms)
+        return negative_milliseconds_to_date(total_ms, mars_sec_on)
