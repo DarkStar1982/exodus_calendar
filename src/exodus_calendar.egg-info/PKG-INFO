@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: exodus_calendar
-Version: 0.99.1.1
+Version: 0.99.1.2
 Summary: A complete Martian Calendar package
 Author-email: Dennis Silin <d_silin@yahoo.com>
 License-Expression: GPL-3.0-or-later
@@ -14,7 +14,7 @@ License-File: LICENSE
 Dynamic: license-file
 
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.19
+Revision 2025.08.24
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
