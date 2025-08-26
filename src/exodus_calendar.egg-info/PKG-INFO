@@ -8,7 +8,7 @@ Project-URL: Homepage, https://github.com/DarkStar1982/exodus_calendar/
 Project-URL: Issues, https://github.com/DarkStar1982/exodus_calendar/issues
 Classifier: Programming Language :: Python :: 3
 Classifier: Operating System :: OS Independent
-Requires-Python: >=3.13
+Requires-Python: >=3.10
 Description-Content-Type: text/markdown
 License-File: LICENSE
 Dynamic: license-file
