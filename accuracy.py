@@ -2,10 +2,9 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.utils import YEAR_CYCLE, MARS_YEAR_LENGTH, EARTH_YEAR_LENGTH, DAY_LENGTH
-from exodus_calendar.utils import MARS_SECOND_LENGTH, SOL_LENGTH
+from src.exodus_calendar.utils import YEAR_CYCLE, MARS_YEAR_LENGTH, EARTH_YEAR_LENGTH, DAY_LENGTH
+from src.exodus_calendar.utils import MARS_SECOND_LENGTH, SOL_LENGTH
 
 # Calendar parameters
 fixed_year = (668*10+669*11+670)/22.0  # Fixed calendar year length
