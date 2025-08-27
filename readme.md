@@ -66,8 +66,11 @@ A simple command-line utility ("exodus.py") is is available that allows conversi
 https://pypi.org/project/exodus-calendar/
 
 
-## CODE USAGE
-Import from PyPi. Functions of value are in exodus_orbitals.utils:
+## INSTALLATION
+Install 'exodus-calendar' from from PyPi, use latest version.
+
+## USAGE
+Functions of value are in exodus_orbitals.utils:
 
 - **earth_datetime_to_mars_datetime(input_date, mars_sec_on)**. 
 Converts timestamp in UTC to Martian date time. 
