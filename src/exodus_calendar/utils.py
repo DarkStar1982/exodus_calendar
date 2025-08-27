@@ -31,7 +31,7 @@ from zoneinfo import ZoneInfo
 ###############################################################################
 
 # Start year, preliminary designation, can be changed
-EPOCH = "1955-04-11 19:21:51Z"
+EPOCH = "1955-04-11 19:21:51+00:00"
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
 
