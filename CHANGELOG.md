@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+### 0.99.1.4
+- Updated readme and added change log to package info. Tested on Python versions 3.10-3.13.
+
 ### 0.99.1.3
 - Fixed a bug that prevented the package from running on advertised Python version (3.10)
 

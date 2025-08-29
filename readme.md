@@ -1,5 +1,5 @@
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.24
+Revision 2025.08.28
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -62,12 +62,14 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
 ## SOURCE CODE
-A simple command-line utility ("exodus.py") is is available that allows conversions between terrestrial (UTC) and Martian (in MTC) dates. Packaged into library that is available on PyPi:
+Packaged into library that is available on PyPi:
 https://pypi.org/project/exodus-calendar/
 
+Additionally, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are available on Github:
+https://github.com/DarkStar1982/exodus_calendar/
 
 ## INSTALLATION
-Install 'exodus-calendar' from from PyPi, use latest version.
+Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13
 
 ## USAGE
 Functions of value are in exodus_orbitals.utils:
