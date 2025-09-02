@@ -69,7 +69,7 @@ Additionally, a simple command-line utility that allows conversions between terr
 https://github.com/DarkStar1982/exodus_calendar/
 
 ## INSTALLATION
-Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13
+Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13.
 
 ## USAGE
 Functions of value are in exodus_orbitals.utils:
