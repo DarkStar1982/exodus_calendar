@@ -200,8 +200,6 @@ def run_all_tests_mtc_on():
     for i in range(0, len(TEST_DATA_F_MTC_ON),1):
         run_delta_test(TEST_DATA_F_MTC_ON[i], "F", i, True)
 
-
-
 def delta_tests():
     print("Running time delta tests")
     run_all_tests_mtc_off()
