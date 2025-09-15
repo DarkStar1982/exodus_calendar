@@ -1,4 +1,5 @@
 # EXODUS CALENDAR FOR MARS
+Revision 2025.09.14
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
