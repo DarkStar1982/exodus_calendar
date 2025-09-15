@@ -64,20 +64,20 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ## SEASONS
 The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisphere spring equinox where Ls=0. Ls=90 thus corresponds to northern summer solstice, just as Ls=180 marks the northern autumn equinox and Ls=270 the northern winter solstice.[2]
 
-| Ls range | Sol range    |    Date range   | Notes                                  |
-|----------|--------------|-----------------|----------------------------------------|
-|     0-30 | 0.0	61.2  | Jan 01 - Feb 06 | Northern Spring Equinox at Ls=0
-|    30-60 | 61.2	126.6 | Feb 06 - Mar 15 |	 
-| 	 60-90 | 126.6	193.3 |	Mar 15 - Apr 26 | Aphelion (largest Sun-Mars distance) at Ls=71
-| 	90-120 | 193.3	257.8 |	Apr 26 - May 34 | Northern Hemisphere Summer Solstice at Ls=90
-|  120-150 | 257.8	317.5 |	May 34 - Jun 38 |	 
-|  150-180 | 317.5	371.9 |	Jun 38 - Jul 36 |	 
-|  180-210 | 371.9	421.6 |	Jul 36 - Aug 30 | Autumn Equinox at Ls=180, Dust Storms begin
-|  210-240 | 421.6	468.5 |	Aug 30 - Sep 21 |	
-|  240-270 | 468.5	514.6 |	Sep 21 - Oct 10 | Perihelion (smallest distance) at Ls=251
-|  270-300 | 514.6	562.0 |	Oct 10 - Nov 03 | Northern hemisphere Winter Solstice at Ls=270
-|  300-330 | 562.0	612.9 |	Nov 03 - Nov 53 |	
-|  330-360 | 612.9	668.6 |	Nov 43 - EOY    | Dust Storm Season ends
+| Ls range |  Sol range  |    Date range   | Notes                                  |
+|----------|-------------|-----------------|----------------------------------------|
+|     0-30 |    0.0-61.2 | Jan 01 - Feb 06 | Northern Spring Equinox at Ls=0
+|    30-60 |  61.2-126.6 | Feb 06 - Mar 15 |	 
+| 	 60-90 | 126.6-193.3 | Mar 15 - Apr 26 | Aphelion (largest Sun-Mars distance) at Ls=71
+| 	90-120 | 193.3-257.8 | Apr 26 - May 34 | Northern Hemisphere Summer Solstice at Ls=90
+|  120-150 | 257.8-317.5 | May 34 - Jun 38 |	 
+|  150-180 | 317.5-371.9 | Jun 38 - Jul 36 |	 
+|  180-210 | 371.9-421.6 | Jul 36 - Aug 30 | Autumn Equinox at Ls=180, Dust Storms begin
+|  210-240 | 421.6-468.5 | Aug 30 - Sep 21 |	
+|  240-270 | 468.5-514.6 | Sep 21 - Oct 10 | Perihelion (smallest distance) at Ls=251
+|  270-300 | 514.6-562.0 | Oct 10 - Nov 03 | Northern hemisphere Winter Solstice at Ls=270
+|  300-330 | 562.0-612.9 | Nov 03 - Nov 53 |	
+|  330-360 | 612.9-668.6 | Nov 43 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
 Packaged into library that is available on PyPi:
