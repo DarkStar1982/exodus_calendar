@@ -106,7 +106,11 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
     seconds = p_milliseconds / second_length
     sec_frac, sec_int = modf(seconds)
     ms = round(sec_frac*1000)
-    timestamp = "%02d:%02d:%02d.%03d" % (hours_int, minutes_int, sec_int, ms)
+    # todo - account for ms>1000 when martian second is used
+    if mars_second_on:
+        timestamp = "%02d:%02d:%02d.%03d" % (hours_int, minutes_int, sec_int, ms)
+    else:
+        timestamp = "%02d:%02d:%02d.%03d" % (hours_int, minutes_int, sec_int, ms)
     return timestamp
 
 
