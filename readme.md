@@ -62,6 +62,8 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
 ## SEASONS
+![Ls chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/ls_angle.png "Solar Longitude")
+
 The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisphere spring equinox where Ls=0. Ls=90 thus corresponds to northern summer solstice, just as Ls=180 marks the northern autumn equinox and Ls=270 the northern winter solstice.[2]
 
 | Ls range |  Sol range  |    Date range   | Notes                                  |
