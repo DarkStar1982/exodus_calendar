@@ -1,5 +1,6 @@
 import time
-from math import modf, ceil, floor
+import juliandate as jd
+from math import modf, ceil, floor, cos, sin, radians
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 
@@ -90,9 +91,32 @@ STR_AVG_YEAR_LENGTH = "Calendar year length"
 STR_MARS_YEARS_TO_1SOL_ERROR = "Martian years to pass for 1 sol error"
 STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
+# Planetary perturbation constants
+PX = {
+    "A":[0.007, 0.006, 0.004, 0.004, 0.002, 0.002, 0.002], #deg
+    "tau":[2.2353, 2.7543, 1.1177, 15.7866, 2.1354, 2.4694, 32.8493], #Jyr
+    "phi":[49.409, 168.173, 191.837, 21.736, 15.704, 95.528, 49.095] #deg
+}
 ###############################################################################
 ################################ IMPLEMENTATION ###############################
 ###############################################################################
+
+def get_solar_latitude_angle(p_milliseconds):
+    jd_ut = 2440587.5 + p_milliseconds/DAY_LENGTH
+    jd_tt = jd_ut + 69.184/86400
+    dT_J2000 = jd_tt - 2451545.0
+    M_rad = radians(19.3870 + 0.52402075*dT_J2000)
+    alpha_fms = 270.3863 + 0.52403840*dT_J2000
+    PBS = 0.0
+    for i in range(0, len(PX), 1):
+        angle = radians(0.98562*dT_J2000/PX["tau"][i]+PX["phi"][i])
+        PBS = PBS + PX["A"][i]*cos(angle)
+
+    Ls = alpha_fms + (10.691 + 3.0e-7*dT_J2000)*sin(M_rad) \
+        + 0.623*sin(2*M_rad) + 0.050*sin(3*M_rad) \
+        + 0.005*sin(4*M_rad) + 0.0005*sin(5*M_rad) + PBS
+
+    return (Ls % 360)
 
 def format_raw_time(p_milliseconds, mars_second_on=False):
     if mars_second_on:

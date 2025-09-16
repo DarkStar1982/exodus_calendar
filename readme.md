@@ -125,3 +125,5 @@ https://www.youtube.com/@exodusorbitals4092
 1. Gangale, Thomas. (2006). The Architecture of Time, Part 2: The Darian System for Mars. SAE Technical Papers. 10.4271/2006-01-2249.
 
 2. https://www-mars.lmd.jussieu.fr/mars/time/solar_longitude.html
+
+3. Michael Allison, Megan McEwen (2000). A post-Pathnder evaluation of areocentric solar coordinates with improved timing recipes for Mars seasonal/diurnal climate studies. Planetary and Space Science 48, 15-235.
