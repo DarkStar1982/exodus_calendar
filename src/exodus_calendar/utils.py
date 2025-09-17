@@ -309,7 +309,7 @@ def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
 def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     diff = input_dt - epoch_date
-    milliseconds_since_epoch = diff.total_seconds()*1000
+    milliseconds_since_epoch = diff.total_seconds()*1000.0
     if (epoch_date<=input_dt):
         return positive_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
     else:
