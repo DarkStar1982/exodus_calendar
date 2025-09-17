@@ -9,11 +9,11 @@ from zoneinfo import ZoneInfo
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
 from exodus_calendar.utils import (
-    get_solar_latitude_angle, 
-    mars_datetime_to_solar_latitude_angle,
+    get_solar_longitude_angle, 
+    mars_datetime_to_solar_longitude_angle,
     mars_datetime_to_earth_datetime_as_string,
     mars_datetime_to_earth_datetime_as_isoformat,
-    earth_datetime_to_solar_latitude_angle
+    earth_datetime_to_solar_longitude_angle
 )
 
 from exodus_calendar.utils import (
@@ -73,30 +73,31 @@ TEST_DATA_D = [
 def all_seasons_test():
     print("Running season dates tests")
     for i in range(0, len(TEST_DATA_A),1):
-        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_A[i][1], True)
+        Ls_1 = mars_datetime_to_solar_longitude_angle(TEST_DATA_A[i][1], True)
         assert(Ls_1==TEST_DATA_A[i][2])
         earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_A[i][1], True))
-        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        Ls_2 =earth_datetime_to_solar_longitude_angle(earth_date, True)
         assert(Ls_1==Ls_2)
 
     for i in range(0, len(TEST_DATA_B),1):
-        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_B[i][1], True)
+        Ls_1 = mars_datetime_to_solar_longitude_angle(TEST_DATA_B[i][1], True)
         assert(Ls_1==TEST_DATA_B[i][2])
         earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_B[i][1], True))
-        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        Ls_2 =earth_datetime_to_solar_longitude_angle(earth_date, True)
         assert(Ls_1==Ls_2)
 
     for i in range(0, len(TEST_DATA_D),1):
-        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_D[i][1], True)
+        Ls_1 = mars_datetime_to_solar_longitude_angle(TEST_DATA_D[i][1], True)
         assert(Ls_1==TEST_DATA_D[i][2])
         earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_D[i][1], True))
-        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        Ls_2 =earth_datetime_to_solar_longitude_angle(earth_date, True)
         assert(Ls_1==Ls_2)
+    print("Finished season dates tests")
 
 
 def basic_test():
     ms_since_unix_epoch = 1757996838621
-    assert(get_solar_latitude_angle(ms_since_unix_epoch)==140.66896191469732)
+    assert(get_solar_longitude_angle(ms_since_unix_epoch)==140.66896191469732)
 
 
 def main():

@@ -95,7 +95,7 @@ STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 ################################ IMPLEMENTATION ###############################
 ###############################################################################
 
-def get_solar_latitude_angle(p_milliseconds):
+def get_solar_longitude_angle(p_milliseconds):
     # Planetary perturbation constants
     PX = {
         "A":[0.007, 0.006, 0.004, 0.004, 0.002, 0.002, 0.002], #deg
@@ -350,14 +350,16 @@ def add_timedelta_to_mars_date(p_date, p_milliseconds, mars_sec_on=False):
     else:
         return negative_milliseconds_to_date(total_ms, mars_sec_on)
 
-def mars_datetime_to_solar_latitude_angle(p_mars_datetime, mars_sec_on=False):
+
+def mars_datetime_to_solar_longitude_angle(p_mars_datetime, mars_sec_on=False):
     delta_ms = mars_datetime_to_earth_datetime_as_ms(p_mars_datetime, mars_sec_on)
     start_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=delta_ms)
-    Ls = round(get_solar_latitude_angle(start_dt.timestamp()*1000),3)
+    Ls = round(get_solar_longitude_angle(start_dt.timestamp()*1000),3)
     return Ls
 
-def earth_datetime_to_solar_latitude_angle(p_earth_datetime, mars_sec_on=False):
+
+def earth_datetime_to_solar_longitude_angle(p_earth_datetime, mars_sec_on=False):
     mars_datetime = earth_datetime_to_mars_datetime(p_earth_datetime, mars_sec_on)
-    Ls = mars_datetime_to_solar_latitude_angle(mars_datetime[:23], mars_sec_on)
+    Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
     return Ls
 

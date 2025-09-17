@@ -82,8 +82,7 @@ def main():
         print("Earth DateTime [UTC]: %s, %s" % (timedate_str[:23], timedate_str[32:]))
         mars_date_mars_second = earth_datetime_to_mars_datetime(timedate, True)
         truncated_date = mars_date_mars_second[:23]
-        print(truncated_date)
-        Ls = mars_datetime_to_solar_latitude_angle(truncated_date, True)
+        Ls = mars_datetime_to_solar_longitude_angle(truncated_date, True)
         print(" Mars DateTime [MTC]: %s, (Ls=%s)" % (mars_date_mars_second, Ls))
 
 
