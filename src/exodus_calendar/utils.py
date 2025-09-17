@@ -356,3 +356,8 @@ def mars_datetime_to_solar_latitude_angle(p_mars_datetime, mars_sec_on=False):
     Ls = round(get_solar_latitude_angle(start_dt.timestamp()*1000),3)
     return Ls
 
+def earth_datetime_to_solar_latitude_angle(p_earth_datetime, mars_sec_on=False):
+    mars_datetime = earth_datetime_to_mars_datetime(p_earth_datetime, mars_sec_on)
+    Ls = mars_datetime_to_solar_latitude_angle(mars_datetime[:23], mars_sec_on)
+    return Ls
+

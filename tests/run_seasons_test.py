@@ -8,7 +8,14 @@ from zoneinfo import ZoneInfo
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.utils import get_solar_latitude_angle, mars_datetime_to_solar_latitude_angle
+from exodus_calendar.utils import (
+    get_solar_latitude_angle, 
+    mars_datetime_to_solar_latitude_angle,
+    mars_datetime_to_earth_datetime_as_string,
+    mars_datetime_to_earth_datetime_as_isoformat,
+    earth_datetime_to_solar_latitude_angle
+)
+
 from exodus_calendar.utils import (
     DAY_LENGTH, 
     SOL_LENGTH, 
@@ -66,16 +73,26 @@ TEST_DATA_D = [
 def all_seasons_test():
     print("Running season dates tests")
     for i in range(0, len(TEST_DATA_A),1):
-        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_A[i][1], True)
-        assert(Ls==TEST_DATA_A[i][2])
+        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_A[i][1], True)
+        assert(Ls_1==TEST_DATA_A[i][2])
+        earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_A[i][1], True))
+        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        assert(Ls_1==Ls_2)
 
     for i in range(0, len(TEST_DATA_B),1):
-        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_B[i][1], True)
-        assert(Ls==TEST_DATA_B[i][2])
+        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_B[i][1], True)
+        assert(Ls_1==TEST_DATA_B[i][2])
+        earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_B[i][1], True))
+        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        assert(Ls_1==Ls_2)
 
     for i in range(0, len(TEST_DATA_D),1):
-        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_D[i][1], True)
-        assert(Ls==TEST_DATA_D[i][2])
+        Ls_1 = mars_datetime_to_solar_latitude_angle(TEST_DATA_D[i][1], True)
+        assert(Ls_1==TEST_DATA_D[i][2])
+        earth_date = (mars_datetime_to_earth_datetime_as_isoformat(TEST_DATA_D[i][1], True))
+        Ls_2 =earth_datetime_to_solar_latitude_angle(earth_date, True)
+        assert(Ls_1==Ls_2)
+
 
 def basic_test():
     ms_since_unix_epoch = 1757996838621

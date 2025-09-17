@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: exodus_calendar
-Version: 0.99.1.5
+Version: 0.99.1.6
 Summary: A complete Martian Calendar package
 Author-email: Dennis Silin <d_silin@yahoo.com>
 License-Expression: GPL-3.0-or-later
@@ -15,7 +15,7 @@ License-File: LICENSE
 Dynamic: license-file
 
 # EXODUS CALENDAR FOR MARS
-Revision 2025.08.28
+*Revision 2025.09.16*
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -78,6 +78,8 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ![error chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/accuracy.png "Accuracy")
 
 ## SEASONS
+![Ls chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/ls_angle.png "Solar Longitude")
+
 The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisphere spring equinox where Ls=0. Ls=90 thus corresponds to northern summer solstice, just as Ls=180 marks the northern autumn equinox and Ls=270 the northern winter solstice.[2]
 
 | Ls range |  Sol range  |    Date range   | Notes                                  |
@@ -96,10 +98,8 @@ The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisph
 |  330-360 | 612.9-668.6 | Nov 43 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
-Packaged into library that is available on PyPi:
-https://pypi.org/project/exodus-calendar/
+In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are also available on Github:
 
-Additionally, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are available on Github:
 https://github.com/DarkStar1982/exodus_calendar/
 
 ## INSTALLATION
@@ -109,22 +109,28 @@ Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 
 Functions of value are in exodus_orbitals.utils:
 
 - **earth_datetime_to_mars_datetime(input_date, mars_sec_on)**. 
-Converts timestamp in UTC to Martian date time. 
+Converts input_date (as UTC-aware datetime object) to Martian date time (as string). 
 
 - **mars_datetime_to_earth_datetime_as_isoformat(input_date, mars_sec_on)** 
-Converts Martian timestamp to Earth one in UTC as datetime object
+Converts Martian timestamp to Earth one (as UTC-aware datetime object)
 
 - **mars_datetime_to_earth_datetime_as_string(input_date, mars_sec_on)** 
-Converts Martian timestamp to Earth one in UTC as string
+Converts Martian timestamp (as string) to Earth one in UTC (as string)
 
 - **mars_datetime_to_earth_datetime_as_ms(input_date, mars_sec_on)** 
-Converts Martian timestamp to Earth one as milliseconds since calendar epoch (not Unix epoch!)
+Converts Martian timestamp (as string) to Earth one as milliseconds since calendar epoch (not Unix epoch!)
 
 - **compute_mars_timedelta(date_a, date_b, mars_sec_on)** 
 Computes time delta in milliseconds between two Martian dates. Returns _date_b - date_a_
 
 - **add_timedelta_to_mars_date(date, millis, mars_sec_on)** 
-Adds time delta in millisecond to a Martian date. Returns Martian date.
+Adds time delta in millisecond to a Martian date. Returns Martian date (as string).
+
+- **mars_datetime_to_solar_latitude_angle(mars_datetime, mars_sec_on)** 
+Converts Martian date to Solar Latitude angle. More details about this value available in [2] and [3].
+
+- **earth_datetime_to_solar_latitude_angle(mars_datetime, mars_sec_on)** 
+Converts Earth date (as UTC-aware datetime) to Martian Solar Latitude angle. 
 
 _"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC. Set to False by default.
 
@@ -141,3 +147,5 @@ https://www.youtube.com/@exodusorbitals4092
 1. Gangale, Thomas. (2006). The Architecture of Time, Part 2: The Darian System for Mars. SAE Technical Papers. 10.4271/2006-01-2249.
 
 2. https://www-mars.lmd.jussieu.fr/mars/time/solar_longitude.html
+
+3. Michael Allison, Megan McEwen (2000). A post-Pathnder evaluation of areocentric solar coordinates with improved timing recipes for Mars seasonal/diurnal climate studies. Planetary and Space Science 48, 15-235.
