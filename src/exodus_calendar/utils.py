@@ -136,7 +136,7 @@ def format_raw_time(p_milliseconds, mars_second_on=False):
     seconds = p_milliseconds / second_length
     sec_frac, sec_int = modf(seconds)
     ms = round(sec_frac*1000)
-    # todo - account for ms>1000 when martian second is used
+    # todo - account for ms>1000 when martian second is used?
     if mars_second_on:
         timestamp = "%02d:%02d:%02d.%03d" % (hours_int, minutes_int, sec_int, ms)
     else:
@@ -254,7 +254,6 @@ def positive_milliseconds_to_date(p_delta_ms, p_mars_second_on=False):
     mm = months_accumulated + 1
     dd = days_accumulated + 1
     wd = WEEKDAYS[days_accumulated % 7]
-    # I think "Mars DateTime" part should be removed
     return("%04d-%02d-%02d %s, %s" %(yyyy, mm, dd, tt, wd))
 
 
@@ -306,6 +305,7 @@ def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
     return -ms_total
 
 
+# TODO: should probably return a tuple (date, time, weekday, Ls)
 def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     diff = input_dt - epoch_date
