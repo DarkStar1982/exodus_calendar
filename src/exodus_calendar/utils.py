@@ -1,5 +1,4 @@
 import time
-import juliandate as jd
 from math import modf, ceil, floor, cos, sin, radians
 from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo

@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+### 0.99.1.7
+- Fixed bug with missing dependency
+
 ### 0.99.1.6
 - Added solar longitude angle calculation and corresponding tests.
 
