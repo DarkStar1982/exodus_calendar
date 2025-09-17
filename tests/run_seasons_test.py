@@ -8,40 +8,82 @@ from zoneinfo import ZoneInfo
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.utils import add_timedelta_to_mars_date, get_solar_latitude_angle
-from exodus_calendar.utils import DAY_LENGTH, SOL_LENGTH, EPOCH, JULIAN_YEAR_LENGTH, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH, MS_PER_CYCLE, MARS_SECOND_LENGTH
+from exodus_calendar.utils import get_solar_latitude_angle, mars_datetime_to_solar_latitude_angle
+from exodus_calendar.utils import (
+    DAY_LENGTH, 
+    SOL_LENGTH, 
+    EPOCH,
+)
 
-EARTH_TIMEZONE = ZoneInfo("UTC")
 
+# First year
+TEST_DATA_A = [
+    ["0001-01-01 00:00:00.000", "0001-02-05 21:19:00.000", SOL_LENGTH*61.2, 30.0],
+    ["0001-01-01 00:00:00.000", "0001-03-15 07:35:00.000", SOL_LENGTH*126.6, 60.0],
+    ["0001-01-01 00:00:00.000", "0001-04-26 00:30:00.000", SOL_LENGTH*193.3, 90.0],
+    ["0001-01-01 00:00:00.000", "0001-05-34 11:42:00.000", SOL_LENGTH*257.8, 120.0],
+    ["0001-01-01 00:00:00.000", "0001-06-38 04:45:00.000", SOL_LENGTH*317.5, 150.0],
+    ["0001-01-01 00:00:00.000", "0001-07-36 11:10:00.000", SOL_LENGTH*371.9, 180.0],
+    ["0001-01-01 00:00:00.000", "0001-08-30 03:59:00.000", SOL_LENGTH*421.6, 210.0],
+    ["0001-01-01 00:00:00.000", "0001-09-21 00:43:00.000", SOL_LENGTH*468.5, 240.0],
+    ["0001-01-01 00:00:00.000", "0001-10-11 03:06:00.000", SOL_LENGTH*514.6, 270.0],
+    ["0001-01-01 00:00:00.000", "0001-11-02 14:21:00.000", SOL_LENGTH*562.0, 300.0],
+    ["0001-01-01 00:00:00.000", "0001-11-53 10:45:00.000", SOL_LENGTH*612.9, 330.0],
+    ["0001-01-01 00:00:00.000", "0001-12-53 05:36:00.000", SOL_LENGTH*668.6, 0.0],
+]
 
-# positive and positive timestamps = positive time delta
-SEASONS_DATA = [
-    ["0001-01-01 00:00:00.000", "0001-02-06 04:48:00.000", SOL_LENGTH*61.2],
-    ["0001-01-01 00:00:00.000", "0001-03-15 14:23:59.1000", SOL_LENGTH*126.6],
-    ["0001-01-01 00:00:00.000", "0001-04-26 07:12:00.000", SOL_LENGTH*193.3],
-    ["0001-01-01 00:00:00.000", "0001-05-34 19:12:00.000", SOL_LENGTH*257.8],
-    ["0001-01-01 00:00:00.000", "0001-06-38 12:00:00.000", SOL_LENGTH*317.5],
-    ["0001-01-01 00:00:00.000", "0001-07-36 21:35:59.1000", SOL_LENGTH*371.9],
-    ["0001-01-01 00:00:00.000", "0001-08-30 14:24:00.000", SOL_LENGTH*421.6],
-    ["0001-01-01 00:00:00.000", "0001-09-21 12:00:00.000", SOL_LENGTH*468.5],
-    ["0001-01-01 00:00:00.000", "0001-10-11 14:24:00.000", SOL_LENGTH*514.6],
-    ["0001-01-01 00:00:00.000", "0001-11-03 00:00:00.000", SOL_LENGTH*562.0],
-    ["0001-01-01 00:00:00.000", "0001-11-53 21:35:59.1000", SOL_LENGTH*612.9],
-    ["0001-01-01 00:00:00.000", "0001-12-53 14:24:00.000", SOL_LENGTH*668.6],
+TEST_DATA_B = [
+    ["0038-01-01 00:00:00.000", "0038-02-06 16:10:00.000", SOL_LENGTH*61.2, 30.0],
+    ["0038-01-01 00:00:00.000", "0038-03-16 01:35:00.000", SOL_LENGTH*126.6, 60.0],
+    ["0038-01-01 00:00:00.000", "0038-04-26 18:53:00.000", SOL_LENGTH*193.3, 90.0],
+    ["0038-01-01 00:00:00.000", "0038-05-35 07:20:00.000", SOL_LENGTH*257.8, 120.0],
+    ["0038-01-01 00:00:00.000", "0038-06-39 02:00:00.000", SOL_LENGTH*317.5, 150.0],
+    ["0038-01-01 00:00:00.000", "0038-07-37 09:58:00.000", SOL_LENGTH*371.9, 180.0],
+    ["0038-01-01 00:00:00.000", "0038-08-31 03:57:00.000", SOL_LENGTH*421.6, 210.0],
+    ["0038-01-01 00:00:00.000", "0038-09-22 01:20:00.000", SOL_LENGTH*468.5, 240.0],
+    ["0038-01-01 00:00:00.000", "0038-10-12 03:40:00.000", SOL_LENGTH*514.6, 270.0],
+    ["0038-01-01 00:00:00.000", "0038-11-03 14:15:00.000", SOL_LENGTH*562.0, 300.0],
+    ["0038-01-01 00:00:00.000", "0038-11-54 09:23:00.000", SOL_LENGTH*612.9, 330.0],
+    ["0038-01-01 00:00:00.000", "0039-01-02 02:28:00.000", SOL_LENGTH*668.6, 0.0],
+]
+
+TEST_DATA_D = [
+    ["0639-01-01 00:00:00.000", "0639-02-04 12:00:00.000", SOL_LENGTH*61.2, 30.0],
+    ["0639-01-01 00:00:00.000", "0639-03-13 04:35:00.000", SOL_LENGTH*126.6, 60.0],
+    ["0639-01-01 00:00:00.000", "0639-04-24 02:11:00.000", SOL_LENGTH*193.3, 90.0],
+    ["0639-01-01 00:00:00.000", "0639-05-33 13:47:00.000", SOL_LENGTH*257.8, 120.0],
+    ["0639-01-01 00:00:00.000", "0639-06-38 16:41:00.000", SOL_LENGTH*317.5, 150.0],
+    ["0639-01-01 00:00:00.000", "0639-07-38 07:16:00.000", SOL_LENGTH*371.9, 180.0],
+    ["0639-01-01 00:00:00.000", "0639-08-32 23:25:00.000", SOL_LENGTH*421.6, 210.0],
+    ["0639-01-01 00:00:00.000", "0639-09-24 07:25:00.000", SOL_LENGTH*468.5, 240.0],
+    ["0639-01-01 00:00:00.000", "0639-10-14 07:52:00.000", SOL_LENGTH*514.6, 270.0],
+    ["0639-01-01 00:00:00.000", "0639-11-05 03:59:00.000", SOL_LENGTH*562.0, 300.0],
+    ["0639-01-01 00:00:00.000", "0639-11-54 21:28:00.000", SOL_LENGTH*612.9, 330.0],
+    ["0639-01-01 00:00:00.000", "0639-12-53 05:54:00.000", SOL_LENGTH*668.6, 0.0],
 ]
 
 
-def seasons_test():
+def all_seasons_test():
     print("Running season dates tests")
-    for i in range(0, len(SEASONS_DATA),1):
-        check_date = add_timedelta_to_mars_date(SEASONS_DATA[i][0], SEASONS_DATA[i][2], True)
-        assert(check_date[:23]==SEASONS_DATA[i][1][:23])
+    for i in range(0, len(TEST_DATA_A),1):
+        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_A[i][1], True)
+        assert(Ls==TEST_DATA_A[i][3])
+
+    for i in range(0, len(TEST_DATA_B),1):
+        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_B[i][1], True)
+        assert(Ls==TEST_DATA_B[i][3])
+
+    for i in range(0, len(TEST_DATA_D),1):
+        Ls = mars_datetime_to_solar_latitude_angle(TEST_DATA_D[i][1], True)
+        assert(Ls==TEST_DATA_D[i][3])
+
+def basic_test():
     ms_since_unix_epoch = 1757996838621
     assert(get_solar_latitude_angle(ms_since_unix_epoch)==140.66896191469732)
-    print("Finished season dates tests")
 
 
 def main():
-    seasons_test()
+    basic_test()
+    all_seasons_test()
 
 main()

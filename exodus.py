@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 import argparse
 from datetime import datetime, timezone, timedelta
-from src.exodus_calendar.utils import earth_datetime_to_mars_datetime, mars_datetime_to_earth_datetime_as_string
+from src.exodus_calendar.utils import (
+    earth_datetime_to_mars_datetime, 
+    mars_datetime_to_earth_datetime_as_string
+)
 from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE, EPOCH
 
 def main():

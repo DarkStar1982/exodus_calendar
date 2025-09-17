@@ -91,22 +91,27 @@ STR_AVG_YEAR_LENGTH = "Calendar year length"
 STR_MARS_YEARS_TO_1SOL_ERROR = "Martian years to pass for 1 sol error"
 STR_EARTH_YEARS_TO_1SOL_ERROR = "Earth years to pass for 1 sol error"
 
-# Planetary perturbation constants
-PX = {
-    "A":[0.007, 0.006, 0.004, 0.004, 0.002, 0.002, 0.002], #deg
-    "tau":[2.2353, 2.7543, 1.1177, 15.7866, 2.1354, 2.4694, 32.8493], #Jyr
-    "phi":[49.409, 168.173, 191.837, 21.736, 15.704, 95.528, 49.095] #deg
-}
 ###############################################################################
 ################################ IMPLEMENTATION ###############################
 ###############################################################################
 
 def get_solar_latitude_angle(p_milliseconds):
+    # Planetary perturbation constants
+    PX = {
+        "A":[0.007, 0.006, 0.004, 0.004, 0.002, 0.002, 0.002], #deg
+        "tau":[2.2353, 2.7543, 1.1177, 15.7866, 2.1354, 2.4694, 32.8493], #Jyr
+        "phi":[49.409, 168.173, 191.837, 21.736, 15.704, 95.528, 49.095] #deg
+    }
+    # calcuate julian date offset from January, 1st, 2002
     jd_ut = 2440587.5 + p_milliseconds/DAY_LENGTH
     jd_tt = jd_ut + 69.184/86400
     dT_J2000 = jd_tt - 2451545.0
+
+    # calculate orbital elements data
     M_rad = radians(19.3870 + 0.52402075*dT_J2000)
     alpha_fms = 270.3863 + 0.52403840*dT_J2000
+    
+    # calculate orbital perturbations parameter
     PBS = 0.0
     for i in range(0, len(PX), 1):
         angle = radians(0.98562*dT_J2000/PX["tau"][i]+PX["phi"][i])
@@ -117,6 +122,7 @@ def get_solar_latitude_angle(p_milliseconds):
         + 0.005*sin(4*M_rad) + 0.0005*sin(5*M_rad) + PBS
 
     return (Ls % 360)
+
 
 def format_raw_time(p_milliseconds, mars_second_on=False):
     if mars_second_on:
@@ -343,3 +349,10 @@ def add_timedelta_to_mars_date(p_date, p_milliseconds, mars_sec_on=False):
         return positive_milliseconds_to_date(total_ms, mars_sec_on)
     else:
         return negative_milliseconds_to_date(total_ms, mars_sec_on)
+
+def mars_datetime_to_solar_latitude_angle(p_mars_datetime, mars_sec_on=False):
+    delta_ms = mars_datetime_to_earth_datetime_as_ms(p_mars_datetime, mars_sec_on)
+    start_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=delta_ms)
+    Ls = round(get_solar_latitude_angle(start_dt.timestamp()*1000),3)
+    return Ls
+

@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+### 0.99.1.6
+- Added solar latitude angle calculation and corresponding tests
+
 ### 0.99.1.5
 - Added seasons start and end dates
 
