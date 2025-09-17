@@ -4,7 +4,7 @@ from datetime import datetime, timezone, timedelta
 from src.exodus_calendar.utils import (
     earth_datetime_to_mars_datetime, 
     mars_datetime_to_earth_datetime_as_string,
-    mars_datetime_to_solar_latitude_angle
+    mars_datetime_to_solar_longitude_angle
 )
 from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE, EPOCH
 
