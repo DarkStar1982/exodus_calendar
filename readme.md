@@ -64,7 +64,7 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ## SEASONS
 ![Ls chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/ls_angle.png "Solar Longitude")
 
-The seasonal advance of the Sun at Mars is commonly measured in terms of the areocentric longitude Ls or Solar Longtitude Angle, as referred to the planet's vernal equinox (the ascending node of the apparent seasonal motion of the Sun on the planet's equator). As defined, Ls = 0°, 90°, 180°, and 270° indicate the Mars northern hemisphere vernal equinox, summer solstice, autumnal equinox, and winter solstice, respectively.[2, 3]
+The seasonal advance of the Sun at Mars is commonly measured in terms of the areocentric longitude (or Solar Longtitude Angle) *Ls*, as referred to the planet's vernal equinox (the ascending node of the apparent seasonal motion of the Sun on the planet's equator). As defined, Ls = 0°, 90°, 180°, and 270° indicate the Mars northern hemisphere vernal equinox, summer solstice, autumnal equinox, and winter solstice, respectively.[2, 3]
 
 | Ls range |  Sol range  | Dates (approx.) | Notes                                  |
 |----------|-------------|-----------------|----------------------------------------|
