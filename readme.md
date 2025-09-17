@@ -43,7 +43,7 @@ The epoch date and time is provisionally set to Mars vernal equinox of April 11,
 
 ### ACCURACY
 
-_Calendar Year Length=(668 x 10 + 669 x 11 + 670)/22_
+_Calendar Year Length = (668 x 10 + 669 x 11 + 670)/22_
 
 This yields an average calendar year duration of 668.5909(09) sols, creating a naive error estimate of 0.00021 sols per year, comparable to the Gregorian calendar's 0.00013-day annual discrepancy. If no other factors take into account, such a system would remain reasonably accurate for the foreseeable future, accumulating an error of only 1 sol after approximately 4,782 Martian years, assuming fixed duration of Mars northward equinox year. But as the Martian year length is known to drift (+0.00079 sols per 1,000 Martian years [1, p3]), more accurate error expression that includes annual duration drift can be expressed as following:
 
@@ -64,9 +64,9 @@ So 1 sol error will accumulate in 1878 Martian years (approximately 3532 Earth o
 ## SEASONS
 ![Ls chart](https://raw.githubusercontent.com/DarkStar1982/exodus_calendar/master/doc/ls_angle.png "Solar Longitude")
 
-The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisphere spring equinox where Ls=0. Ls=90 thus corresponds to northern summer solstice, just as Ls=180 marks the northern autumn equinox and Ls=270 the northern winter solstice.[2]
+The seasonal advance of the Sun at Mars is commonly measured in terms of the areocentric longitude Ls or Solar Longtitude Angle, as referred to the planet's vernal equinox (the ascending node of the apparent seasonal motion of the Sun on the planet's equator). As defined, Ls = 0°, 90°, 180°, and 270° indicate the Mars northern hemisphere vernal equinox, summer solstice, autumnal equinox, and winter solstice, respectively.[2, 3]
 
-| Ls range |  Sol range  |    Date range   | Notes                                  |
+| Ls range |  Sol range  | Dates (approx.) | Notes                                  |
 |----------|-------------|-----------------|----------------------------------------|
 |     0-30 |    0.0-61.2 | Jan 01 - Feb 06 | Northern Spring Equinox at Ls=0
 |    30-60 |  61.2-126.6 | Feb 06 - Mar 15 |	 
@@ -79,7 +79,7 @@ The solar longitude Ls is the Mars-Sun angle, measured from the Northern Hemisph
 |  240-270 | 468.5-514.6 | Sep 21 - Oct 10 | Perihelion (smallest distance) at Ls=251
 |  270-300 | 514.6-562.0 | Oct 10 - Nov 03 | Northern hemisphere Winter Solstice at Ls=270
 |  300-330 | 562.0-612.9 | Nov 03 - Nov 53 |	
-|  330-360 | 612.9-668.6 | Nov 43 - EOY    | Dust Storm Season ends
+|  330-360 | 612.9-668.6 | Nov 53 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
 In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are also available on Github:
@@ -111,7 +111,7 @@ Computes time delta in milliseconds between two Martian dates. Returns _date_b -
 Adds time delta in millisecond to a Martian date. Returns Martian date (as string).
 
 - **mars_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
-Converts Martian date to Solar Latitude angle. More details about this value available in [2] and [3].
+Converts Martian date to Solar Latitude angle. More details about this value available in [2], [3] and [4].
 
 - **earth_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
 Converts Earth date (as UTC-aware datetime) to Martian Solar Latitude angle. 
@@ -130,6 +130,9 @@ https://www.youtube.com/@exodusorbitals4092
 
 1. Gangale, Thomas. (2006). The Architecture of Time, Part 2: The Darian System for Mars. SAE Technical Papers. 10.4271/2006-01-2249.
 
-2. https://www-mars.lmd.jussieu.fr/mars/time/solar_longitude.html
+2. https://www.giss.nasa.gov/tools/mars24/help/notes.html
 
-3. Michael Allison, Megan McEwen (2000). A post-Pathnder evaluation of areocentric solar coordinates with improved timing recipes for Mars seasonal/diurnal climate studies. Planetary and Space Science 48, 15-235.
+3. https://www-mars.lmd.jussieu.fr/mars/time/solar_longitude.html
+
+4. Michael Allison, Megan McEwen (2000). A post-Pathnder evaluation of areocentric solar coordinates with improved timing recipes for Mars seasonal/diurnal climate studies. Planetary and Space Science 48, 15-235.
+
