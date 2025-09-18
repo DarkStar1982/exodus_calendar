@@ -306,22 +306,14 @@ def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
     return -ms_total
 
 
-
-
-# TODO: should probably return a tuple (date, time, weekday, Ls)
 def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
-    epoch_date = datetime.fromisoformat(EPOCH)
-    diff = input_dt - epoch_date
-    milliseconds_since_epoch = diff.total_seconds()*1000.0
-    if (epoch_date<=input_dt):
-        mars_datetime = positive_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
-    else:
-        mars_datetime = negative_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+    mars_datetime = earth_datetime_to_mars_datetime_as_string(input_dt, mars_sec_on)
     Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
     date = mars_datetime.split(',')[0].split(' ')[0]
     time = mars_datetime.split(',')[0].split(' ')[1]
     weekday = mars_datetime.split(',')[1]
     return (date, time, weekday, Ls)
+
 
 def earth_datetime_to_mars_datetime_as_string(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)

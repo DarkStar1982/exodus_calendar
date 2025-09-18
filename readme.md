@@ -90,31 +90,14 @@ https://github.com/DarkStar1982/exodus_calendar/
 Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13.
 
 ## USAGE
-Functions of value are in exodus_orbitals.utils:
+Main functions of note in exodus_orbitals.utils:
 
 - **earth_datetime_to_mars_datetime(input_date, mars_sec_on)**. 
-Converts input_date (as UTC-aware datetime object) to Martian date time (as string). 
+Converts input_date in UTC (as timezone-aware datetime object) to Martian date time as a tuple of (date, time, weekday, Ls), where Ls is solar longitude angle. More details about this value available in [2], [3] and [4].
+ 
+- **mars_datetime_to_earth_datetime(input_date, mars_sec_on)** 
+Converts Martian timestamp (as string) to Earth one in UTC (as timezone-aware datetime object)
 
-- **mars_datetime_to_earth_datetime_as_isoformat(input_date, mars_sec_on)** 
-Converts Martian timestamp to Earth one (as UTC-aware datetime object)
-
-- **mars_datetime_to_earth_datetime_as_string(input_date, mars_sec_on)** 
-Converts Martian timestamp (as string) to Earth one in UTC (as string)
-
-- **mars_datetime_to_earth_datetime_as_ms(input_date, mars_sec_on)** 
-Converts Martian timestamp (as string) to Earth one as milliseconds since calendar epoch (not Unix epoch!)
-
-- **compute_mars_timedelta(date_a, date_b, mars_sec_on)** 
-Computes time delta in milliseconds between two Martian dates. Returns _date_b - date_a_
-
-- **add_timedelta_to_mars_date(date, millis, mars_sec_on)** 
-Adds time delta in millisecond to a Martian date. Returns Martian date (as string).
-
-- **mars_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
-Converts Martian date to Solar Latitude angle. More details about this value available in [2], [3] and [4].
-
-- **earth_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
-Converts Earth date (as UTC-aware datetime) to Martian Solar Latitude angle. 
 
 _"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC. Set to False by default.
 
