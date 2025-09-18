@@ -311,7 +311,7 @@ def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
     Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
     date = mars_datetime.split(',')[0].split(' ')[0]
     time = mars_datetime.split(',')[0].split(' ')[1]
-    weekday = mars_datetime.split(',')[1]
+    weekday = mars_datetime.split(',')[1].strip(' ')
     return (date, time, weekday, Ls)
 
 

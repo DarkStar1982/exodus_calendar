@@ -1,5 +1,9 @@
 ## CHANGE LOG
 
+
+### 0.99.1.8
+- Reworked API to reduce clutter and provide better result format
+
 ### 0.99.1.7
 - Fixed bug with missing dependency
 

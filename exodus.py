@@ -83,7 +83,7 @@ def main():
         timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         print("Earth DateTime [UTC]: %s, %s" % (timedate_str[:23], timedate_str[32:]))
         m_d = earth_datetime_to_mars_datetime(timedate, True)
-        f_d = f" Mars DateTime [MTC]: {m_d[0]} {m_d[1]},{m_d[2]}, Ls={m_d[3]}"
+        f_d = f" Mars DateTime [MTC]: {m_d[0]} {m_d[1]}, {m_d[2]}, Ls={m_d[3]}"
         print(f_d)
 
 
