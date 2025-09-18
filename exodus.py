@@ -46,7 +46,8 @@ def main():
     if args.EARTH_DATETIME_MTC is not None:
         try:
             input_date = datetime.fromisoformat(args.EARTH_DATETIME_MTC)
-            print(earth_datetime_to_mars_datetime(input_date, True))
+            mars_date = earth_datetime_to_mars_datetime(input_date, True)
+            print(f"{mars_date[0]} {mars_date[1]}")
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
@@ -62,7 +63,8 @@ def main():
     elif args.EARTH_DATETIME_RAW is not None:
         try:
             input_date = datetime.fromisoformat(args.EARTH_DATETIME_RAW)
-            print(earth_datetime_to_mars_datetime(input_date, False))
+            mars_date = earth_datetime_to_mars_datetime(input_date, False)
+            print(f"{mars_date[0]} {mars_date[1]}")
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
@@ -80,10 +82,9 @@ def main():
         timedate = datetime.now(timezone.utc)
         timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         print("Earth DateTime [UTC]: %s, %s" % (timedate_str[:23], timedate_str[32:]))
-        mars_date_mars_second = earth_datetime_to_mars_datetime(timedate, True)
-        truncated_date = mars_date_mars_second[:23]
-        Ls = mars_datetime_to_solar_longitude_angle(truncated_date, True)
-        print(" Mars DateTime [MTC]: %s, (Ls=%s)" % (mars_date_mars_second, Ls))
+        m_d = earth_datetime_to_mars_datetime(timedate, True)
+        f_d = f" Mars DateTime [MTC]: {m_d[0]} {m_d[1]},{m_d[2]}, Ls={m_d[3]}"
+        print(f_d)
 
 
 main()

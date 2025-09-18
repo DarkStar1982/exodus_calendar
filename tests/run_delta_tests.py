@@ -8,7 +8,7 @@ from zoneinfo import ZoneInfo
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 
-from exodus_calendar.utils import compute_mars_timedelta, mars_datetime_to_earth_datetime_as_isoformat, add_timedelta_to_mars_date, earth_datetime_to_mars_datetime
+from exodus_calendar.utils import compute_mars_timedelta, mars_datetime_to_earth_datetime, add_timedelta_to_mars_date, earth_datetime_to_mars_datetime
 from exodus_calendar.utils import DAY_LENGTH, SOL_LENGTH, EPOCH, JULIAN_YEAR_LENGTH, DAY_LENGTH, MS_PER_MARS_YEAR, MARS_MONTH_LENGTH, MS_PER_CYCLE, MARS_SECOND_LENGTH
 
 EARTH_TIMEZONE = ZoneInfo("UTC")
@@ -146,8 +146,8 @@ def run_delta_test(P_DATA, TEST_LETTER, TEST_INDEX, mars_second_on=False):
     delta_ms_M = compute_mars_timedelta(P_DATA[0], P_DATA[1], mars_second_on)
     
     # convert them into Earth timestamps
-    earth_date_1 = mars_datetime_to_earth_datetime_as_isoformat(P_DATA[0], mars_second_on)
-    earth_date_2 = mars_datetime_to_earth_datetime_as_isoformat(P_DATA[1], mars_second_on)    
+    earth_date_1 = mars_datetime_to_earth_datetime(P_DATA[0], mars_second_on)
+    earth_date_2 = mars_datetime_to_earth_datetime(P_DATA[1], mars_second_on)    
     
     # timedelta between two Earth timestamps should be identical to Mars ones
     delta_time = (earth_date_2 - earth_date_1)
@@ -172,9 +172,9 @@ def run_delta_test(P_DATA, TEST_LETTER, TEST_INDEX, mars_second_on=False):
     # those should be identical to input dates
     mars_date_1 = earth_datetime_to_mars_datetime(earth_date_1, mars_second_on)
     mars_date_2 = earth_datetime_to_mars_datetime(earth_date_2, mars_second_on)
-    assert(P_DATA[0]==mars_date_1[:len(P_DATA[0])])
-    assert(P_DATA[1]==mars_date_2[:len(P_DATA[1])])
 
+    assert(P_DATA[0]== f"{mars_date_1[0]} {mars_date_1[1]}")
+    assert(P_DATA[1]== f"{mars_date_2[0]} {mars_date_2[1]}")
     # first timedate + timedelta = second timedate
     # second timedate - timedelta = first time_date
     check_date_1 = add_timedelta_to_mars_date(P_DATA[0], P_DATA[2], mars_second_on)

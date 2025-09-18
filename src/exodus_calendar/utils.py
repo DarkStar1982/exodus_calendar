@@ -101,11 +101,12 @@ def get_solar_longitude_angle(p_milliseconds):
         "tau":[2.2353, 2.7543, 1.1177, 15.7866, 2.1354, 2.4694, 32.8493], #Jyr
         "phi":[49.409, 168.173, 191.837, 21.736, 15.704, 95.528, 49.095] #deg
     }
+    
     # calcuate julian date offset from January, 1st, 2002
     jd_ut = 2440587.5 + p_milliseconds/DAY_LENGTH
     jd_tt = jd_ut + 69.184/86400
     dT_J2000 = jd_tt - 2451545.0
-
+    
     # calculate orbital elements data
     M_rad = radians(19.3870 + 0.52402075*dT_J2000)
     alpha_fms = 270.3863 + 0.52403840*dT_J2000
@@ -116,6 +117,7 @@ def get_solar_longitude_angle(p_milliseconds):
         angle = radians(0.98562*dT_J2000/PX["tau"][i]+PX["phi"][i])
         PBS = PBS + PX["A"][i]*cos(angle)
 
+    # calculate angle
     Ls = alpha_fms + (10.691 + 3.0e-7*dT_J2000)*sin(M_rad) \
         + 0.623*sin(2*M_rad) + 0.050*sin(3*M_rad) \
         + 0.005*sin(4*M_rad) + 0.0005*sin(5*M_rad) + PBS
@@ -304,8 +306,24 @@ def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
     return -ms_total
 
 
+
+
 # TODO: should probably return a tuple (date, time, weekday, Ls)
 def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
+    epoch_date = datetime.fromisoformat(EPOCH)
+    diff = input_dt - epoch_date
+    milliseconds_since_epoch = diff.total_seconds()*1000.0
+    if (epoch_date<=input_dt):
+        mars_datetime = positive_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+    else:
+        mars_datetime = negative_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+    Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
+    date = mars_datetime.split(',')[0].split(' ')[0]
+    time = mars_datetime.split(',')[0].split(' ')[1]
+    weekday = mars_datetime.split(',')[1]
+    return (date, time, weekday, Ls)
+
+def earth_datetime_to_mars_datetime_as_string(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     diff = input_dt - epoch_date
     milliseconds_since_epoch = diff.total_seconds()*1000.0
@@ -313,6 +331,12 @@ def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
         return positive_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
     else:
         return negative_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+
+
+def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False):
+    out_ms = mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on)
+    out_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=out_ms)
+    return out_dt
 
 
 def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
@@ -323,14 +347,8 @@ def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
     return out_ms
 
 
-def mars_datetime_to_earth_datetime_as_isoformat(input_dt, mars_sec_on=False):
-    out_ms = mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on)
-    out_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=out_ms)
-    return out_dt
-
-
 def mars_datetime_to_earth_datetime_as_string(input_dt, mars_sec_on=False):
-    out_dt = mars_datetime_to_earth_datetime_as_isoformat(input_dt, mars_sec_on)
+    out_dt = mars_datetime_to_earth_datetime(input_dt, mars_sec_on)
     timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
     return "%s, %s" % (timedate_str[:23], timedate_str[32:])
 
