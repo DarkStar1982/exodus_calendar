@@ -33,8 +33,6 @@ TEST_DATA_A_MTC_ON = [
     [('0011-01-01', '21:49:05.455', 'Monday', 0.168), MS_PER_MARS_YEAR*10],
     [('0023-01-01', '00:00:00.000', 'Monday', 0.165), MS_PER_CYCLE],
     [('0030-01-01', '03:16:21.818', 'Monday', 0.172), MS_PER_MARS_YEAR*29]
-
-
 ]
 
 def run_basic_tests():
