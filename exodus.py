@@ -54,8 +54,10 @@ def main():
             print("exodus.py -u '2025-01-01 00:00:01+00:00'")
     elif args.MARS_DATETIME_UTC is not None:
         try:
-            timedate_str = mars_datetime_to_earth_datetime_as_string(args.MARS_DATETIME_UTC, True, False)
-            print("Earth DateTime: %s" % timedate_str)
+            out_dt = mars_datetime_to_earth_datetime(args.MARS_DATETIME_UTC, True, False)
+            timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
+            output_str = "%s, %s" % (timedate_str[:23], timedate_str[32:])
+            print("Earth DateTime: %s" % output_str)
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
@@ -71,8 +73,10 @@ def main():
             print("exodus.py -r '2025-01-01 00:00:01+00:00'")
     elif args.MARS_DATETIME_RAW is not None:
         try:
-            timedate_str = mars_datetime_to_earth_datetime_as_string(args.MARS_DATETIME_RAW, False, False)
-            print("Earth DateTime: %s" % timedate_str)
+            out_dt = mars_datetime_to_earth_datetime(args.MARS_DATETIME_RAW, False, False)
+            timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
+            output_str = "%s, %s" % (timedate_str[:23], timedate_str[32:])
+            print("Earth DateTime: %s" % output_str)
         except:
             print("Input date is not in the correct format!")
             print("Correct example below:")
