@@ -8,6 +8,7 @@ from src.exodus_calendar.utils import (
 )
 from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE, EPOCH
 
+
 def main():
     parser = argparse.ArgumentParser(
         prog='exodus.py',

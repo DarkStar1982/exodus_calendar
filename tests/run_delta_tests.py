@@ -205,9 +205,3 @@ def delta_tests():
     run_all_tests_mtc_off()
     run_all_tests_mtc_on()
     print("Finished time delta tests")
-
-
-def main():
-    delta_tests()
-
-main()

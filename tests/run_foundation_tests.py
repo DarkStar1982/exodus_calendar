@@ -166,13 +166,10 @@ def utc_to_mars_time_test_now():
     # should never fail - write to file if does!
     assert(abs(time_diff_b.total_seconds()*1000)<1.0)
 
-def main():
+def foundation_tests():
     print("Running foundational tests")
     run_positive_dates()
     run_negative_dates()
     run_long_intervals()
     utc_to_mars_time_test_now()
     print("Finished foundational tests")
-
-
-main()
