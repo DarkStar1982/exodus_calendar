@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: exodus_calendar
-Version: 0.99.1.7
+Version: 0.99.1.8
 Summary: A complete Martian Calendar package
 Author-email: Dennis Silin <d_silin@yahoo.com>
 License-Expression: GPL-3.0-or-later
@@ -15,7 +15,7 @@ License-File: LICENSE
 Dynamic: license-file
 
 # EXODUS CALENDAR FOR MARS
-*Revision 2025.09.16*
+*Revision 2025.09.17*
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -98,7 +98,7 @@ The seasonal advance of the Sun at Mars is commonly measured in terms of the are
 |  330-360 | 612.9-668.6 | Nov 53 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
-In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are also available on Github:
+In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py"), accuracy test code ("accuracy.py") and unit tests ("run_all_tests.py") are also available on Github:
 
 https://github.com/DarkStar1982/exodus_calendar/
 
@@ -106,31 +106,13 @@ https://github.com/DarkStar1982/exodus_calendar/
 Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13.
 
 ## USAGE
-Functions of value are in exodus_orbitals.utils:
+Main functions of note in exodus_orbitals.utils:
 
 - **earth_datetime_to_mars_datetime(input_date, mars_sec_on)**. 
-Converts input_date (as UTC-aware datetime object) to Martian date time (as string). 
-
-- **mars_datetime_to_earth_datetime_as_isoformat(input_date, mars_sec_on)** 
-Converts Martian timestamp to Earth one (as UTC-aware datetime object)
-
-- **mars_datetime_to_earth_datetime_as_string(input_date, mars_sec_on)** 
-Converts Martian timestamp (as string) to Earth one in UTC (as string)
-
-- **mars_datetime_to_earth_datetime_as_ms(input_date, mars_sec_on)** 
-Converts Martian timestamp (as string) to Earth one as milliseconds since calendar epoch (not Unix epoch!)
-
-- **compute_mars_timedelta(date_a, date_b, mars_sec_on)** 
-Computes time delta in milliseconds between two Martian dates. Returns _date_b - date_a_
-
-- **add_timedelta_to_mars_date(date, millis, mars_sec_on)** 
-Adds time delta in millisecond to a Martian date. Returns Martian date (as string).
-
-- **mars_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
-Converts Martian date to Solar Latitude angle. More details about this value available in [2], [3] and [4].
-
-- **earth_datetime_to_solar_longitude_angle(mars_datetime, mars_sec_on)** 
-Converts Earth date (as UTC-aware datetime) to Martian Solar Latitude angle. 
+Converts input_date in UTC (as timezone-aware datetime object) to Martian date time as a tuple of (date, time, weekday, Ls), where Ls is solar longitude angle. More details about this value available in [2], [3] and [4].
+ 
+- **mars_datetime_to_earth_datetime(input_date, mars_sec_on)** 
+Converts Martian timestamp (as string) to Earth one in UTC (as timezone-aware datetime object)
 
 _"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC. Set to False by default.
 
