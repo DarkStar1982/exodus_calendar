@@ -82,7 +82,7 @@ The seasonal advance of the Sun at Mars is commonly measured in terms of the are
 |  330-360 | 612.9-668.6 | Nov 53 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
-In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py") and accuracy test code ("accuracy.py") are also available on Github:
+In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py"), accuracy test code ("accuracy.py") and unit tests ("run_all_tests.py") are also available on Github:
 
 https://github.com/DarkStar1982/exodus_calendar/
 
