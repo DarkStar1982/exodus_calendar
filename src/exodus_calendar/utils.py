@@ -307,22 +307,18 @@ def negative_dates_to_milliseconds(p_input_date, p_mars_second_on=False):
 
 
 def earth_datetime_to_mars_datetime(input_dt, mars_sec_on=False):
-    mars_datetime = earth_datetime_to_mars_datetime_as_string(input_dt, mars_sec_on)
-    Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
-    date = mars_datetime.split(',')[0].split(' ')[0]
-    time = mars_datetime.split(',')[0].split(' ')[1]
-    weekday = mars_datetime.split(',')[1].strip(' ')
-    return (date, time, weekday, Ls)
-
-
-def earth_datetime_to_mars_datetime_as_string(input_dt, mars_sec_on=False):
     epoch_date = datetime.fromisoformat(EPOCH)
     diff = input_dt - epoch_date
-    milliseconds_since_epoch = diff.total_seconds()*1000.0
+    ms_since_epoch = diff.total_seconds()*1000.0
     if (epoch_date<=input_dt):
-        return positive_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+        mars_dt = positive_milliseconds_to_date(ms_since_epoch, mars_sec_on)
     else:
-        return negative_milliseconds_to_date(milliseconds_since_epoch, mars_sec_on)
+        mars_dt = negative_milliseconds_to_date(ms_since_epoch, mars_sec_on)
+    Ls = mars_datetime_to_solar_longitude_angle(mars_dt[:23], mars_sec_on)
+    date = mars_dt.split(',')[0].split(' ')[0]
+    time = mars_dt.split(',')[0].split(' ')[1]
+    weekday = mars_dt.split(',')[1].strip(' ')
+    return (date, time, weekday, Ls)
 
 
 def mars_datetime_to_earth_datetime(input_dt, mars_sec_on=False):
@@ -337,12 +333,6 @@ def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
     else:
         out_ms = positive_dates_to_milliseconds(input_dt, mars_sec_on)
     return out_ms
-
-
-def mars_datetime_to_earth_datetime_as_string(input_dt, mars_sec_on=False):
-    out_dt = mars_datetime_to_earth_datetime(input_dt, mars_sec_on)
-    timedate_str = out_dt.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
-    return "%s, %s" % (timedate_str[:23], timedate_str[32:])
 
 
 def compute_mars_timedelta(p_date_1, p_date_2, mars_sec_on=False):
@@ -364,11 +354,5 @@ def mars_datetime_to_solar_longitude_angle(p_mars_datetime, mars_sec_on=False):
     delta_ms = mars_datetime_to_earth_datetime_as_ms(p_mars_datetime, mars_sec_on)
     start_dt = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=delta_ms)
     Ls = round(get_solar_longitude_angle(start_dt.timestamp()*1000),3)
-    return Ls
-
-
-def earth_datetime_to_solar_longitude_angle(p_earth_datetime, mars_sec_on=False):
-    mars_datetime = earth_datetime_to_mars_datetime(p_earth_datetime, mars_sec_on)
-    Ls = mars_datetime_to_solar_longitude_angle(mars_datetime[:23], mars_sec_on)
     return Ls
 

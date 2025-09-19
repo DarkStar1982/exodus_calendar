@@ -11,7 +11,6 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 from exodus_calendar.utils import (
     earth_datetime_to_mars_datetime, 
     mars_datetime_to_earth_datetime, 
-    earth_datetime_to_mars_datetime_as_string,
     mars_datetime_to_earth_datetime_as_ms
 )
 
@@ -151,14 +150,16 @@ def utc_to_mars_time_test_now():
     # mtc off
     ms_since_unix_epoch = time.time()
     timedate_now = datetime.fromtimestamp(ms_since_unix_epoch,EARTH_TIMEZONE)
-    mars_timestamp_a = (earth_datetime_to_mars_datetime_as_string(timedate_now)[:23])
+    mars_timestamp = earth_datetime_to_mars_datetime(timedate_now)
+    mars_timestamp_a = f"{mars_timestamp[0]} {mars_timestamp[1]}"
     milliseconds_since_epoch_a = mars_datetime_to_earth_datetime_as_ms(mars_timestamp_a)
     timedate_now_inverse_a = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=milliseconds_since_epoch_a)
     time_diff_a = (timedate_now_inverse_a - timedate_now)
     # should never fail - write to file if does!
     assert(abs(time_diff_a.total_seconds()*1000)<1.0)
     # mtc on
-    mars_timestamp_b = (earth_datetime_to_mars_datetime_as_string(timedate_now,True)[:23])
+    mars_timestamp = earth_datetime_to_mars_datetime(timedate_now,True)
+    mars_timestamp_b = f"{mars_timestamp[0]} {mars_timestamp[1]}"
     milliseconds_since_epoch_b = mars_datetime_to_earth_datetime_as_ms(mars_timestamp_b, True)
     timedate_now_inverse_b = datetime.fromisoformat(EPOCH) + timedelta(milliseconds=milliseconds_since_epoch_b)
     time_diff_b = (timedate_now_inverse_b - timedate_now)
