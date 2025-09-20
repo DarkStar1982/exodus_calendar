@@ -102,7 +102,7 @@ def get_solar_longitude_angle(p_milliseconds):
         "phi":[49.409, 168.173, 191.837, 21.736, 15.704, 95.528, 49.095] #deg
     }
     
-    # calcuate julian date offset from January, 1st, 2002
+    # calcuate julian date offset from January, 1st, 2000
     jd_ut = 2440587.5 + p_milliseconds/DAY_LENGTH
     jd_tt = jd_ut + 69.184/86400
     dT_J2000 = jd_tt - 2451545.0

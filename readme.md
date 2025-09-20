@@ -87,7 +87,7 @@ In addition to PyPi package source, a simple command-line utility that allows co
 https://github.com/DarkStar1982/exodus_calendar/
 
 ## INSTALLATION
-Install 'exodus-calendar' from from PyPi, use latest version. Tested for Python 3.10-3.13.
+Run 'pip install exodus-calendar', latest version recommended. Tested for Python 3.10-3.13.
 
 ## USAGE
 Main functions of note in exodus_orbitals.utils:
