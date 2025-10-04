@@ -1,5 +1,7 @@
 ## CHANGE LOG
 
+### 0.99.1.9
+- Added Mars datetime "now" functions
 
 ### 0.99.1.8
 - Reworked API to reduce clutter and provide better result format. Added AUTHORS file.

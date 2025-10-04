@@ -4,7 +4,8 @@ from datetime import datetime, timezone, timedelta
 from src.exodus_calendar.utils import (
     earth_datetime_to_mars_datetime, 
     mars_datetime_to_earth_datetime,
-    mars_datetime_to_solar_longitude_angle
+    mars_datetime_to_solar_longitude_angle,
+    mars_datetime_now
 )
 from src.exodus_calendar.utils import WEEKDAYS, EARTH_TIMEZONE, EPOCH
 
@@ -87,7 +88,7 @@ def main():
         timedate = datetime.now(timezone.utc)
         timedate_str = timedate.strftime("%Y-%m-%d %H:%M:%S.%f+%Z, %A")
         print("Earth DateTime [UTC]: %s, %s" % (timedate_str[:23], timedate_str[32:]))
-        m_d = earth_datetime_to_mars_datetime(timedate, True)
+        m_d = mars_datetime_now(True, "str")
         f_d = f" Mars DateTime [MTC]: {m_d[0]} {m_d[1]}, {m_d[2]}, Ls={m_d[3]}"
         print(f_d)
 

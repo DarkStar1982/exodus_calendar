@@ -335,6 +335,17 @@ def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
     return out_ms
 
 
+def mars_datetime_now(mars_sec_on=False, format="str"):
+    timedate = datetime.now(timezone.utc)
+    m_d = earth_datetime_to_mars_datetime(timedate, mars_sec_on)
+    if format == "str":
+        return m_d
+    if format == "ms":
+        m_td = f"{m_d[0]} {m_d[1]}"
+        return mars_datetime_to_earth_datetime_as_ms(m_td, mars_sec_on)
+    else:
+        return None
+
 def compute_mars_timedelta(p_date_1, p_date_2, mars_sec_on=False):
     time_ms_a = mars_datetime_to_earth_datetime_as_ms(p_date_1, mars_sec_on)
     time_ms_b = mars_datetime_to_earth_datetime_as_ms(p_date_2, mars_sec_on)
