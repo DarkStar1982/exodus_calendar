@@ -99,7 +99,7 @@ Converts input_date in UTC (as timezone-aware datetime object) to Martian date t
 Converts Martian timestamp (as string) to Earth one in UTC (as timezone-aware datetime object)
 
 
-- **mars_datetime_now(mars_sec_on, format)** 
+- **mars_datetime_now(format, mars_sec_on)** 
 Prints Martian timestap as string (format="str", default value) or milliseconds (format="ms") since calendar epoch
 
 _"mars_sec_on"_ parameter allows to use either standard second (1000 ms) when False or Martian second (1027.5 ms) when True for more convienient 24-hour timekeeping. When used, the time returned will be in sync with (unofficial) MTC timezone - time at zero Martian meridian, Mars equivalent to UTC. Set to False by default.
