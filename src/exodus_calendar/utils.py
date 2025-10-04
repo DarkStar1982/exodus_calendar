@@ -335,7 +335,7 @@ def mars_datetime_to_earth_datetime_as_ms(input_dt, mars_sec_on=False):
     return out_ms
 
 
-def mars_datetime_now(mars_sec_on=False, format="str"):
+def mars_datetime_now(format="str", mars_sec_on=False):
     timedate = datetime.now(timezone.utc)
     m_d = earth_datetime_to_mars_datetime(timedate, mars_sec_on)
     if format == "str":
