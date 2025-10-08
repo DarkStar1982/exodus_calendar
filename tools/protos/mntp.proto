@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package exodus_mntp;
+
+service MNTP_Service {
+	rpc ProcessTimeSyncRequest(MNTP_Packet) returns (MNTP_Packet) {}
+}
+
+message MNTP_Packet {
+	int32 Header = 1;
+	int32 RootDelay = 2;
+	int32 Dispersion = 3;
+	int32 ReferenceID = 4;
+	int64 ReferenceTimestamp = 5;
+	int64 OriginTimestamp = 6;
+	int64 ReceiveTimestamp = 7;
+	int64 TransmitTimestamp = 8;
+	string SHA2Checksum = 9;
+}

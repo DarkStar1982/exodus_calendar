@@ -5,7 +5,9 @@ import sys
 from concurrent import futures
 from math import modf
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..', 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'protos'))
+
 
 from exodus_calendar.utils import mars_datetime_now
 import grpc
@@ -77,7 +79,7 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 		packet["root_delay"] = 0
 		packet["dispersion"] = 0
 		packet["reference_id"] = 1
-		packet["reference_timestamp"] = REF_TIMESTAMP
+		packet["reference_timestamp"] = self.ref_timestamp
 		packet["origin_timestamp"] =  0
 		packet["receive_timestamp"] = mars_datetime_now(format="ms")
 		packet["transmit_timestamp"] = 0
