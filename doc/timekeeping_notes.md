@@ -5,13 +5,12 @@ Therefore a convinient convention is to define Martian secodn as 1.0275 of Earth
 same amount of hours, minutes and seconds for any day-to-day timekeeping needs.
 
 However... second is a fundamental unit in all of our science and engineering, so there is a 
-need to maintain a clear distinction between the two.
+need to maintain a clear distinction between the two. Therefore _millisecond_ is used for the
+timestamps, removing this ambiguity.
 
-The library itself uses milliseconds internally for most of the conversion calculations,
-converting timestamps to and from ones with Martian seconds where necessary.
-
-Future Martian settlers should probably use a different name for their "second" of 1027.5 ms
-duration or use millisecond as fundamental time unit.
+The underlying Exodus calendar library itself uses milliseconds internally for most of the
+conversion calculations, converting timestamps to and from ones with Martian seconds where
+necessary.
 
 
 ## NTP (Re-)implementation.
@@ -25,14 +24,14 @@ MNTP wide-scale adoption.
 ## Martian Network Time Protocol Proposed Packet Structure
 
 As with NTP, it should contain some info on time source, required timestamps and checksum.
-Note that martian seconds can be either equal to Earth second (1000 ms) or stretched to
-1027.5 ms to mantain the convieniens 24-hour sol. This should be specified explicitely by
-the users.
+All timestamps are in milliseconds, using 64 bits this will allow for both reasonable
+precision and uninterrupted duration of the single epoch far beyond any immediate needs.
+For sub-millisecond precision a different protocol is needed, outside the scope of this proposal (i.e. PTP analog for Mars).
 
 +-------+0---------------1---------------2---------------3--------------+
-|BITS   | 0 1|2 3 4|5 6 7|0 1 2|3 4 5 6 7|0 1 2 3 4 5 6 7|0 1 2 3 4 5 6 7  
-+-------+----+-----+-----+-----+---------+---------------+--------------+
-|00-31  | SC | LI  | VN  |Mode | Stratum |     Poll      |   Precision  |
+|BITS   | 0 1 2 3 45 6 7 |0 1 2 3 4 5 6 7|0 1 2 3 4 5 6 7|0 1 2 3 4 5 6 7  
++-------+----------------+---------------+---------+-----+--------------+
+|00-31  | Verson Number  |     Mode      |     Poll      |   Precision  |
 +-------+---------------------------------------------------------------+
 |32-63  | 					Root Delay                                  |
 +-------+---------------------------------------------------------------+
@@ -40,82 +39,45 @@ the users.
 +-------+---------------------------------------------------------------+
 |96-127 |  					Reference ID                                |
 +-------+---------------------------------------------------------------+
-|128-159|			        REFERENCE TIMESTAMP                         |
+|128-159|			        REFERENCE TIMESTAMP (T0)                    |
 |160-191|                                                               |
 +-------+---------------------------------------------------------------+
-|192-223|			        ORIGIN TIMESTAMP                            |
+|192-223|			        ORIGINATE TIMESTAMP (T1)                    |
 |224-255|                                                               |
 +-------+---------------------------------------------------------------+
-|256-287|			        RECEIVE TIMESTAMP                           |
+|256-287|			        RECEIVE TIMESTAMP (T2)                      |
 |288-319|                                                               |
 +-------+---------------------------------------------------------------+
-|320-351|			        TRANSMIT TIMESTAMP                          |
+|320-351|			        TRANSMIT TIMESTAMP (T3)                     |
 |352-383|                                                               |
 +-------+---------------------------------------------------------------+
-|384-415| 					128-bit CHECKSUM                            |
+|384-415| 					256-bit SHA2 CHECKSUM                       |
 |416-447|                                                               |
 |448-479|                                                               |
-|480-512|                                                               |
+|480-511|                                                               |
+|512-575|																|
+|576-639|                                                               |
 +-------+---------------------------------------------------------------+
 
 ## Fields Explained
 
-* SC - which second are we using to propagate timestamps, Earth or Martian one?
-+-------+--------------------------------+
-| Value | 	Meaning                      |
-+-------+--------------------------------+
-| 00(0) | Undefined value                |
-| 01(1) | Terrestrial second (1000 ms)   |
-| 10(2) | Martian second (1027.49125 ms) |
-| 11(3) | Reserved for future use        |
-+-------+--------------------------------+
 
-* LI - Leap indicator warning
-+--------+-----------------------------------------+
-| Value  | 	Meaning                                |
-+--------+-----------------------------------------+
-| 000(0) | No leap value incoming                  |
-| 001(1) | Last minute of the day has 61 seconds   |
-| 010(2) | last minute of the day has 59 seconds   |
-| 011(3) | Reserved for future use                 |
-| 100(4) | Reserved for future use                 |
-| 101(5) | Reserved for future use                 |
-| 110(6) | Reserved for future use                 |
-| 111(7) | Undefined value                         |
-+--------+-----------------------------------------+
+* VN - Version Number (version): 8-bit integer representing Mars NTP version number, set to 1
 
-* VN - Version Number (version): 3-bit integer representing Mars NTP version number, set to 1
+* Mode/Stratum - 8-bit integer representing the operations mode
 
-* Mode - 3-bit integer representing the association mode
-+--------+-----------------------------------------+
-| Value  | 	Meaning                                |
-+--------+-----------------------------------------+
-| 000(0) | Diagnostic/debug mode - no valid timing |
-| 001(1) | My role is set to be MNTP server        |
-| 010(2) | My role is set to be MNTP client        |
-| 011(3) | Reserved for future use  			   |
-| 100(4) | Reserved for future use                 |
-| 101(5) | Reserved for future use                 |
-| 110(6) | Reserved for future use                 |
-| 111(7) | Reserved for future use                 |
-+--------+-----------------------------------------+
-
-* Stratum - 5-bit integer representing the stratum
-
-+-----------+----------------------------------------------------------+
-|   Value   | 	 Meaning                                               |
-+-----------+----------------------------------------------------------+
-| 00000(0)  | Undefined/unspecified                                    |
-| 00001(1)  | Primary MNTP server (high-precision time source)         |
-| 00010(2)  | Secondary MNTP server (set from MNTP Stratum 1 source)   |
-| 00011(3)  | Secondary MNTP server (set from MNTP Stratum 2 source)   |
-| ......... | ......................................................   |
-| 01111(15) | Secondary MNTP server (set from MNTP Stratum N-1 source) |
-| 10000(16) | Unsynchronized                                           |
-| 10001(17) | Reserved for future use                                  |
-| ......... | ......................................................   |
-| 11111(31) | Reserved for future use                                  |
-+--------+-------------------------------------------------------------+
++---------------+---------------------------------------------------+
+|    Value      | 	Meaning                                         |
++---------------+---------------------------------------------------+
+| 00000000(0)   | My role is set to be MNTP client                  |
+| 00000001(1)   | My role is set to be MNTP Stratum 1 source        |
+| 00000010(2)   | My role is set to be MNTP Stratum 2 source        |
+| ...........   | ..........................................        |
+| 00001111(15)  | My role is set to be MNTP Stratum 15 source       |
+| 00010000(16)  | Reserved for future use                           |
+| ...........   | ..........................................        |
+| 11111111(255) | Diagnostic/debug mode - no valid timing           |
++-----------------+-------------------------------------------------+
 
 Poll: 8-bit unsigned integer representing the maximum interval between
 successive messages, in seconds.  Suggested default limits for
@@ -123,6 +85,27 @@ minimum and maximum poll intervals are 1 and 256, respectively.
 
 Precision: 8-bit unsigned integer representing the precision of the
 system clock, in 1/(1^LOG2(value)), from +/-1s to +/-10 ns.
+
+Root Delay: The root delay is the round-trip packet delay from a client to a stratum 1 server
+
+Root Dispersion: The root tells you how much error is added due to other factors.
+
+Reference ID: Server identification information
+
+Reference Timestamp: Time when the system clock was last set or corrected, 
+in MNTP timestamp format.
+
+Origin Timestamp: Time at the client when the request departed for the server,
+in MNTP timestamp format.
+
+Receive Timestamp: Time at the server when the request arrived from the client,
+in MNTP timestamp format.
+
+Transmit Timestamp: Time at the server when the response left for the client,
+in MNTP timestamp format.
+
+Destination Timestamp: Time at the client when the reply arrived from the server, 
+in NTP timestamp format.
 
 
 ## MNTP Server-Client Operations

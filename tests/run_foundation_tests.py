@@ -173,3 +173,5 @@ def foundation_tests():
     run_long_intervals()
     utc_to_mars_time_test_now()
     print("Finished foundational tests")
+
+foundation_tests()

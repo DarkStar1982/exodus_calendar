@@ -1,5 +1,5 @@
 # EXODUS CALENDAR FOR MARS
-*Revision 2025.09.20*
+*Revision 2025.10.07*
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -82,7 +82,7 @@ The seasonal advance of the Sun at Mars is commonly measured in terms of the are
 |  330-360 | 612.9-668.6 | Nov 53 - EOY    | Dust Storm Season ends
 
 ## SOURCE CODE
-In addition to PyPi package source, a simple command-line utility that allows conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py"), accuracy test code ("accuracy.py") and unit tests ("run_all_tests.py") are also available on Github:
+In addition to PyPi package source, there are some command-line utilities in "/tools" folder of GitHub repository - one for conversions between terrestrial (UTC) and Martian (in MTC) dates ("exodus.py"), accuracy test ("accuracy.py"), as well as a demo of Martian NTP implementation (mntp.py:
 
 https://github.com/DarkStar1982/exodus_calendar/
 

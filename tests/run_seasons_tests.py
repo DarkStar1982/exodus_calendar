@@ -87,3 +87,5 @@ def seasons_test():
     ms_since_unix_epoch = 1757996838621
     assert(get_solar_longitude_angle(ms_since_unix_epoch)==140.66896191469732)
     print("Finished season dates tests")
+
+seasons_test()
