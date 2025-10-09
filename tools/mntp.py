@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import argparse
+import hashlib
 import os
 import sys
 from concurrent import futures
@@ -8,34 +9,48 @@ from math import modf
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'src'))
 sys.path.append(os.path.join(os.path.dirname(__file__), '.', 'protos'))
 
-
 from exodus_calendar.utils import mars_datetime_now
 import grpc
 import mntp_pb2
 import mntp_pb2_grpc
 
+
+PORT = 1955
+SERVER = "localhost"
+
 class MNTP_Client():
-	version_info = 1
+	version = 1
 	mode = 0
 	poll = 1
 	precision = 1
 
 	def form_client_packet(self):
-		packet = {}
-		packet["header"] = self.version_info<<24 | self.mode<<16 | self.poll<<8 | self.precision
-		packet["root_delay"] = 0
-		packet["dispersion"] = 0
-		packet["reference_id"] = 0
-		packet["reference_timestamp"] = 0
-		packet["origin_timestamp"] =  0
-		packet["receive_timestamp"] = 0
-		packet["transmit_timestamp"] = mars_datetime_now(format="ms")
-		packet["sha2checksum"] = '0'
+		packet = {
+			"header": self.version<<24 | self.mode<<16 | self.poll<<8 | self.precision,
+			"root_delay": 0,
+			"dispersion": 0,
+			'reference_id': 0,
+			'root_delay': 0,
+			'dispersion': 0,
+			'reference_id':0,
+			'reference_timestamp':0,
+			'origin_timestamp':0,
+			'receive_timestamp':0,
+			'transmit_timestamp':mars_datetime_now(format="ms"),
+		}
+		packet_as_str = ''
+		for value in packet.values():
+			packet_as_str = packet_as_str + str(value)
+		
+		# update hashsum field
+		str_bytes= packet_as_str.encode('utf-8')
+		sha256hex = hashlib.sha256(str_bytes).hexdigest()
+		packet['sha2checksum'] = sha256hex
 		return packet
 
 	def client_call(self):
 		print("Will try to request timestamp ...")
-		with grpc.insecure_channel("localhost:1955") as channel:
+		with grpc.insecure_channel(f"{SERVER}:{PORT}") as channel:
 			stub = mntp_pb2_grpc.MNTP_ServiceStub(channel)
 			client_packet = self.form_client_packet()
 			response = stub.ProcessTimeSyncRequest(mntp_pb2.MNTP_Packet(
@@ -65,12 +80,36 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 	precision = 1
 	ref_timestamp = mars_datetime_now(format="ms")
 	
+	def check_packet_integrity(self, packet):
+		packet_as_str = ''
+		decoded = {}
+		decoded["header"] = packet.Header
+		decoded["root_delay"] = packet.RootDelay
+		decoded["dispersion"] = packet.Dispersion
+		decoded["reference_id"] = packet.ReferenceID
+		decoded["reference_timestamp"] = packet.ReferenceTimestamp
+		decoded["receive_timestamp"] = packet.ReceiveTimestamp
+		decoded["origin_timestamp"] = packet.OriginTimestamp
+		decoded["transmit_timestamp"] = packet.TransmitTimestamp
+
+		packet_as_str = ''
+		for value in decoded.values():
+			packet_as_str = packet_as_str + str(value)
+		
+		str_bytes= packet_as_str.encode('utf-8')
+		sha256hex = hashlib.sha256(str_bytes).hexdigest()
+		assert(sha256hex ==packet.SHA2Checksum)
+		return True
+
 	def decode_client_packet(self, packet):
+		integrity = self.check_packet_integrity(packet)
 		client_version = packet.Header>>24 & 0x000000FF
 		mode = packet.Header>>16 & 0x000000FF
 		poll = packet.Header>>8 & 0x000000FF
 		precision = packet.Header & 0x000000FF
-		print(f"Client header: {client_version} | {mode} | {poll} | {precision}")
+		sha2hash = packet.SHA2Checksum
+		print(f"Client packet header: {client_version} | {mode} | {poll} | {precision}")
+		print(f"Client packet checksum: {sha2hash}")
 		return (packet.TransmitTimestamp, packet.Header)
 
 	def form_server_packet(self):
@@ -89,7 +128,7 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 	def ProcessTimeSyncRequest(self, request, context):
 		packet = self.form_server_packet()
 		result, header = self.decode_client_packet(request)
-		print("Client packed received: " + str(header))
+		print("Client packet received: " + str(header))
 		return mntp_pb2.MNTP_Packet(
 			Header = packet["header"], 
 			RootDelay = packet["root_delay"], 
@@ -104,7 +143,7 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 
 
 def serve():
-	port = "1955"
+	port = f"{PORT}"
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 	mntp_pb2_grpc.add_MNTP_ServiceServicer_to_server(MNTP_Server(), server)
 	server.add_insecure_port("[::]:" + port)
@@ -136,7 +175,6 @@ def main():
 		serve()
 	
 	if args.client:
-		print("Are we there?")
 		client = MNTP_Client()
 		client.client_call()
 		return
