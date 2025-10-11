@@ -15,14 +15,18 @@ import mntp_pb2
 import mntp_pb2_grpc
 
 
-PORT = 1955
-SERVER = "localhost"
+DEFAULT_PORT = 1955
+DEFAULT_SERVER = "localhost"
 
 class MNTP_Client():
 	version = 1
 	mode = 0
 	poll = 1
 	precision = 1
+
+	def __init__(self, p_server, p_port):
+		self.port = p_port
+		self.server = p_server
 
 	def form_client_packet(self):
 		packet = {
@@ -50,7 +54,7 @@ class MNTP_Client():
 
 	def client_call(self):
 		print("Will try to request timestamp ...")
-		with grpc.insecure_channel(f"{SERVER}:{PORT}") as channel:
+		with grpc.insecure_channel(f"{self.server}:{self.port}") as channel:
 			stub = mntp_pb2_grpc.MNTP_ServiceStub(channel)
 			client_packet = self.form_client_packet()
 			response = stub.ProcessTimeSyncRequest(mntp_pb2.MNTP_Packet(
@@ -82,15 +86,17 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 	
 	def check_packet_integrity(self, packet):
 		packet_as_str = ''
-		decoded = {}
-		decoded["header"] = packet.Header
-		decoded["root_delay"] = packet.RootDelay
-		decoded["dispersion"] = packet.Dispersion
-		decoded["reference_id"] = packet.ReferenceID
-		decoded["reference_timestamp"] = packet.ReferenceTimestamp
-		decoded["receive_timestamp"] = packet.ReceiveTimestamp
-		decoded["origin_timestamp"] = packet.OriginTimestamp
-		decoded["transmit_timestamp"] = packet.TransmitTimestamp
+
+		decoded = {
+			"header":packet.Header,
+			"root_delay": packet.RootDelay,
+			"dispersion": packet.Dispersion,
+			"reference_id": packet.ReferenceID,
+			"reference_timestamp": packet.ReferenceTimestamp,
+			"receive_timestamp": packet.ReceiveTimestamp,
+			"origin_timestamp": packet.OriginTimestamp,
+			"transmit_timestamp": packet.TransmitTimestamp
+		}
 
 		packet_as_str = ''
 		for value in decoded.values():
@@ -113,16 +119,17 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
 		return (packet.TransmitTimestamp, packet.Header)
 
 	def form_server_packet(self):
-		packet = {}
-		packet["header"] = self.version_info<<24 | self.mode<<16 | self.poll<<8 | self.precision
-		packet["root_delay"] = 0
-		packet["dispersion"] = 0
-		packet["reference_id"] = 1
-		packet["reference_timestamp"] = self.ref_timestamp
-		packet["origin_timestamp"] =  0
-		packet["receive_timestamp"] = mars_datetime_now(format="ms")
-		packet["transmit_timestamp"] = 0
-		packet["sha2checksum"] = '0'
+		packet = {
+			"header": self.version_info<<24 | self.mode<<16 | self.poll<<8 | self.precision,
+			"root_delay": 0,
+			"dispersion": 0,
+			"reference_id":1,
+			"reference_timestamp": self.ref_timestamp,
+			"origin_timestamp": 0,
+			"receive_timestamp": mars_datetime_now(format="ms"),
+			"transmit_timestamp":0,
+			"sha2checksum":'0'
+		}
 		return packet
 
 	def ProcessTimeSyncRequest(self, request, context):
@@ -142,8 +149,8 @@ class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
         )
 
 
-def serve():
-	port = f"{PORT}"
+def serve(p_port):
+	port = f"{p_port}"
 	server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 	mntp_pb2_grpc.add_MNTP_ServiceServicer_to_server(MNTP_Server(), server)
 	server.add_insecure_port("[::]:" + port)
@@ -157,6 +164,7 @@ def main():
 		prog='mntp.py',
 		description='A demo of Martian flavor of NTP protocol, using gRPC as transport layer'
 	)
+
 	parser.add_argument(
 		'-s',
 		"--server", 
@@ -169,13 +177,40 @@ def main():
 		action='store_true',
 		help='Runs MNTP utility in client mode'
 	)
+
+	parser.add_argument(
+		"-p",
+		"--port",
+		type=int,
+		dest='PORT',
+		help='Set MNTP port in both server and client mode'
+	)
+
+	parser.add_argument(
+		"-m",
+		"--mntp",
+		type=str,
+		dest='SERVER',
+		help='Set remote server address for client, localhost by default'
+	)
+
+
 	args = parser.parse_args()
 
+	if args.PORT:
+		port = args.PORT
+	else:
+		port = DEFAULT_PORT
+
 	if args.server:
-		serve()
+		serve(port)
 	
 	if args.client:
-		client = MNTP_Client()
+		if args.SERVER:
+			server = args.SERVER
+		else:
+			server = DEFAULT_SERVER
+		client = MNTP_Client(server, port)
 		client.client_call()
 		return
 
