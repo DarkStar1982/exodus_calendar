@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 import argparse
 import hashlib
+import threading
+import time
 import os
 import sys
 from concurrent import futures
@@ -41,6 +43,7 @@ def check_packet_integrity(packet):
 	sha256hex = hashlib.sha256(str_bytes).hexdigest()
 	return (sha256hex == packet.SHA2Checksum)
 
+
 class MNTP_Client():
 	version = 1
 	mode = 0
@@ -72,32 +75,38 @@ class MNTP_Client():
 		packet['sha2checksum'] = sha256hex
 		return packet
 
-	def client_call(self):
-		print("Will try to request timestamp ...")
-		with grpc.insecure_channel(f"{self.server}:{self.port}") as channel:
-			stub = mntp_pb2_grpc.MNTP_ServiceStub(channel)
-			client_packet = self.form_client_packet()
-			response = stub.ProcessTimeSyncRequest(mntp_pb2.MNTP_Packet(
-				Header = client_packet["header"], 
-				RootDelay = client_packet["root_delay"], 
-				Dispersion = client_packet["dispersion"], 
-				ReferenceID = client_packet["reference_id"],
-				ReferenceTimestamp = client_packet["reference_timestamp"], 
-				OriginTimestamp = client_packet["origin_timestamp"], 
-				ReceiveTimestamp = client_packet["receive_timestamp"],
-				TransmitTimestamp = client_packet["transmit_timestamp"], 
-				SHA2Checksum = client_packet['sha2checksum']
-			))
-			if check_packet_integrity(response):
-				T4 = mars_datetime_now(format="ms")
-				T3 = response.TransmitTimestamp
-				T2 = response.ReceiveTimestamp
-				T1 = response.OriginTimestamp
-				print(f"T1:{T1}, T2:{T2}, T3:{T3}, T4:{T4}")
-				print(f"d={(T4 - T1) - (T3 - T2)}")
-				print(f"t={((T2 - T1) + (T3 - T4))/2}")
-			else:
-				raise Exception("Server packet checksum failed!")
+	def mntp_call(self):
+		while(True):
+			with grpc.insecure_channel(f"{self.server}:{self.port}") as channel:
+				stub = mntp_pb2_grpc.MNTP_ServiceStub(channel)
+				client_packet = self.form_client_packet()
+				response = stub.ProcessTimeSyncRequest(mntp_pb2.MNTP_Packet(
+					Header = client_packet["header"], 
+					RootDelay = client_packet["root_delay"], 
+					Dispersion = client_packet["dispersion"], 
+					ReferenceID = client_packet["reference_id"],
+					ReferenceTimestamp = client_packet["reference_timestamp"], 
+					OriginTimestamp = client_packet["origin_timestamp"], 
+					ReceiveTimestamp = client_packet["receive_timestamp"],
+					TransmitTimestamp = client_packet["transmit_timestamp"], 
+					SHA2Checksum = client_packet['sha2checksum']
+				))
+				if check_packet_integrity(response):
+					T4 = mars_datetime_now(format="ms")
+					T3 = response.TransmitTimestamp
+					T2 = response.ReceiveTimestamp
+					T1 = response.OriginTimestamp
+					print(f"T1:{T1}, T2:{T2}, T3:{T3}, T4:{T4}")
+					print(f"d={(T4 - T1) - (T3 - T2)}")
+					print(f"t={((T2 - T1) + (T3 - T4))/2}")
+				else:
+					raise Exception("Server packet checksum failed!")
+			time.sleep(self.poll)
+
+	def client_run(self):
+		client_thread = threading.Thread(target=self.mntp_call)
+		client_thread.start()
+		client_thread.join()
 
 
 class MNTP_Server(mntp_pb2_grpc.MNTP_Service):
@@ -223,7 +232,7 @@ def main():
 		else:
 			server = DEFAULT_SERVER
 		client = MNTP_Client(server, port)
-		client.client_call()
+		client.client_run()
 		return
 
 	parser.print_help()
