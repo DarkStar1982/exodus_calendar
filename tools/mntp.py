@@ -19,7 +19,9 @@ import mntp_pb2_grpc
 
 DEFAULT_PORT = 1955
 DEFAULT_SERVER = "localhost"
-
+MAX_SKEW = 1 
+MAX_AGE = 88775.244
+SYS_PRECISION = 9
 
 def check_packet_integrity(packet):
 	decoded = {
@@ -75,6 +77,20 @@ class MNTP_Client():
 		packet['sha2checksum'] = sha256hex
 		return packet
 
+	def process_timing_data(self, packet_data):
+		T4 = mars_datetime_now(format="ms")
+		T3 = packet_data.TransmitTimestamp
+		T2 = packet_data.ReceiveTimestamp
+		T1 = packet_data.OriginTimestamp
+		delay = (T4 - T1) - (T3 - T2)
+		offset = ((T2 - T1) + (T3 - T4))/2
+		dispersion = (1 >> SYS_PRECISION) + MAX_SKEW/MAX_AGE*(T1-T3)
+
+		print(f"T1:{T1}, T2:{T2}, T3:{T3}, T4:{T4}")
+		print(f"d={delay}")
+		print(f"t={offset}")
+		print(f"e={dispersion}")
+
 	def mntp_call(self):
 		while(True):
 			with grpc.insecure_channel(f"{self.server}:{self.port}") as channel:
@@ -92,13 +108,7 @@ class MNTP_Client():
 					SHA2Checksum = client_packet['sha2checksum']
 				))
 				if check_packet_integrity(response):
-					T4 = mars_datetime_now(format="ms")
-					T3 = response.TransmitTimestamp
-					T2 = response.ReceiveTimestamp
-					T1 = response.OriginTimestamp
-					print(f"T1:{T1}, T2:{T2}, T3:{T3}, T4:{T4}")
-					print(f"d={(T4 - T1) - (T3 - T2)}")
-					print(f"t={((T2 - T1) + (T3 - T4))/2}")
+					self.process_timing_data(response)
 				else:
 					raise Exception("Server packet checksum failed!")
 			time.sleep(self.poll)
