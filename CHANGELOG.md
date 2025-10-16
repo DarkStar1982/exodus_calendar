@@ -1,7 +1,7 @@
 ## CHANGE LOG
 
 ### 0.99.2.0
-- Added (Martian) Network Time Protocol demo
+- Removed (Martian) Network Time Protocol demo
 
 ### 0.99.1.9
 - Added Mars datetime "now" functions
