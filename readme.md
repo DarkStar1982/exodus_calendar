@@ -1,5 +1,5 @@
 # EXODUS CALENDAR FOR MARS
-*Revision 2025.11.09*
+*Revision 2025.11.13*
 
 ## INTRODUCTION
 An accurate and user-friendly Martian calendar would be invaluable for future Martian
@@ -110,6 +110,11 @@ https://www.paypal.com/paypalme/DenysSilin
 
 ## SUBSCRIBE TO AUTHOR'S YOUTUBE CHANNEL
 https://www.youtube.com/@exodusorbitals4092
+
+## PUBLICATIONS
+
+Silin, D.V. (2025). The Exodus Calendar: A Simple Timekeeping System for Martian Colonists. Journal of the British Interplanetary Society, Vol 78 No 09 – September 2025. 
+https://bis-space.com/shop/product/jbis-vol-78-no-09-september-2025/
 
 ## REFERENCES
 
