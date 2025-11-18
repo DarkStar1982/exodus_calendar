@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+### 1.0.0.0
+- Specifications finalized for 1.0 version
+
 ### 0.99.2.1
 - Updated readme.
 
