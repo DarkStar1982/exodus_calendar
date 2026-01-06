@@ -1,5 +1,8 @@
 ## CHANGE LOG
 
+### 1.0.0.1
+- Added calendar website link
+
 ### 1.0.0.0
 - Specifications finalized for 1.0 version
 
